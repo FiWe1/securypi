@@ -29,11 +29,6 @@ class StreamingOutput(io.BufferedIOBase):
             self.frame = buf
             self.condition.notify_all()
 
-output = StreamingOutput()
-picam2 = Picamera2()
-picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
-picam2.start_recording(JpegEncoder(), FileOutput(output))
-
 
 def generate_frames():
     while True:
@@ -48,10 +43,13 @@ def generate_frames():
 
 @bp.route('/stream.mjpg')
 def video_feed():
-    global output
+    global picam2, output
+    
     output = StreamingOutput()
-    current_app.picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
-    current_app.picam2.start_recording(JpegEncoder(), FileOutput(output))
+    picam2 = Picamera2()
+    picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
+   picam2.start_recording(JpegEncoder(), FileOutput(output))
+   
     return Response(generate_frames(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
     

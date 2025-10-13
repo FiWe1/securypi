@@ -1,8 +1,6 @@
 import os
 from flask import Flask
 
-from picamera2 import Picamera2
-
 
 def create_app(test_config=None):
     """Create and configure an instance of the Flask application."""
@@ -26,6 +24,7 @@ def create_app(test_config=None):
         os.makedirs(app.instance_path)
     except OSError:
         pass
+    
 
     # a simple page that says hello
     @app.route('/hello')
@@ -44,6 +43,6 @@ def create_app(test_config=None):
     app.add_url_rule("/", endpoint="index")
     
     
-    app.picam2 = Picamera2()
+    
 
     return app
