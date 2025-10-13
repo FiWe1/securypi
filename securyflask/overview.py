@@ -45,7 +45,7 @@ def generate_frames():
                frame + b'\r\n')
 
 
-@app.route('/stream.mjpg')
+@bp.route('/stream.mjpg')
 def video_feed():
     return Response(generate_frames(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
