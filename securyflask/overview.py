@@ -5,6 +5,7 @@ from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
+from flask import current_app
 # from werkzeug.exceptions import abort
 
 from picamera2 import Picamera2
@@ -47,11 +48,15 @@ def generate_frames():
 
 @bp.route('/stream.mjpg')
 def video_feed():
+    global output
+    output = StreamingOutput()
+    current_app.picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
+    current_app.picam2.start_recording(JpegEncoder(), FileOutput(output))
     return Response(generate_frames(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
     
     
 @bp.route("/")
 def index():
-    """Show all the posts, most recent first."""
+    """Render overview page with camera feed."""
     return render_template("overview/index.html")

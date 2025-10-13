@@ -1,8 +1,7 @@
 import os
 from flask import Flask
 
-
-from flask import Flask
+from picamera2 import Picamera2
 
 
 def create_app(test_config=None):
@@ -43,5 +42,8 @@ def create_app(test_config=None):
     # app.route, while giving the blog blueprint a url_prefix, but for
     # the tutorial the blog will be the main index
     app.add_url_rule("/", endpoint="index")
+    
+    
+    app.picam2 = Picamera2()
 
     return app
