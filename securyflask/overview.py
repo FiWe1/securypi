@@ -1,11 +1,12 @@
+from flask import Flask, Response, render_template_string
 from flask import Blueprint
-from flask import flash
-from flask import g
-from flask import redirect
+# from flask import flash
+# from flask import g
+# from flask import redirect
 from flask import render_template
-from flask import request
-from flask import url_for
-from flask import current_app
+# from flask import request
+# from flask import url_for
+# from flask import current_app
 # from werkzeug.exceptions import abort
 
 from picamera2 import Picamera2
@@ -48,7 +49,7 @@ def video_feed():
     output = StreamingOutput()
     picam2 = Picamera2()
     picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
-   picam2.start_recording(JpegEncoder(), FileOutput(output))
+    picam2.start_recording(JpegEncoder(), FileOutput(output))
    
     return Response(generate_frames(),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
