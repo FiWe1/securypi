@@ -31,6 +31,5 @@ class MyPicamera2(Picamera2):
     def configureAndStartStream(self, fileOutput):
         self.configure(self.create_video_configuration(main={"size": (640, 480)}))
         self.start_recording(JpegEncoder(), FileOutput(fileOutput))
-        self.start_stream()
         
         return self
