@@ -1,17 +1,31 @@
 {% extends 'base.html' %}
-{% block head%}
-  <script>
-    window.addEventListener("beforeunload", function () {
-      // Send a background POST request when the user leaves the page
-      navigator.sendBeacon("/stop_camera");
-    });
+
+{% block head %}
+<script>
+  async function switchMode(mode) {
+    const res = await fetch(`/start_camera/${mode}`);
+    const data = await res.json();
+
+    if (data.status === "ok") {
+      const img = document.getElementById("camera-feed");
+      // add timestamp to force reload of stream
+      img.src = "/stream.mjpg?t=" + new Date().getTime();
+      document.getElementById("mode-label").textContent = data.mode.toUpperCase();
+    }
+  }
+
+  window.addEventListener("beforeunload", function () {
+    navigator.sendBeacon("/stop_camera");
+  });
 </script>
 {% endblock %}
 
-{% block header %}
-  <h1>{% block title %}Your Home{% endblock %}</h1>
-{% endblock %}
-
 {% block content %}
-  <img src="{{ url_for('overview.video_feed') }}" width="640" height="480" />
+  <h1>Camera Mode: <span id="mode-label">PHOTO</span></h1>
+  <div>
+    <button onclick="switchMode('photo')">📸 Photo</button>
+    <button onclick="switchMode('video')">🎥 Video</button>
+  </div>
+
+  <img id="camera-feed" src="" width="640" height="480" />
 {% endblock %}
