@@ -1,57 +1,33 @@
 from flask import Flask, Response, render_template_string
 from flask import Blueprint
+from flask import render_template
 # from flask import flash
 # from flask import g
 # from flask import redirect
-from flask import render_template
 # from flask import request
 # from flask import url_for
 # from flask import current_app
 # from werkzeug.exceptions import abort
 
-from picamera2 import Picamera2
-from picamera2.encoders import JpegEncoder
-from picamera2.outputs import FileOutput
-from threading import Condition
-import io
+from mycam import mycam, StreamingOutput, generate_frames
 
 
 bp = Blueprint("overview", __name__)
 
 
-
-class StreamingOutput(io.BufferedIOBase):
-    def __init__(self):
-        self.frame = None
-        self.condition = Condition()
-
-    def write(self, buf):
-        with self.condition:
-            self.frame = buf
-            self.condition.notify_all()
-
-
-def generate_frames():
-    while True:
-        with output.condition:
-            output.condition.wait()
-            frame = output.frame
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n'
-               b'Content-Length: ' + f"{len(frame)}".encode() + b'\r\n\r\n' +
-               frame + b'\r\n')
-
-
 @bp.route('/stream.mjpg')
 def video_feed():
-    global picam2, output
+    """
+    Video streaming route to the src attribute of an img tag.
+    Uses a generator function to stream the response.
+    Calls mycam, a picamera2 wrapper class contained in mycam.py
+    """    
+    output = mycam.StreamingOutput()
     
-    output = StreamingOutput()
-    picam2 = Picamera2()
-    picam2.configure(picam2.create_video_configuration(main={"size": (640, 480)}))
-    picam2.start_recording(JpegEncoder(), FileOutput(output))
-   
-    return Response(generate_frames(),
+    camera = mycam.MyPicamera2()
+    camera.configureAndStartStream(output)
+           
+    return Response(mycam.generate_frames(output),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
     
     
