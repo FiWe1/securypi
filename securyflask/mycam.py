@@ -36,11 +36,10 @@ class MyPicamera2(Picamera2):
     
     def configureAndTakePicture(self, fileOutput):
         self.configure(self.create_still_configuration(main={"size": (1920, 1080)}))
-        request = self.capture_request()
-        buffer = request.make_buffer("main")
         
-        fileOutput.write(buffer)
+        array = self.capture_array()
+        jpeg = JpegEncoder.encode(array)
         
-        request.release()
+        fileOutput.write(jpeg)
         
         return self
