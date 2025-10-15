@@ -78,7 +78,7 @@ def index():
     # --- Remove POST handling block entirely ---
 
     # Determine the template and URL for the <img> tag based on the mode
-    if mode == 'live':
+    if mode == 'stream':
         img_src = url_for('overview.video_feed')
         return render_template("overview/stream.html", mode=mode, img_src=img_src)
     else: # Default is 'picture'
