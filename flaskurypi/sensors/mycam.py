@@ -7,6 +7,9 @@ import io
 
 
 class StreamingOutput(io.BufferedIOBase):
+    """ Class to handle streaming of camera frames to a HTTP response.
+        Uses a Condition to synchronize access to the latest frame.
+    """
     def __init__(self):
         self.frame = None
         self.condition = Condition()
@@ -17,6 +20,10 @@ class StreamingOutput(io.BufferedIOBase):
             self.condition.notify_all()
 
 def generate_frames(output):
+    """Generator function that yields camera frames in byte format.
+       Wailts for a new frame from the camera and
+       yields it as part of a multipart HTTP response.
+    """
     while True:
         with output.condition:
             output.condition.wait()
@@ -28,6 +35,9 @@ def generate_frames(output):
 
 
 class MyPicamera2(Picamera2):
+    """ My wrapper class for Picamera2 with methods for streaming and taking pictures
+        for flask application purposes.
+    """
     def configureAndStartStream(self, fileOutput):
         config = self.create_video_configuration(main={"size": (640, 360), "format": "XRGB8888"},
                                                  raw={"size": self.sensor_resolution})

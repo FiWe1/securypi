@@ -14,10 +14,11 @@ from .sensors import temphum
 
 ### Globals ###
 bp = Blueprint("overview", __name__)
-camera = None
+camera = None # Shared camera instance
 
 
 def get_camera():
+    """Get or initialize the shared camera instance."""
     global camera
     if camera is None:
         camera = mycam.MyPicamera2()
@@ -47,6 +48,7 @@ def video_feed():
 @bp.route('/picture.jpg')
 def picture_feed():
     """Route for a single snapshot."""
+    
     global camera
     camera = get_camera()
     
@@ -60,17 +62,11 @@ def picture_feed():
         return Response(status=500)
 
 
-def stop_recording():
-    global camera
-    if camera is not None:
-        try:
-            camera.stop_recording()
-        except Exception as e:
-            print(f"Error stopping camera: {e}")
-
-
 @bp.route("/stop_camera", methods=["POST"])
 def stop_camera():
+    """Route to stop the camera and release resources.
+       camera <- None
+    """
     global camera
     if camera is not None:
         try:
@@ -80,12 +76,15 @@ def stop_camera():
             print(f"Error stopping camera: {e}")
         finally:
             camera = None
+            
     return ("Camera stopped", 200)
     
 
 @bp.route("/", methods=["GET"]) # Only need GET now
 def index():
-    """Render overview page with camera feed, handling mode switching."""
+    """Main overview page showing either live stream or snapshot based on mode.
+       Also displays temperature and humidity readings.
+    """
     
     # Get the desired mode from the request (default to 'picture')
     mode = request.args.get('mode', 'picture')

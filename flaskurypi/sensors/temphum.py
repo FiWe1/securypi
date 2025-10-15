@@ -4,6 +4,7 @@ import board # pyright: ignore[reportMissingImports]
 
 
 def measure_temp_hum(pin = board.D4, temperature_unit = 'C'):
+    """ Measure temperature and humidity using DHT22 sensor."""
     try:
         dht_device = adafruit_dht.DHT22(pin)
         
