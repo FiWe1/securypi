@@ -9,8 +9,8 @@ from flask import url_for
 # from flask import current_app
 # from werkzeug.exceptions import abort
 
-from sensors import mycam
-from sensors import temphum
+from .sensors import mycam
+from .sensors import temphum
 
 ### Globals ###
 bp = Blueprint("overview", __name__)
