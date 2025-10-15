@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 {% block head %}
-  <script>
+  {% comment %} <script>
     window.addEventListener("beforeunload", function () {
       // Send a background POST request when the user leaves the page
       navigator.sendBeacon("/stop_camera");
     });
-</script>
+</script> {% endcomment %}
 {% endblock %}
 
 {% block header %}

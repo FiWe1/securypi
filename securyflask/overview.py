@@ -16,6 +16,15 @@ bp = Blueprint("overview", __name__)
 camera = None
 
 
+def get_camera():
+    global camera
+    if camera is None:
+        camera = mycam.MyPicamera2()
+    elif camera.started:
+        camera.stop()
+    return camera
+
+
 @bp.route('/stream.mjpg')
 def video_feed():
     """
@@ -24,8 +33,7 @@ def video_feed():
     Calls mycam, a picamera2 wrapper class contained in mycam.py
     """
     global camera
-    stop_recording() # This will stop recording if streaming was active
-    camera = mycam.MyPicamera2()
+    camera = get_camera()
     
     output = mycam.StreamingOutput()
     
@@ -39,8 +47,7 @@ def video_feed():
 def picture_feed():
     """Route for a single snapshot."""
     global camera
-    stop_camera() # This will stop recording if streaming was active, camera=None
-    camera = mycam.MyPicamera2()
+    camera = get_camera()
     
     try:
         jpeg_data = camera.configureAndTakePicture()
