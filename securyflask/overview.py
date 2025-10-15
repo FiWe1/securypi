@@ -50,4 +50,4 @@ def stop_camera():
 @bp.route("/")
 def index():
     """Render overview page with camera feed."""
-    return render_template("overview/index.html")
+    return render_template("overview/stream.html")
