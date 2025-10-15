@@ -16,6 +16,8 @@ def measure_temp_hum(pin = board.D4, temperature_unit = 'C'):
             temperature = temperature_c * (9 / 5) + 32
         else:
             raise ValueError("Invalid unit. Use 'C' for Celsius or 'F' for Fahrenheit.")
+        
+        dht_device.exit()
         return temperature, humidity
     except RuntimeError as err:
         print(err.args[0])
