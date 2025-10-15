@@ -82,4 +82,4 @@ def index():
         return render_template("overview/stream.html", mode=mode, img_src=img_src)
     else: # Default is 'picture'
         img_src = url_for('overview.picture_feed')
-        return render_template("overview/index.html", mode=mode, img_src=img_src)
+        return render_template("overview/snapshot.html", mode=mode, img_src=img_src)
