@@ -51,13 +51,22 @@ def picture_feed():
         return Response(status=500)
 
 
-@bp.route("/stop_camera", methods=["POST"])
 def stop_recording():
     global camera
     if camera is not None:
         try:
             camera.stop_recording()
-            # camera.close()
+        except Exception as e:
+            print(f"Error stopping camera: {e}")
+
+
+@bp.route("/stop_camera", methods=["POST"])
+def stop_camera():
+    global camera
+    if camera is not None:
+        try:
+            camera.stop_recording()
+            camera.close()
         except Exception as e:
             print(f"Error stopping camera: {e}")
         finally:
