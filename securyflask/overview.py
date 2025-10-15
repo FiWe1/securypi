@@ -24,9 +24,9 @@ def video_feed():
     Calls mycam, a picamera2 wrapper class contained in mycam.py
     """
     global camera
+    stop_recording() # This will stop recording if streaming was active
     
     output = mycam.StreamingOutput()
-    stop_camera() # This will ensure 'camera' is None if streaming was active
     
     camera.configureAndStartStream(output)
            
@@ -38,8 +38,7 @@ def video_feed():
 def picture_feed():
     """Route for a single snapshot."""
     global camera
-    # Ensure no streaming camera is running before capturing a picture
-    stop_camera() # This will ensure 'camera' is None if streaming was active
+    stop_recording() # This will stop recording if streaming was active
     
     try:
         jpeg_data = camera.configureAndTakePicture()
@@ -53,12 +52,12 @@ def picture_feed():
 
 
 @bp.route("/stop_camera", methods=["POST"])
-def stop_camera():
+def stop_recording():
     global camera
     if camera is not None:
         try:
             camera.stop_recording()
-            camera.close()
+            # camera.close()
         except Exception as e:
             print(f"Error stopping camera: {e}")
         finally:
@@ -72,7 +71,7 @@ def index():
     global camera
     
     if camera is None:
-        camera = mycam.Picamera2() # Initialize camera if not already done
+        camera = mycam.MyPicamera2() # Initialize camera if not already done
     
     # Get the desired mode from the request (default to 'picture')
     mode = request.args.get('mode', 'picture')
