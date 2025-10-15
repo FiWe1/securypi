@@ -38,11 +38,10 @@ class MyPicamera2(Picamera2):
         self.configure(self.create_still_configuration(main={"size": (1920, 1080)}))
         
         self.start()
-        request = self.capture_request()
-        buffer = request.make_buffer("main")
+        pic = self.capture_image("main")
         self.stop()
         
         
-        fileOutput.write(buffer.data)
+        fileOutput.write(pic)
         
         return self
