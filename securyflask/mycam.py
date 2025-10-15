@@ -29,7 +29,10 @@ def generate_frames(output):
 
 class MyPicamera2(Picamera2):
     def configureAndStartStream(self, fileOutput):
-        self.configure(self.create_video_configuration(main={"size": (640, 480)}))
+        sensor_resolution = self.sensor_resolution
+        config = self.create_video_configuration(main={"size": (640, 480)},
+                                                 raw={"size": sensor_resolution})
+        self.configure(config)
         self.start_recording(JpegEncoder(), FileOutput(fileOutput))
         
         return self
