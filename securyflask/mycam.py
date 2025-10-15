@@ -33,3 +33,17 @@ class MyPicamera2(Picamera2):
         self.start_recording(JpegEncoder(), FileOutput(fileOutput))
         
         return self
+    
+    def configureAndTakePicture(self):
+        # Configure for still capture
+        config = self.create_still_configuration(main={"size": (1920, 1080)})
+        self.configure(config)
+        self.start()
+        
+        # Capture an image to a BytesIO object
+        stream = io.BytesIO()
+        self.capture_file(stream, format='jpeg')
+        self.stop()
+        
+        # Return the byte data
+        return stream.getvalue()
