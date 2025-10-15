@@ -33,9 +33,3 @@ class MyPicamera2(Picamera2):
         self.start_recording(JpegEncoder(), FileOutput(fileOutput))
         
         return self
-    
-    def configureAndTakePicture(self, fileOutput):
-        self.configure(self.create_still_configuration(main={"size": (1920, 1080)}))
-        self.start_recording(JpegEncoder(), FileOutput(fileOutput))
-        
-        return self
