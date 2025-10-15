@@ -29,9 +29,8 @@ def generate_frames(output):
 
 class MyPicamera2(Picamera2):
     def configureAndStartStream(self, fileOutput):
-        sensor_resolution = self.sensor_resolution
         config = self.create_video_configuration(main={"size": (640, 360), "format": "XRGB8888"},
-                                                 raw={"size": sensor_resolution})
+                                                 raw={"size": self.sensor_resolution})
         self.configure(config)
         self.start_recording(JpegEncoder(), FileOutput(fileOutput))
         
@@ -39,7 +38,8 @@ class MyPicamera2(Picamera2):
     
     def configureAndTakePicture(self):
         # Configure for still capture
-        config = self.create_still_configuration(main={"size": (1920, 1080)})
+        config = self.create_still_configuration(main={"size": self.sensor_resolution, "format": "XRGB8888"},
+                                                 raw={"size": self.sensor_resolution})
         self.configure(config)
         self.start()
         
