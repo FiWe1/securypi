@@ -6,12 +6,12 @@
   {% block head %}{% endblock %}
 </head>
 <body>
-    <header>
-      {% block body_header %}{% endblock %}
-    </header>
-    {% for message in get_flashed_messages() %}
-      <div class="flash">{{ message }}</div>
-    {% endfor %}
-    {% block body_content %}{% endblock %}
+  <header>
+    {% block body_header %}{% endblock %}
+  </header>
+  {% for message in get_flashed_messages() %}
+  <div class="flash">{{ message }}</div>
+  {% endfor %}
+  {% block body_content %}{% endblock %}
 </body>
 </html>
