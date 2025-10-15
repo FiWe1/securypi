@@ -11,8 +11,9 @@ from flask import url_for
 
 from . import mycam
 
-
+### Globals ###
 bp = Blueprint("overview", __name__)
+camera = None
 
 
 @bp.route('/stream.mjpg')
