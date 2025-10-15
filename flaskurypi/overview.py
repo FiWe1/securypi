@@ -9,7 +9,8 @@ from flask import url_for
 # from flask import current_app
 # from werkzeug.exceptions import abort
 
-from . import mycam
+from sensors import mycam
+from sensors import temphum
 
 ### Globals ###
 bp = Blueprint("overview", __name__)
@@ -51,7 +52,6 @@ def picture_feed():
     
     try:
         jpeg_data = camera.configureAndTakePicture()
-        # The camera instance is short-lived and closed within configureAndTakePicture
         
         return Response(jpeg_data, mimetype='image/jpeg')
     except Exception as e:
@@ -90,12 +90,16 @@ def index():
     # Get the desired mode from the request (default to 'picture')
     mode = request.args.get('mode', 'picture')
     
-    # --- Remove POST handling block entirely ---
+    
+    # temperature and humidity sensor
+    temperature_unit = 'C'
+    temperature, humidity = temphum.measure_temp_hum(temperature_unit=temperature_unit)
+    
 
     # Determine the template and URL for the <img> tag based on the mode
     if mode == 'stream':
         img_src = url_for('overview.video_feed')
-        return render_template("overview/stream.html", mode=mode, img_src=img_src)
+        return render_template("overview/stream.html", mode=mode, img_src=img_src, temperature=temperature, humidity=humidity, temperature_unit=temperature_unit)
     else: # Default is 'picture'
         img_src = url_for('overview.picture_feed')
-        return render_template("overview/snapshot.html", mode=mode, img_src=img_src)
+        return render_template("overview/snapshot.html", mode=mode, img_src=img_src, temperature=temperature, humidity=humidity, temperature_unit=temperature_unit)
