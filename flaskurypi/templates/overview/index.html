@@ -13,6 +13,8 @@
 {% endblock %}
 
 {% block content %}
+  {% block camera_feed %}
+  {% endblock %}
   <div>
     <h2>Temperature and Humidity</h2>
     <p>Temperature: {{ temperature }} &deg;{{ temperature_unit }}</p>
