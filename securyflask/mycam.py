@@ -38,7 +38,7 @@ class MyPicamera2(Picamera2):
     
     def configureAndTakePicture(self):
         # Configure for still capture
-        config = self.create_still_configuration(main={"size": self.sensor_resolution, "format": "XRGB8888"},
+        config = self.create_still_configuration(main={"size": (1920, 1080), "format": "XRGB8888"},
                                                  raw={"size": self.sensor_resolution})
         self.configure(config)
         self.start()
