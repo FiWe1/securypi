@@ -26,10 +26,8 @@ def video_feed():
     global camera
     
     output = mycam.StreamingOutput()
-    
     stop_camera() # This will ensure 'camera' is None if streaming was active
     
-    camera = mycam.MyPicamera2()    
     camera.configureAndStartStream(output)
            
     return Response(mycam.generate_frames(output),
@@ -39,12 +37,12 @@ def video_feed():
 @bp.route('/picture.jpg')
 def picture_feed():
     """Route for a single snapshot."""
+    global camera
     # Ensure no streaming camera is running before capturing a picture
     stop_camera() # This will ensure 'camera' is None if streaming was active
     
     try:
-        temp_camera = mycam.MyPicamera2()
-        jpeg_data = temp_camera.configureAndTakePicture()
+        jpeg_data = camera.configureAndTakePicture()
         # The camera instance is short-lived and closed within configureAndTakePicture
         
         return Response(jpeg_data, mimetype='image/jpeg')
@@ -71,6 +69,10 @@ def stop_camera():
 @bp.route("/", methods=["GET"]) # Only need GET now
 def index():
     """Render overview page with camera feed, handling mode switching."""
+    global camera
+    
+    if camera is None:
+        camera = mycam.Picamera2() # Initialize camera if not already done
     
     # Get the desired mode from the request (default to 'picture')
     mode = request.args.get('mode', 'picture')
