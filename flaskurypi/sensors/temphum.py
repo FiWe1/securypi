@@ -17,8 +17,10 @@ def measure_temp_hum(pin = board.D4, temperature_unit = 'C'):
         else:
             raise ValueError("Invalid unit. Use 'C' for Celsius or 'F' for Fahrenheit.")
         
-        dht_device.exit()
         return temperature, humidity
     except RuntimeError as err:
         print(err.args[0])
         return None, None
+    finally:
+        dht_device.exit()
+        #time.sleep(2.0)  # DHT22 sensor needs a delay between readings
