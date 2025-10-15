@@ -15,9 +15,9 @@
 {% block body_content %}
   <section class="camera_overview">
     {% if mode == "stream" %}
-    include 'overview/stream.html'
+    {% include 'overview/stream.html' %}
     {% else %}
-    include 'overview/snapshot.html'
+    {% include 'overview/snapshot.html' %}
     {% endif %}
   </section>
 
