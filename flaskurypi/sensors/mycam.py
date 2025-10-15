@@ -1,6 +1,6 @@
-from picamera2 import Picamera2
-from picamera2.encoders import JpegEncoder
-from picamera2.outputs import FileOutput
+from picamera2 import Picamera2 # pyright: ignore[reportMissingImports]
+from picamera2.encoders import JpegEncoder # pyright: ignore[reportMissingImports]
+from picamera2.outputs import FileOutput # pyright: ignore[reportMissingImports]
 
 from threading import Condition
 import io

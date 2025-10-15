@@ -1,6 +1,6 @@
-import time
-import adafruit_dht
-import board
+# import time
+import adafruit_dht # pyright: ignore[reportMissingImports]
+import board # pyright: ignore[reportMissingImports]
 
 
 def measure_temp_hum(pin = board.D4, temperature_unit = 'C'):
