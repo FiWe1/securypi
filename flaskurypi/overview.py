@@ -99,7 +99,6 @@ def index():
     # Determine the template and URL for the <img> tag based on the mode
     if mode == 'stream':
         img_src = url_for('overview.video_feed')
-        return render_template("overview/stream.html", mode=mode, img_src=img_src, temperature=temperature, humidity=humidity, temperature_unit=temperature_unit)
     else: # Default is 'picture'
         img_src = url_for('overview.picture_feed')
-        return render_template("overview/snapshot.html", mode=mode, img_src=img_src, temperature=temperature, humidity=humidity, temperature_unit=temperature_unit)
+    return render_template("overview/index.html", mode=mode, img_src=img_src, temperature=temperature, humidity=humidity, temperature_unit=temperature_unit)    
