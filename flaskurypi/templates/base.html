@@ -1,17 +1,17 @@
 <!doctype html>
 <html>
-  <head>
-    <title>{% block title %}{% endblock %} - Securypi</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-    {% block head %}{% endblock %}
-  </head>
-  <body>
-    <section class="content">
-      <header>{% block header %}{% endblock %}</header>
-      {% for message in get_flashed_messages() %}
+<head>
+  <title>{% block title %}{% endblock %} - Securypi</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  {% block head %}{% endblock %}
+</head>
+<body>
+    <header>
+      {% block body_header %}{% endblock %}
+    </header>
+    {% for message in get_flashed_messages() %}
       <div class="flash">{{ message }}</div>
-      {% endfor %}
-      {% block content %}{% endblock %}
-    </section>
-  </body>
+    {% endfor %}
+    {% block body_content %}{% endblock %}
+</body>
 </html>

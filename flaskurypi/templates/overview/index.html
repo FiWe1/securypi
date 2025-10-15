@@ -8,16 +8,16 @@
 </script> -->
 {% endblock %}
 
-{% block header %}
+{% block body_header %}
   <h1>{% block title %}Your Home{% endblock %}</h1>
 {% endblock %}
 
-{% block content %}
-  {% block camera_section %}
+{% block body_content %}
+  {% block camera_overview %}
   {% endblock %}
-  <div>
+  <section class="temphum">
     <h2>Temperature and Humidity</h2>
     <p>Temperature: {{ temperature }} &deg;{{ temperature_unit }}</p>
     <p>Humidity: {{ humidity }} %</p>
-  </div>
+  </section>
 {% endblock %}
