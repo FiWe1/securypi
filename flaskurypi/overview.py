@@ -90,15 +90,14 @@ def index():
     # Get the desired mode from the request (default to 'picture')
     mode = request.args.get('mode', 'picture')
     
-    
     # temperature and humidity sensor
     temperature_unit = 'C'
     temperature, humidity = temphum.measure_temp_hum(temperature_unit=temperature_unit)
-    
 
     # Determine the template and URL for the <img> tag based on the mode
     if mode == 'stream':
         img_src = url_for('overview.video_feed')
     else: # Default is 'picture'
         img_src = url_for('overview.picture_feed')
+    
     return render_template("overview/index.html", mode=mode, img_src=img_src, temperature=temperature, humidity=humidity, temperature_unit=temperature_unit)    

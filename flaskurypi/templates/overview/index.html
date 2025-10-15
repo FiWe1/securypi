@@ -14,16 +14,10 @@
 
 {% block body_content %}
   <section class="camera_overview">
-    {% set switch_mode = 'picture' if mode == 'stream' else 'stream' %}
-    <a href="{{ url_for('overview.index', mode=switch_mode) }}" class="button-style-link">
-      Switch to {{ switch_mode|capitalize }} Mode
-    </a>
-    <p>Currently viewing {{ "Live Stream" if mode == "stream" else "Snapshot" }}</p>
-    
-    <img id="camera_feed" src="{{ img_src }}" width="640" height="480" />
-
-    {% if mode == 'picture' %}
-      <button onclick="document.getElementById('camera_feed').src = '{{ img_src }}?' + new Date().getTime()">Refresh Snapshot</button>
+    {% if mode == "stream" %}
+    include 'overview/stream.html'
+    {% else %}
+    include 'overview/snapshot.html'
     {% endif %}
   </section>
 
