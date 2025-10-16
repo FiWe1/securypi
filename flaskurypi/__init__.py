@@ -30,16 +30,19 @@ def create_app(test_config=None):
     @app.route('/hello')
     def hello():
         return 'Hello, World!'
+    
+    # inject the navbar links into the template context
+    from . import navbar
+    app.context_processor(navbar.inject_nav_links)
+    
+    
         
     # apply the blueprints to the app
     from . import overview
-
     app.register_blueprint(overview.bp)
 
-    # make url_for('index') == url_for('blog.index')
-    # in another app, you might define a separate main index here with
-    # app.route, while giving the blog blueprint a url_prefix, but for
-    # the tutorial the blog will be the main index
+    # make url_for('index') == url_for('overview.index')
+    # overview.index is the main index
     app.add_url_rule("/", endpoint="index")
     
     

@@ -6,12 +6,16 @@
   {% block head %}{% endblock %}
 </head>
 <body>
-  <header>
-    {% block body_header %}{% endblock %}
-  </header>
+  {{ include "navbar.html" }}
+  
+  {% block body_flash %}{% endblock %}
   {% for message in get_flashed_messages() %}
   <div class="flash">{{ message }}</div>
   {% endfor %}
+  <header>
+    {% block body_header %}{% endblock %}
+  </header>
+  
   {% block body_content %}{% endblock %}
 </body>
 </html>
