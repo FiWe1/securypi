@@ -3,10 +3,11 @@ from flask import render_template
 
 
 ### Globals ###
-bp = Blueprint("temp_history", __name__)
+bp = Blueprint("temp_history", __name__, url_prefix="/temp_history")
+# url_prefix for routing, subroutes stay relative to this
 
 
-
-@bp.route("/temp_history")
-def temp_history():
-    return render_template("temp_history.html")    
+@bp.route("/")
+def index():
+    """ Default (inde) route for temp_history blueprint."""
+    return render_template("temp_history.html")

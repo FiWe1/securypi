@@ -14,7 +14,7 @@ from .sensors import mycam
 from .sensors import temphum
 
 ### Globals ###
-bp = Blueprint("overview", __name__)
+bp = Blueprint("overview", __name__) # has no url_prefix, main overview page
 camera = None # Shared camera instance
 
 

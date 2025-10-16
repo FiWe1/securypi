@@ -3,10 +3,11 @@ from flask import render_template
 
 
 ### Globals ###
-bp = Blueprint("account", __name__)
+bp = Blueprint("account", __name__, url_prefix="/account")
+# url_prefix for routing, subroutes stay relative to this
 
 
-
-@bp.route("/account")
-def account():
-    return render_template("account.html")    
+@bp.route("/")
+def index():
+    """ Default (inde) route for account blueprint."""
+    return render_template("account.html")
