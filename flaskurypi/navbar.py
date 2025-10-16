@@ -9,11 +9,11 @@ def inject_nav_links():
     """
     links = [
         ("Overview", url_for("overview.index")),
-        ("Temp History", url_for("temp_history")),
-        ("Camera Control", url_for("camera_control")),
-        ("Recordings", url_for("recordings")),
-        ("Settings", url_for("settings")),
-        ("Account", url_for("account"))
+        ("Temp History", url_for("temp_history.index")),
+        ("Camera Control", url_for("camera_control.index")),
+        ("Recordings", url_for("recordings.index")),
+        ("Settings", url_for("settings.index")),
+        ("Account", url_for("account.index"))
     ]
 
     ##############################TODO: Add admin link if user is admin
