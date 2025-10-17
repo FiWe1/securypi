@@ -5,7 +5,7 @@
         Switch to Live Stream
     </a>
     <p>Currently viewing Snapshot</p>
-    <img id="camera_feed" src="{{ img_src }}" width="640" height="480" />
+    <img id="camera_feed" src="{{ img_src }}" width="640" height="360" />
     <button onclick="document.getElementById('camera_feed').src = '{{ img_src }}?' + new Date().getTime()">Refresh Snapshot</button>
   </div>
 {% endblock %}
