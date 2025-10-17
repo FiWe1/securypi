@@ -1,6 +1,8 @@
 Flask>=2.0
 picamera2
 simplejpeg
+
+# Temperature and Humidity Sensor Libraries
 adafruit-circuitpython-dht
 RPi.GPIO
 lgpio
