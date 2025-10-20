@@ -1,3 +1,6 @@
 #!/bin/bash
 
-.venv/bin/python -m flask --app flaskurypi run -h 0.0.0.0 -p 5555 --debugger
+.venv/bin/python -m flask --app flaskurypi run -h localhost -p 5555 --debugger
+
+# change "-h [address]" to 0.0.0.0 for all networks - unsafe!
+# use VPN ip
