@@ -1,1 +1,0 @@
-python3 -m pip install adafruit-circuitpython-dht lgpio RPi.GPIO

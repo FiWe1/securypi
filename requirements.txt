@@ -1,4 +1,8 @@
+# Web Framework
 Flask>=2.0
+
+
+# Camera Libraries
 picamera2
 simplejpeg
 
@@ -7,3 +11,6 @@ adafruit-circuitpython-dht
 RPi.GPIO
 lgpio
 Adafruit-Blinka
+
+# Mock libraries for development
+Pillow

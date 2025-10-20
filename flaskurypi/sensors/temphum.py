@@ -1,12 +1,20 @@
-# import time
-import adafruit_dht # pyright: ignore[reportMissingImports]
-import board # pyright: ignore[reportMissingImports]
+
+try:
+    from adafruit_dht import DHT22  # pyright: ignore[reportMissingImports]
+    import board                    # pyright: ignore[reportMissingImports]
+    
+except ImportError:
+    # Mock sensor classes for development outside RPi
+    from .temphum_mock import MockDHT22, MockBoard
+        
+    DHT22 = MockDHT22
+    board = MockBoard
 
 
 def measure_temp_hum(pin = board.D4, temperature_unit = 'C'):
     """ Measure temperature and humidity using DHT22 sensor."""
     try:
-        dht_device = adafruit_dht.DHT22(pin)
+        dht_device = DHT22(pin)
         
         temperature_c = dht_device.temperature
         humidity = dht_device.humidity
@@ -24,4 +32,3 @@ def measure_temp_hum(pin = board.D4, temperature_unit = 'C'):
         return None, None
     finally:
         dht_device.exit()
-        #time.sleep(2.0)  # DHT22 sensor needs a delay between readings

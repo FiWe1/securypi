@@ -1,9 +1,24 @@
-from picamera2 import Picamera2 # pyright: ignore[reportMissingImports]
-from picamera2.encoders import JpegEncoder # pyright: ignore[reportMissingImports]
-from picamera2.outputs import FileOutput # pyright: ignore[reportMissingImports]
-
-from threading import Condition
 import io
+import time
+import random
+from threading import Condition
+
+# Conditional Import
+try:
+    from picamera2 import Picamera2             # pyright: ignore[reportMissingImports]
+    from picamera2.encoders import JpegEncoder  # pyright: ignore[reportMissingImports]
+    from picamera2.outputs import FileOutput    # pyright: ignore[reportMissingImports]
+    PICAMERA_AVAILABLE = True
+    
+except ImportError:
+    # Mock sensor classes for development outside RPi
+    from PIL import Image
+    from .mycam_mock import MockPicamera2, MockEncoder, MockOutput
+
+    Picamera2 = MockPicamera2
+    JpegEncoder = MockEncoder
+    FileOutput = MockOutput
+    PICAMERA_AVAILABLE = False
 
 
 class StreamingOutput(io.BufferedIOBase):
