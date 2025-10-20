@@ -12,3 +12,8 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+
+
+
+# to ignore local changes to app_run.sh (changing ports), run:
+# git update-index --assume-unchanged app_run.sh
