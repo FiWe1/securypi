@@ -58,7 +58,7 @@ class MockPicamera2:
     def capture_file(self, stream, format='jpeg'):
         print("[MockPicamera2] Capturing fake image...")
         # Create a real JPEG image
-        img = self.create_random_color_image(640, 360)
+        img = self.create_random_color_image(640, 360, brightness=0.5)
         img.save(stream, format=format)
 
     def stop(self):

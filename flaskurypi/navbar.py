@@ -7,13 +7,15 @@ def inject_nav_links():
         Used as a context processor in the Flask app to make nav_links
         available in all templates.
     """
-    links = [
+    main_nav_links = [
         ("Overview", url_for("overview.index")),
         ("Temp History", url_for("temp_history.index")),
         ("Camera Control", url_for("camera_control.index")),
-        ("Recordings", url_for("recordings.index")),
-        ("Settings", url_for("settings.index")),
-        ("Account", url_for("account.index"))
+        ("Recordings", url_for("recordings.index"))
+    ]
+    bottom_nav_links = [
+        ("Account", url_for("account.index")),
+        ("Settings", url_for("settings.index"))
     ]
 
     ##############################TODO: Add admin link if user is admin
@@ -21,4 +23,4 @@ def inject_nav_links():
     # if g.user.is_admin:
     #     links.append(("Admin", url_for("admin.index")))
     
-    return {"nav_links": links}
+    return {"main_nav_links": main_nav_links, "bottom_nav_links": bottom_nav_links}

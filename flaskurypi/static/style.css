@@ -1,0 +1,60 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+body {
+    display: flex;
+    flex-direction: row;
+
+    background-color: #0a1421;
+    color: white;
+}
+
+.site__content {
+    margin: 1em;
+}
+
+
+/*
+***                                 ***
+        ***  NAVIGATION   ***
+***                                 ***
+*/
+
+.navbar {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  box-sizing: border-box;
+
+  background-color: #1B1A55;
+}
+
+.navbar__main {
+  display: grid;
+  grid-auto-rows: 3em;
+  row-gap: 8px;
+}
+
+.navbar__bottom {
+  display: grid;
+  grid-auto-rows: 3em;
+  row-gap: 8px;
+  margin-top: auto; /* pushes this section to the bottom */
+  margin-bottom: 1em;
+}
+
+
+.navbar a {
+    padding: 1em;
+}
+
+
+/*
+***                                 ***
+        ***  OVERVIEW   ***
+***                                 ***
+*/

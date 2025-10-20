@@ -1,5 +1,15 @@
-<nav>
-  {% for label, link in nav_links %}
+{# only to be included, does not extend #}
+<nav class="navbar">
+  <div class="navbar__main">
+  {% for label, link in main_nav_links %}
     <a href="{{ link }}">{{ label }}</a>
   {% endfor %}
+  </div>
+
+
+  <div class="navbar__bottom">
+  {% for label, link in bottom_nav_links %}
+    <a href="{{ link }}">{{ label }}</a>
+  {% endfor %}
+  </div>
 </nav>

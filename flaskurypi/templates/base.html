@@ -5,17 +5,19 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   {% block head %}{% endblock %}
 </head>
-<body>
+<body class="grid">
   {% include "includes/navbar.html" %}
-  
-  {% block body_flash %}{% endblock %}
-  {% for message in get_flashed_messages() %}
-  <div class="flash">{{ message }}</div>
-  {% endfor %}
-  <header>
+
+  <div class="site__content">
+    {#
+    {% block body_flash %}{% endblock %}
+    {% for message in get_flashed_messages() %}
+    <div class="flash">{{ message }}</div>
+    {% endfor %}
+    #}
+
     {% block body_header %}{% endblock %}
-  </header>
-  
-  {% block body_content %}{% endblock %}
+    {% block body_content %}{% endblock %}
+  </div>
 </body>
 </html>
