@@ -58,3 +58,7 @@ body {
         ***  OVERVIEW   ***
 ***                                 ***
 */
+
+.overview__content {
+    display: grid;
+}

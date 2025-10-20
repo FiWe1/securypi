@@ -14,11 +14,12 @@ def inject_nav_links():
         ("Recordings", url_for("recordings.index"))
     ]
     bottom_nav_links = [
+        ("Settings", url_for("settings.index")),
         ("Account", url_for("account.index")),
-        ("Settings", url_for("settings.index"))
+        ("Logout", "") # TODO log out
     ]
 
-    ##############################TODO: Add admin link if user is admin
+    ##############################TODO: Add /hide settings for admin
     # getattr(g, "user", None)
     # if g.user.is_admin:
     #     links.append(("Admin", url_for("admin.index")))

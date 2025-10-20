@@ -1,11 +1,13 @@
 {# included by index, does not extend #}
 {% block camera_overview %}
   <div>
-    <a href="{{ url_for('overview.index', mode='stream') }}" class="button-style-link">
-        Switch to Live Stream
-    </a>
-    <p>Currently viewing Snapshot</p>
-    <img id="camera_feed" src="{{ img_src }}" width="640" height="360" />
-    <button onclick="document.getElementById('camera_feed').src = '{{ img_src }}?' + new Date().getTime()">Refresh Snapshot</button>
+    <figure>
+      <figcaption>Snapshot</figcaption>
+      <img id="camera_feed" src="{{ img_src }}" width="640" height="360">
+    </figure>
+    <button onclick="document.getElementById('camera_feed').src = '{{ img_src }}?' + new Date().getTime()">
+      Refresh Snapshot
+    </button>
+    <a href="{{ url_for('overview.index', mode='stream') }}" class="button-style-link">Switch to Live Stream</a>
   </div>
 {% endblock %}
