@@ -14,16 +14,16 @@
 {% endblock %}
 
 {% block body %}
-<div class="overview__content">
-  <header>
+<div class="overview_content">
+  <header class="overview_content__title">
     <h1>{% block title %}Your Home{% endblock %}</h1>
   </header>
 
-  <section class="temphum">
+  <section class="overview_content__temphum">
     <p>Temperature: {{ temperature }} &deg;{{ temperature_unit }}</p>
     <p>Humidity: {{ humidity }} %</p>
   </section>
-  <section class="camera_overview">
+  <section class="overview_content__camera_feed">
     {% if mode == "stream" %}
     {% include 'overview/stream.html' %}
     {% else %}
