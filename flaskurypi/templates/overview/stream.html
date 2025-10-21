@@ -1,6 +1,7 @@
 {# included by index, does not extend #}
 {% block camera_overview %}
-      <span>Live feed</span>
-      <img id="camera_feed" src="{{ img_src }}">
-    <a href="{{ url_for('overview.index', mode='picture') }}" class="button-style-link">Switch to Snapshot</a>
+    <span class="overview__camera_feed--title">Live feed</span>
+    <img id=overview__camera_feed src="{{ img_src }}">
+
+    <a class="overview__camera_feed--switch" href="{{ url_for('overview.index', mode='picture') }}" class="button-style-link">Switch to Snapshot</a>
 {% endblock %}
