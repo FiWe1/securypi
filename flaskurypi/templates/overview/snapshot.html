@@ -1,7 +1,7 @@
 {# included by index, does not extend #}
 {% block camera_overview %}
     <span class="overview__camera_feed--title">Snapshot</span>
-    <img id=overview__camera_feed src="{{ img_src }}">
+    <img id="overview__camera_feed" src="{{ img_src }}">
 
     <a class="overview__camera_feed--switch" href="{{ url_for('overview.index', mode='stream') }}" class="button-style-link">Switch to Live Stream</a>
     <button class="overview__camera_feed--refresh" onclick="document.getElementById('overview__camera_feed').src = '{{ img_src }}?' + new Date().getTime()">
