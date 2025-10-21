@@ -80,7 +80,8 @@ body {
   grid-column: 2 / 5;
   grid-row: 1;
   margin-left: 6vw;
-  margin-top: 3rem;
+  /* margin-top: 3rem; */
+  align-self: center;
 }
 
 .overview__temphum {
@@ -127,4 +128,25 @@ body {
   grid-row: 3;
   max-width: 8rem;
   justify-self: right;
+}
+
+
+.overview__temphum {
+    grid-column: 9 / 12;
+    grid-row: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    font-size: 3vw;
+}
+
+.overview__temphum--tem {
+    grid-column: 1;
+    align-self: center;
+    justify-self: center;
+}
+
+.overview__temphum--hum {
+    grid-column: 2;
+    align-self: center;
+    justify-self: center;
 }
