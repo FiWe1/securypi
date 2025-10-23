@@ -12,6 +12,7 @@ echo "Installing required packages from requirements.txt..."
 .venv/bin/python -m pip install --upgrade pip setuptools wheel
 .venv/bin/python -m pip install --upgrade numpy
 .venv/bin/python -m pip install --upgrade --force-reinstall simplejpeg
+# TODO(Test on a fresh install without reinstall)
 
 # Install the rest of the requirements
 .venv/bin/python -m pip install -r requirements.txt
