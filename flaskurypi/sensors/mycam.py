@@ -11,7 +11,7 @@ try:
     PICAMERA_AVAILABLE = True
     
 except ImportError as e:
-    print("\033[31m", "failed to import picamera:", e, "\033[0m")
+    print("\033[31m", "Failed to import picamera2, reverting to mock class:", e, "\033[0m")
     
     # Mock sensor classes for development outside RPi
     from .mycam_mock import MockPicamera2, MockEncoder, MockOutput
