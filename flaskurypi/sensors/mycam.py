@@ -1,6 +1,4 @@
 import io
-import time
-import random
 from threading import Condition
 
 # Conditional Import
@@ -11,10 +9,10 @@ try:
     PICAMERA_AVAILABLE = True
     
 except ImportError as e:
-    print("\033[31m", "Failed to import picamera2, reverting to mock class:", e, "\033[0m")
+    print("Failed to import picamera2 camera library, reverting to mock class:\n", "\033[31m", e, "\033[0m")
     
     # Mock sensor classes for development outside RPi
-    from .mycam_mock import MockPicamera2, MockEncoder, MockOutput
+    from .mock_mycam import MockPicamera2, MockEncoder, MockOutput
 
     Picamera2 = MockPicamera2
     JpegEncoder = MockEncoder

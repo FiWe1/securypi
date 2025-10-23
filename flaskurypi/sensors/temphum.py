@@ -3,14 +3,17 @@ try:
     from adafruit_dht import DHT22  # pyright: ignore[reportMissingImports]
     import board                    # pyright: ignore[reportMissingImports]
     
-except ImportError:
+except ImportError as e:
+    print("Failed to import temperature sensor libraries, reverting to mock class:\n", "\033[31m", e, "\033[0m")
     # Mock sensor classes for development outside RPi
-    from .temphum_mock import MockDHT22, MockBoard
+    from .mock_temphum import MockDHT22, MockBoard
         
     DHT22 = MockDHT22
     board = MockBoard
 
-
+# TODO(async thread, into db!
+# make it abstract, for multiple sensors
+# )
 def measure_temp_hum(pin = board.D4, temperature_unit = 'C'):
     """ Measure temperature and humidity using DHT22 sensor."""
     try:

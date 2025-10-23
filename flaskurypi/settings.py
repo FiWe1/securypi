@@ -15,3 +15,10 @@ bp = Blueprint("settings", __name__, url_prefix="/settings")
 def index():
     """ Default (inde) route for settings blueprint."""
     return render_template("settings.html")
+
+
+"""
+TODO():
+set overview camera resolution for picture, video 
+set temp logging interval
+"""

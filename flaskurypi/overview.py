@@ -91,7 +91,7 @@ def index():
     # Get the desired mode from the request (default to 'picture')
     mode = request.args.get('mode', 'picture')
     
-    # temperature and humidity sensor
+    # temperature and humidity sensor TODO(from db)
     temperature_unit = 'C'
     temperature, humidity = temphum.measure_temp_hum(temperature_unit=temperature_unit)
 
