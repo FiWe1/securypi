@@ -5,7 +5,7 @@ try:
     
 except ImportError:
     # Mock sensor classes for development outside RPi
-    from .temphum_mock import MockDHT22, MockBoard
+    from sensors.temphum_mock import MockDHT22, MockBoard
         
     DHT22 = MockDHT22
     board = MockBoard

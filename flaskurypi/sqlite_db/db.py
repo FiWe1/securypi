@@ -92,12 +92,11 @@ def init_db_command():
     click.echo('Initialized the database.\n Default user \'admin\' with password: \'admin4321\'')
 
 
-# TODO(Duplicite code with auth.register_form -> circular import)
 def register_user(username, password, user_type='standard'):
     """
     Registers a new user. 
-    -> (0, "succes")
-    -> (1, "user already registered")
+    -> (True, "succes")
+    -> (False, "user already registered")
     """
     db = get_db()
     try:
@@ -107,9 +106,9 @@ def register_user(username, password, user_type='standard'):
         )
         db.commit()
     except db.IntegrityError:
-        return 1, f'User {username} is already registered.'
+        return False, f'User {username} is already registered.'
     else:
-        return 0, f'Successfully registered {username}.'
+        return True, f'Successfully registered {username}.'
 
 
 @click.command('register-user')

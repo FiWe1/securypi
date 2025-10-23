@@ -15,7 +15,7 @@ except ImportError as e:
     
     # Mock sensor classes for development outside RPi
     from PIL import Image
-    from .mycam_mock import MockPicamera2, MockEncoder, MockOutput
+    from sensors.mycam_mock import MockPicamera2, MockEncoder, MockOutput
 
     Picamera2 = MockPicamera2
     JpegEncoder = MockEncoder

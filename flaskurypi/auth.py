@@ -4,20 +4,23 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 from werkzeug.security import check_password_hash, generate_password_hash
-from .sqlite_db.db import get_db
+from flaskurypi.sqlite_db.db import get_db, register_user
 
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-# TODO(Duplicite code with db.register_user -> circular import)
 # not enabling register
 # @bp.route('/register', methods=('GET', 'POST'))
 def register_form():
+    """
+    Route for registering a new user by admin.
+    Depends on sqlite_db.db.register_user
+    """
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        db = get_db()
+        is_admin = request.form['is_admin']
         error = None
 
         if not username:
@@ -26,16 +29,11 @@ def register_form():
             error = 'Password is required.'
 
         if error is None:
-            try:
-                db.execute(
-                    "INSERT INTO user (username, password) VALUES (?, ?)",
-                    (username, generate_password_hash(password)),
-                )
-                db.commit()
-            except db.IntegrityError:
-                error = f"User {username} is already registered."
-            else:
+            success, message = register_user(username, password, is_admin)
+            if success:
                 return redirect(url_for("auth.login"))
+            else:
+                error = message
 
         flash(error)
 
