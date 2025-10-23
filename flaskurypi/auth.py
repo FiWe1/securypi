@@ -99,3 +99,15 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
+
+""" Decorate view to be accessed only by admin. """
+def admin_rights_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is not None and g.user["is_Admin"] == 1:
+            return view(**kwargs)
+
+        return redirect(url_for('index'))
+
+    return wrapped_view
