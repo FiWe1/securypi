@@ -10,7 +10,9 @@ try:
     from picamera2.outputs import FileOutput    # pyright: ignore[reportMissingImports]
     PICAMERA_AVAILABLE = True
     
-except ImportError:
+except ImportError as e:
+    print("\033[31m", "failed to import picamera:", e, "\033[0m")
+    
     # Mock sensor classes for development outside RPi
     from PIL import Image
     from .mycam_mock import MockPicamera2, MockEncoder, MockOutput
