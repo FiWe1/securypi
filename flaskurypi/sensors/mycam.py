@@ -14,8 +14,7 @@ except ImportError as e:
     print("\033[31m", "failed to import picamera:", e, "\033[0m")
     
     # Mock sensor classes for development outside RPi
-    from PIL import Image
-    from sensors.mycam_mock import MockPicamera2, MockEncoder, MockOutput
+    from .mycam_mock import MockPicamera2, MockEncoder, MockOutput
 
     Picamera2 = MockPicamera2
     JpegEncoder = MockEncoder
