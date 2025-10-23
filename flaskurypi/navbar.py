@@ -16,7 +16,7 @@ def inject_nav_links():
     bottom_nav_links = [
         ("Settings", url_for("settings.index")),
         ("Account", url_for("account.index")),
-        ("Logout", "") # TODO log out
+        ("Logout", url_for("auth.logout"))
     ]
 
     ##############################TODO: Add /hide settings for admin

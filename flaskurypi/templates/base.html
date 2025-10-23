@@ -6,15 +6,18 @@
   {% block head %}{% endblock %}
 </head>
 <body class="grid">
-  {% include "includes/navbar.html" %}
+  {% if g.user is not none %}
+    {% include "includes/navbar.html" %}
+  {% endif %}
+
 
   {# <div class="site__content"> #}
-    {#
+    
     {% block body_flash %}{% endblock %}
     {% for message in get_flashed_messages() %}
     <div class="flash">{{ message }}</div>
     {% endfor %}
-    #}
+   
 
     {% block body %}{% endblock %}
   {# </div> #}

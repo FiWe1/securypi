@@ -9,7 +9,7 @@ def create_app(test_config=None):
         # a default secret that should be overridden by instance config
         SECRET_KEY="dev",
         # store the database in the instance folder
-        DATABASE=os.path.join(app.instance_path, "flaskr.sqlite"),
+        DATABASE=os.path.join(app.instance_path, "flaskurypi.sqlite"),
     )
 
     if test_config is None:
@@ -38,15 +38,18 @@ def create_app(test_config=None):
     
     
     # apply the blueprints to the app
-    from . import overview, temp_history, recordings, camera_control, settings, account
+    from . import auth, overview, temp_history, recordings, camera_control, settings, account
     
-    blueprints = [overview.bp, temp_history.bp, recordings.bp, camera_control.bp, settings.bp, account.bp]
+    blueprints = [auth.bp, overview.bp, temp_history.bp, recordings.bp, camera_control.bp, settings.bp, account.bp]
     for bp in blueprints:
         app.register_blueprint(bp)
 
 
-    # make url_for('index') == url_for('overview.index')
-    # overview.index is the main index
+    # make url_for('index') == url_for('overview.index') -- overview.index is the main index
     app.add_url_rule("/", endpoint="index")
 
+    
+    from .sqlite_db import db
+    db.init_app(app)
+    
     return app

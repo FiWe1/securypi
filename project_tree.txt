@@ -1,5 +1,5 @@
 /home/user/Projects/flask-tutorial
-├── flaskr/
+├── flaskurypi/
 │   ├── __init__.py
 │   ├── db.py
 │   ├── schema.sql

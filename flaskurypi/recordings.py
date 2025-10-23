@@ -1,6 +1,8 @@
 from flask import Blueprint
 from flask import render_template
 
+from flaskurypi.auth import login_required
+
 
 ### Globals ###
 bp = Blueprint("recordings", __name__, url_prefix="/recordings")
@@ -8,6 +10,7 @@ bp = Blueprint("recordings", __name__, url_prefix="/recordings")
 
 
 @bp.route("/")
+@login_required
 def index():
     """ Default (inde) route for recordings blueprint."""
     return render_template("recordings.html")

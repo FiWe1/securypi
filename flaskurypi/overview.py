@@ -1,23 +1,20 @@
-from flask import Flask, Response
-from flask import Blueprint
-from flask import render_template
-# from flask import render_template_string
-# from flask import flash
-# from flask import g
-# from flask import redirect
-from flask import request
-from flask import url_for
-# from flask import current_app
+from flask import Response, Blueprint, render_template, request, url_for
+# from flask import render_template_string, flash, g, redirect, flash, current_app
 # from werkzeug.exceptions import abort
 
-from .sensors import mycam
-from .sensors import temphum
+from flaskurypi.auth import login_required
+from flaskurypi.sqlite_db.db import get_db
+
+from flaskurypi.sensors import mycam
+from flaskurypi.sensors import temphum
+
 
 ### Globals ###
 bp = Blueprint("overview", __name__) # has no url_prefix, main overview page
 camera = None # Shared camera instance
 
 
+@login_required
 def get_camera():
     """Get or initialize the shared camera instance."""
     global camera
@@ -29,6 +26,7 @@ def get_camera():
 
 
 @bp.route('/stream.mjpg')
+@login_required
 def video_feed():
     """
     Video streaming route to the src attribute of an img tag.
@@ -47,6 +45,7 @@ def video_feed():
 
 
 @bp.route('/picture.jpg')
+@login_required
 def picture_feed():
     """Route for a single snapshot."""
     
@@ -64,6 +63,7 @@ def picture_feed():
 
 
 @bp.route("/stop_camera", methods=["POST"])
+@login_required
 def stop_camera():
     """Route to stop the camera and release resources.
        camera <- None
@@ -81,7 +81,8 @@ def stop_camera():
     return ("Camera stopped", 200)
     
 
-@bp.route("/", methods=["GET"]) # Only need GET now
+@bp.route("/", methods=["GET"])
+@login_required
 def index():
     """Main overview page showing either live stream or snapshot based on mode.
        Also displays temperature and humidity readings.
