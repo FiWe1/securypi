@@ -28,3 +28,5 @@
 
     flask --app flaskurypi register-user [username] [password] [admin / standard]
 
+
+// #TODO(Check linences and T&Cs of libraries (requirements.txt))
