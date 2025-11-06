@@ -1,0 +1,17 @@
+# pip requirements for Raspberry Pi installation
+
+# Web Framework
+Flask
+
+# Mock libraries for development
+Pillow
+
+# Camera Libraries
+simplejpeg
+picamera2
+
+# Temperature and Humidity Sensor Libraries
+adafruit-circuitpython-dht
+RPi.GPIO
+lgpio
+Adafruit-Blinka
