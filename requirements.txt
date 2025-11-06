@@ -1,16 +1,15 @@
 # Web Framework
 Flask>=2.0
 
+# Mock libraries for development
+Pillow
 
 # Camera Libraries
-picamera2
 simplejpeg
+picamera2
 
 # Temperature and Humidity Sensor Libraries
 adafruit-circuitpython-dht
 RPi.GPIO
 lgpio
 Adafruit-Blinka
-
-# Mock libraries for development
-Pillow
