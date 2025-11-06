@@ -1,0 +1,11 @@
+# pip requirements for deploying outside of Raspberry pi
+#for testing with mocked sensors
+
+# Web Framework
+Flask
+
+# Mock libraries for development
+Pillow
+
+# Camera Libraries
+simplejpeg

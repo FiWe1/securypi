@@ -1,5 +1,7 @@
+# pip requirements for Raspberry Pi installation
+
 # Web Framework
-Flask>=2.0
+Flask
 
 # Mock libraries for development
 Pillow
