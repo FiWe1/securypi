@@ -31,4 +31,4 @@ instance/
 
 ###
 # to ignore local changes in app_run.sh (changing ports), run:
-# git update-index --assume-unchanged app_run.sh
+# git update-index --assume-unchanged scripts/app_run.sh
