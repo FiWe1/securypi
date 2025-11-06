@@ -2,14 +2,18 @@
 <nav class="navbar">
   <div class="navbar__main">
   {% for label, link in main_nav_links %}
-    <a href="{{ link }}">{{ label }}</a>
+    <a href="{{ link }}" class="{% if active_page == link %}link--active{% endif %}">
+      {{ label }}
+    </a>
   {% endfor %}
   </div>
 
 
   <div class="navbar__bottom">
   {% for label, link in bottom_nav_links %}
-    <a href="{{ link }}">{{ label }}</a>
+    <a href="{{ link }}" class="{% if active_page == link %}link--active{% endif %}">
+      {{ label }}
+    </a>
   {% endfor %}
   </div>
 </nav>

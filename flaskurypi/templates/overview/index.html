@@ -17,8 +17,8 @@
   </header>
 
   <section class="overview__temphum">
-    <span class="overview__temphum--tem">{{ temperature }} &deg;{{ temperature_unit }}</span>
-    <span class="overview__temphum--hum">{{ humidity }} %</span>
+    <span class="overview__temphum--temperature">{{ temperature }} &deg;{{ temperature_unit }}</span>
+    <span class="overview__temphum--humidity">{{ humidity }} %</span>
   </section>
   <section class="overview__camera_feed">
     {% if mode == "stream" %}

@@ -1,3 +1,16 @@
+:root {
+  --title-color: white;
+  --text-color: white;
+  --nav-link-color: rgb(251, 255, 222);
+  --nav-link-color-active: rgb(243, 255, 156);
+  --background-primary: #0a1421;
+  --background-nav: #1B1A55;
+
+  --overview__camera_feed-switch-color: #ff3a3a;
+}
+/* TODO(add root variables for colors ...) */
+
+
 html, body {
   margin: 0;
   padding: 0;
@@ -9,8 +22,8 @@ html, body {
 
 
 body {
-  background-color: #0a1421;
-  color: white;
+  background-color: var(--background-primary);
+  color: var(--text-color);
 }
 
 .grid {
@@ -18,6 +31,7 @@ body {
   grid-template-columns: 1fr 11fr;
   /* the main body grid for laying out navigation and the rest of the content */
 }
+
 
 
 /*
@@ -32,7 +46,7 @@ body {
   height: 100vh;
   box-sizing: border-box;
 
-  background-color: #1B1A55;
+  background-color: var(--background-nav);
 }
 
 .navbar__main {
@@ -52,8 +66,21 @@ body {
 
 
 .navbar a {
+  color: var(--nav-link-color);
+  text-decoration: none;
   padding: 1em;
 }
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+.navbar a.link--active {
+  color: var(--nav-link-color-active);
+  font-weight: bold;
+}
+
+
 
 
 /*
@@ -85,13 +112,13 @@ body {
     font-size: 3vw;
 }
 
-.overview__temphum--tem {
+.overview__temphum--temperature {
     grid-column: 1;
     align-self: center;
     justify-self: center;
 }
 
-.overview__temphum--hum {
+.overview__temphum--humidity {
     grid-column: 2;
     align-self: center;
     justify-self: center;
@@ -106,6 +133,7 @@ body {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto;
+  margin-bottom: 1em;
 }
 
 .overview__camera_feed--title {
@@ -128,7 +156,15 @@ body {
 .overview__camera_feed--switch {
   grid-column: 1;
   grid-row: 3;
+  
+  color: var(--overview__camera_feed-switch-color);
+  text-decoration: none;
 }
+
+.overview__camera_feed--switch:hover {
+  text-decoration: underline;
+}
+
 
 .overview__camera_feed--refresh {
   grid-column: 2;
@@ -163,6 +199,7 @@ body {
 }
 
 
+/* TODO(responsive layout) */
 /* 
 @media (max-width: 959px) {
   .grid {
