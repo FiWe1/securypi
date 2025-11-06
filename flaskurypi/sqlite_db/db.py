@@ -92,7 +92,7 @@ def init_db_command():
     click.echo('Initialized the database.\n Default user \'admin\' with password: \'admin4321\'')
 
 
-def register_user(username, password, user_type='standard'):
+def register_user(username, password, user_type='standard', hash_method='pbkdf2:sha256'):
     """
     Registers a new user. 
     -> (True, "succes")
@@ -102,7 +102,8 @@ def register_user(username, password, user_type='standard'):
     try:
         db.execute(
             "INSERT INTO user (username, password, is_admin) VALUES (?, ?, ?)",
-            (username, generate_password_hash(password), 1 if user_type == 'admin' else 0),
+            (username, generate_password_hash(password, method=hash_method),
+            1 if user_type == 'admin' else 0)
         )
         db.commit()
     except db.IntegrityError:
