@@ -2,8 +2,10 @@
 
 echo "Creating ./venv directory for virtual environment..."
 
+PYTHON=python3
+
 # ensure system packages (libcamera, picamera) are included
-python -m venv .venv --system-site-packages # TODO(Test on a fresh install without system-site)
+$PYTHON -m venv .venv --system-site-packages # TODO(Test on a fresh install without system-site)
 . .venv/bin/activate
 
 echo "Installing required packages from requirements.txt..."
