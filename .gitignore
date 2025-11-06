@@ -1,19 +1,34 @@
+# macOS system files, recursively:
+**/.DS_Store
+
+##
+# python
+##
 .venv/
 
 *.pyc
 __pycache__/
 
-instance/
+# build directories
+build/
+dist/
 
+# package metadata
+*.egg-info/
+
+# testing
 .pytest_cache/
 .coverage
 htmlcov/
 
-dist/
-build/
-*.egg-info/
+##
+# flask
+##
+instance/
+*.env
 
 
 
-# to ignore local changes to app_run.sh (changing ports), run:
+###
+# to ignore local changes in app_run.sh (changing ports), run:
 # git update-index --assume-unchanged app_run.sh
