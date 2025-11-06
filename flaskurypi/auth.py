@@ -62,7 +62,7 @@ def login():
             return redirect(url_for('index'))
 
         flash(error)
-
+    # TODO(clear form)
     return render_template('auth/login.html')
 
 
