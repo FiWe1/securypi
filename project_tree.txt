@@ -1,5 +1,5 @@
 /home/user/*/*/securypi
-├── flaskurypi/
+├── securypi_app/
 │   ├── __init__.py
 │   ├── db.py
 │   ├── schema.sql

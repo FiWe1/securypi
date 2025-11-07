@@ -18,7 +18,7 @@ def create_app(test_config=None):
         # a default secret that should be overridden by instance config
         SECRET_KEY="dev",
         # store the database in the instance folder
-        DATABASE=os.path.join(app.instance_path, "flaskurypi.sqlite"),
+        DATABASE=os.path.join(app.instance_path, "securypi_app.sqlite"),
     )
 
     if test_config is None:

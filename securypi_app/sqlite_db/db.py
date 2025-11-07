@@ -59,7 +59,7 @@ def close_db(e=None):
 """
 https://flask.palletsprojects.com/en/stable/tutorial/database/
 #
-open_resource() opens a file relative to the flaskurypi package,
+open_resource() opens a file relative to the securypi_app package,
 which is useful since you won't necessarily know
 where that location is when deploying the application later.
 get_db returns a database connection, which is used
@@ -81,7 +81,7 @@ def init_db_command():
     login:      admin
     password:   admin4321
     
-    Use: flask --app flaskurypi init-db
+    Use: flask --app securypi_app init-db
     
     It needs to be added to the app (function init_app())
     """
@@ -119,7 +119,7 @@ def register_user(username, password, user_type='standard', hash_method='pbkdf2:
 def register_user_command(username, password, user_type):
     """ 
     Registers a new user using command line 
-    Use: flask --app flaskurypi register-user [username] [password]
+    Use: flask --app securypi_app register-user [username] [password]
             [user_type = 'admin' / 'standard']
     
     It needs to be added to the app (function init_app())

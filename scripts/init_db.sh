@@ -2,6 +2,6 @@
 
 # initalise the database with the default user
 
-flask --app flaskurypi init-db
+flask --app securypi_app init-db
 
 # returns username, password

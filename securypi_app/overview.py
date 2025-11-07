@@ -2,11 +2,11 @@ from flask import Response, Blueprint, render_template, request, url_for
 # from flask import render_template_string, flash, g, redirect, flash, current_app
 # from werkzeug.exceptions import abort
 
-from flaskurypi.auth import login_required
-from flaskurypi.sqlite_db.db import get_db
+from securypi_app.auth import login_required
+from securypi_app.sqlite_db.db import get_db
 
-from flaskurypi.sensors import mycam
-from flaskurypi.sensors import temphum
+from securypi_app.sensors import mycam
+from securypi_app.sensors import temphum
 
 
 ### Globals ###

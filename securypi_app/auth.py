@@ -4,7 +4,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 from werkzeug.security import check_password_hash, generate_password_hash
-from flaskurypi.sqlite_db.db import get_db, register_user
+from securypi_app.sqlite_db.db import get_db, register_user
 
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')

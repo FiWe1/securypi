@@ -1,7 +1,7 @@
 from flask import Blueprint
 from flask import render_template
 
-from flaskurypi.auth import login_required
+from securypi_app.auth import login_required
 
 ### Globals ###
 bp = Blueprint("account", __name__, url_prefix="/account")
