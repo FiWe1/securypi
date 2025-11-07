@@ -1,19 +1,19 @@
-/home/user/Projects/flask-tutorial
+/home/user/*/*/securypi
 ├── flaskurypi/
 │   ├── __init__.py
 │   ├── db.py
 │   ├── schema.sql
 │   ├── auth.py
-│   ├── blog.py
+│   ├── overview.py
 │   ├── templates/
 │   │   ├── base.html
 │   │   ├── auth/
 │   │   │   ├── login.html
 │   │   │   └── register.html
-│   │   └── blog/
-│   │       ├── create.html
+│   │   └── overview/
 │   │       ├── index.html
-│   │       └── update.html
+│   │       └── snapshot.html
+│   │       └── stream.html
 │   └── static/
 │       └── style.css
 ├── tests/
@@ -24,5 +24,5 @@
 │   ├── test_auth.py
 │   └── test_blog.py
 ├── .venv/
-├── pyproject.toml
+├── pyproject.toml # TODO(what is pyproject.toml, MANIFEST.in?)
 └── MANIFEST.in
