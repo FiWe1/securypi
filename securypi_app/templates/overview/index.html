@@ -9,24 +9,22 @@
     });
   </script>#}
 {% endblock %}
-
 {% block body %}
 <div class="overview">
   <header class="overview__title">
     <h1>{% block title %}Your Home{% endblock %}</h1>
   </header>
 
-  <section class="overview__temphum">
+  <div class="overview__temphum">
     <span class="overview__temphum--temperature">{{ temperature }} &deg;{{ temperature_unit }}</span>
     <span class="overview__temphum--humidity">{{ humidity }} %</span>
-  </section>
-  <section class="overview__camera_feed">
+  </div>
+  <div class="overview__camera_feed">
     {% if mode == "stream" %}
     {% include 'overview/stream.html' %}
     {% else %}
     {% include 'overview/snapshot.html' %}
     {% endif %}
-  </section>
+  </div>
 </div>
-  
 {% endblock %}

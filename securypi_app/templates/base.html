@@ -3,24 +3,19 @@
 <head>
   <title>{% block title %}{% endblock %} - Securypi</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   {% block head %}{% endblock %}
 </head>
 <body class="grid">
-  {% if g.user is not none %}
-    {% include "includes/navbar.html" %}
-  {% endif %}
+{% if g.user is not none %}
+  {% include "includes/navbar.html" %}
+{% endif %}
+{% block body_flash %}{% endblock %}
+{% for message in get_flashed_messages() %}
+<div class="flash">{{ message }}</div>
+{% endfor %}
+  
 
-
-  {# <div class="site__content"> #}
-    
-    {% block body_flash %}{% endblock %}
-    {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-    {% endfor %}
-   
-
-    {% block body %}{% endblock %}
-  {# </div> #}
+{% block body %}{% endblock %}
 </body>
 </html>
