@@ -29,4 +29,4 @@
     flask --app securypi_app register-user [username] [password] [admin / standard]
 
 
-// #TODO(Check linences and T&Cs of libraries (requirements.txt))
+@TODO Check linences and T&Cs of libraries (requirements.txt))

@@ -11,10 +11,10 @@ except ImportError as e:
     DHT22 = MockDHT22
     board = MockBoard
 
-# TODO(
+# @TODO 
     # CLASS
     # ?singleton
-    # async thread, into TODO(ORM db! - also singleton)
+    # async thread, into @TODO ORM db! - also singleton)
 # make it abstract, for multiple sensors
 # )
 def measure_temp_hum(pin = board.D4, temperature_unit = 'C'):

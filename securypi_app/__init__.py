@@ -3,7 +3,7 @@ import logging
 from flask import Flask, request, url_for
 
 
-# TODO(move to another module)    
+# @TODO move to another module)    
 def inject_active_page():
     return {'active_page': url_for(request.endpoint)}
 
@@ -38,7 +38,7 @@ def create_app(test_config=None):
     ##
     # LOGGING
     ##
-    # TODO(Logging)
+    # @TODO Logging)
     # # app log file in the instance folder
     # log_path = os.path.join(app.instance_path, 'app.log')
     # logging.basicConfig(

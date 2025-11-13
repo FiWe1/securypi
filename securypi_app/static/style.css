@@ -8,7 +8,7 @@
 
   --overview__camera_feed-switch-color: #ff3a3a;
 }
-/* TODO(add root variables for colors ...) */
+/* @TODO add root variables for colors ...) */
 
 
 html, body {
@@ -18,7 +18,7 @@ html, body {
   height: 100%;
   width: 100%;
 }
-/* TODO(change html font!) */
+/* @TODO change html font!) */
 
 
 body {
@@ -89,7 +89,7 @@ body {
 ***                                 ***
 */
 
-/* TODO(Login layout)
+/* @TODO Login layout)
 .login {
   grid-column: 2 / 3;
   display: grid;
@@ -197,7 +197,7 @@ body {
 */
 
 /* 
-.account { TODO(fix above)
+.account { @TODO fix above)
     grid-template-rows: 1fr 3fr;
 } */
 
@@ -214,7 +214,7 @@ body {
 }
 
 
-/* TODO(responsive layout) */
+/* @TODO responsive layout) */
 /* 
 @media (max-width: 959px) {
   .grid {

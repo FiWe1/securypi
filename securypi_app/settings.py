@@ -18,7 +18,7 @@ def index():
 
 
 """
-TODO():
+@TODO ):
 set overview camera resolution for picture, video 
 set temp logging interval
 """

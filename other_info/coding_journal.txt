@@ -1,4 +1,10 @@
-DO:
+@TODO Style todo comments like this
+@TODO {
+    or
+    this way
+}
+
+CONTINUE WITH:
 0. PEP - CODING CONVENTIONS (+ indentation?)
 1. singleton sensor classes
 2. sources

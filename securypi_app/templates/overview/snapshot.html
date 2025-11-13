@@ -3,7 +3,7 @@
     <span class="overview__camera_feed--title">Snapshot</span>
     <img id="overview__camera_feed" src="{{ img_src }}" alt="Live video feed from the camera">
 
-    <a class="overview__camera_feed--switch" href="{{ url_for('overview.index', mode='stream') }}">Switch to Live Stream</a> {# TODO switch target color #}
+    <a class="overview__camera_feed--switch" href="{{ url_for('overview.index', mode='stream') }}">Switch to Live Stream</a> {# @TODO switch target color #}
     <button class="overview__camera_feed--refresh" onclick="document.getElementById('overview__camera_feed').src = '{{ img_src }}?' + new Date().getTime()">
       Refresh Snapshot
     </button>
