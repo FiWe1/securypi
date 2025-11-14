@@ -6,10 +6,10 @@ try:
     from picamera2 import Picamera2             # pyright: ignore[reportMissingImports]
     from picamera2.encoders import JpegEncoder  # pyright: ignore[reportMissingImports]
     from picamera2.outputs import FileOutput    # pyright: ignore[reportMissingImports]
-    PICAMERA_AVAILABLE = True
     
 except ImportError as e:
-    print("Failed to import picamera2 camera library, reverting to mock class:\n", "\033[31m", e, "\033[0m")
+    print("Failed to import picamera2 camera library, "
+          "reverting to mock class:\n", "\033[31m", e, "\033[0m")
     
     # Mock sensor classes for development outside RPi
     from .mock_mycam import MockPicamera2, MockEncoder, MockOutput
@@ -17,12 +17,12 @@ except ImportError as e:
     Picamera2 = MockPicamera2
     JpegEncoder = MockEncoder
     FileOutput = MockOutput
-    PICAMERA_AVAILABLE = False
 
 
 class StreamingOutput(io.BufferedIOBase):
-    """ Class to handle streaming of camera frames to a HTTP response.
-        Uses a Condition to synchronize access to the latest frame.
+    """
+    Handles streaming of camera frames to a HTTP response.
+    Uses a Condition to synchronize access to the latest frame.
     """
     # @TODO ? singleton)
     def __init__(self):
@@ -35,9 +35,10 @@ class StreamingOutput(io.BufferedIOBase):
             self.condition.notify_all()
 
 def generate_frames(output):
-    """Generator function that yields camera frames in byte format.
-       Wailts for a new frame from the camera and
-       yields it as part of a multipart HTTP response.
+    """
+    Generator function that yields camera frames in byte format.
+    Wailts for a new frame from the camera and
+    yields it as part of a multipart HTTP response.
     """
     while True:
         with output.condition:
@@ -50,8 +51,9 @@ def generate_frames(output):
 
 
 class MyPicamera2(Picamera2):
-    """ My wrapper class for Picamera2 with methods for streaming and taking pictures
-        for flask application purposes.
+    """
+    My wrapper class for Picamera2 with methods
+    for streaming and taking pictures.
     """
     def configureAndStartStream(self, fileOutput):
         config = self.create_video_configuration(main={"size": (640, 360), "format": "XRGB8888"},

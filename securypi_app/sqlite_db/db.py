@@ -1,3 +1,6 @@
+# source:
+# https://flask.palletsprojects.com/en/stable/tutorial/database/
+
 import sqlite3
 from datetime import datetime
 
@@ -19,35 +22,9 @@ def get_db():
     return g.db
 
 
-"""
-https://flask.palletsprojects.com/en/stable/tutorial/database/
-#
-g is a special object that is unique for each request.
-It is used to store data that might be accessed by multiple
-functions during the request.
-The connection is stored and reused instead of creating a new connection
-if get_db is called a second time in the same request.
-
-current_app is another special object that points to the Flask application
-handling the request.
-Since you used an application factory, there is no application object
-when writing the rest of your code.
-get_db will be called when the application has been created
-and is handling a request, so current_app can be used.
-
-sqlite3.connect() establishes a connection to the file
-pointed at by the DATABASE configuration key.
-This file doesn't have to exist yet, and won't
-until you initialize the database later.
-
-sqlite3.Row tells the connection to return rows that behave like dicts.
-This allows accessing the columns by name.
-"""
-
 def close_db(e=None):
     """
-    Removes database from g context.
-    Closes the database.
+    Closes and removes database from g context.
     Must recieve one positional argument.
     """
     db = g.pop('db', None)
@@ -56,15 +33,6 @@ def close_db(e=None):
         db.close()
 
 
-"""
-https://flask.palletsprojects.com/en/stable/tutorial/database/
-#
-open_resource() opens a file relative to the securypi_app package,
-which is useful since you won't necessarily know
-where that location is when deploying the application later.
-get_db returns a database connection, which is used
-to execute the commands read from the file.
-"""
 def init_db():
     db = get_db()
 
@@ -76,23 +44,23 @@ def init_db():
 @click.command('init-db')
 def init_db_command():
     """
-    Clears the existing data and create new tables.
+    CLI command to clear the existing data and create new tables.
     Creates first admin user with:
     login:      admin
     password:   admin4321
     
     Use: flask --app securypi_app init-db
-    
-    It needs to be added to the app (function init_app())
     """
     init_db()
     # can not call click wrapped function
     register_user("admin", "admin4321", "admin")
     
-    click.echo('Initialized the database.\n Default user \'admin\' with password: \'admin4321\'')
+    click.echo("Initialized the database.\n"
+               "Default user named: \'admin\' with password: \'admin4321\'")
 
 
-def register_user(username, password, user_type='standard', hash_method='pbkdf2:sha256'):
+def register_user(
+    username, password, user_type='standard', hash_method='pbkdf2:sha256'):
     """
     Registers a new user. 
     -> (True, "succes")
@@ -107,9 +75,9 @@ def register_user(username, password, user_type='standard', hash_method='pbkdf2:
         )
         db.commit()
     except db.IntegrityError:
-        return False, f'User {username} is already registered.'
+        return False, f"User {username} is already registered."
     else:
-        return True, f'Successfully registered {username}.'
+        return True, f"Successfully registered {username}."
 
 
 @click.command('register-user')
@@ -118,33 +86,26 @@ def register_user(username, password, user_type='standard', hash_method='pbkdf2:
 @click.argument('user_type')
 def register_user_command(username, password, user_type):
     """ 
-    Registers a new user using command line 
+    CLI command to register a new user.
     Use: flask --app securypi_app register-user [username] [password]
             [user_type = 'admin' / 'standard']
-    
-    It needs to be added to the app (function init_app())
     """
     _, message = register_user(username, password, user_type)
     click.echo(message)
 
 
-"""
-https://flask.palletsprojects.com/en/stable/tutorial/database/
-#
-The call to sqlite3.register_converter() tells Python
-how to interpret timestamp values in the database. 
-We convert the value to a datetime.datetime.
-"""
+# Tells Python how to interpret timestamp values in the database
 sqlite3.register_converter(
     "timestamp", lambda v: datetime.fromisoformat(v.decode())
 )
 
 
 def init_app(app):
-    """ Does registration of db functions in app. """
-    # tells Flask to call that function when cleaning up after returning the response
+    """
+    Cleans up the database and
+    registers cli commands to the app.
+    """
     app.teardown_appcontext(close_db)
     
-    # adds a new command that can be called with the flask command in CLI
     app.cli.add_command(init_db_command)
     app.cli.add_command(register_user_command)
