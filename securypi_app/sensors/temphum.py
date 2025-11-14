@@ -4,7 +4,8 @@ try:
     import board                    # pyright: ignore[reportMissingImports]
     
 except ImportError as e:
-    print("Failed to import temperature sensor libraries, reverting to mock class:\n", "\033[31m", e, "\033[0m")
+    print("Failed to import temperature sensor libraries, "
+          "reverting to mock class:\n", "\033[31m", e, "\033[0m")
     # Mock sensor classes for development outside RPi
     from .mock_temphum import MockDHT22, MockBoard
         
@@ -30,7 +31,8 @@ def measure_temp_hum(pin = board.D4, temperature_unit = 'C'):
         elif temperature_unit == 'F':
             temperature = temperature_c * (9 / 5) + 32
         else:
-            raise ValueError("Invalid unit. Use 'C' for Celsius or 'F' for Fahrenheit.")
+            raise ValueError("Invalid unit. Use 'C' for Celsius "
+                             "or 'F' for Fahrenheit.")
         
         return temperature, humidity
     except RuntimeError as err:

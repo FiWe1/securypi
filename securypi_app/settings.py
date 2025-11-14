@@ -6,19 +6,19 @@ from securypi_app.auth import login_required, admin_rights_required
 
 ### Globals ###
 bp = Blueprint("settings", __name__, url_prefix="/settings")
-# url_prefix for routing, subroutes stay relative to this
 
 
 @bp.route("/")
 @login_required
 @admin_rights_required
 def index():
-    """ Default (inde) route for settings blueprint."""
+    """ Default (index) route for settings blueprint. """
     return render_template("settings.html")
 
 
 """
-@TODO ):
+@TODO {
 set overview camera resolution for picture, video 
 set temp logging interval
+}
 """

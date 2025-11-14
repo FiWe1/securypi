@@ -6,7 +6,6 @@ from securypi_app.auth import login_required
 
 ### Globals ###
 bp = Blueprint("camera_control", __name__, url_prefix="/camera_control")
-# url_prefix for routing, subroutes stay relative to this
 
 
 @bp.route("/")

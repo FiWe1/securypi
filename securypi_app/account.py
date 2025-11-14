@@ -5,7 +5,6 @@ from securypi_app.auth import login_required
 
 ### Globals ###
 bp = Blueprint("account", __name__, url_prefix="/account")
-# url_prefix for routing, subroutes stay relative to this
 
 
 @bp.route("/")

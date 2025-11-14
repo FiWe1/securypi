@@ -10,7 +10,7 @@ from securypi_app.sensors import temphum
 
 
 ### Globals ###
-bp = Blueprint("overview", __name__) # has no url_prefix, main overview page
+bp = Blueprint("overview", __name__) # no url_prefix, main overview page
 camera = None # Shared camera instance
 
 
@@ -93,7 +93,8 @@ def index():
     
     # temperature and humidity sensor @TODO from db)
     temperature_unit = 'C'
-    temperature, humidity = temphum.measure_temp_hum(temperature_unit=temperature_unit)
+    temperature, humidity = temphum.measure_temp_hum(
+        temperature_unit=temperature_unit)
 
     # Determine the template and URL for the <img> tag based on the mode
     if mode == 'stream':
@@ -101,4 +102,10 @@ def index():
     else: # Default is 'picture'
         img_src = url_for('overview.picture_feed')
     
-    return render_template("overview/index.html", mode=mode, img_src=img_src, temperature=temperature, humidity=humidity, temperature_unit=temperature_unit)    
+    return render_template("overview/index.html",
+                           mode=mode,
+                           img_src=img_src,
+                           temperature=temperature,
+                           humidity=humidity,
+                           temperature_unit=temperature_unit)
+    

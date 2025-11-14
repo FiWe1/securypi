@@ -3,14 +3,14 @@ import functools
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
-from werkzeug.security import check_password_hash, generate_password_hash
+from werkzeug.security import check_password_hash
 from securypi_app.sqlite_db.db import get_db, register_user
 
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-# not enabling register
+# @TODO clear? - not enabling register
 # @bp.route('/register', methods=('GET', 'POST'))
 def register_form():
     """
@@ -62,7 +62,7 @@ def login():
             return redirect(url_for('index'))
 
         flash(error)
-    # @TODO clear form - after app restart)
+    # @TODO clear form - after app restart
     return render_template('auth/login.html')
 
 
@@ -84,25 +84,23 @@ def logout():
     return redirect(url_for('index'))
 
 
-"""
-This decorator returns a new view function that wraps the original view it’s applied to.
-The new function checks if a user is loaded and redirects to the login page otherwise.
-If a user is loaded the original view is called and continues normally.
-You’ll use this decorator when writing the blog views
-"""
 def login_required(view):
+    """
+    Decorate view requiring user to be logged in,
+    otherwise redirect to login page.
+    """
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
             return redirect(url_for('auth.login'))
 
         return view(**kwargs)
-
+    
     return wrapped_view
 
 
-""" Decorate view to be accessed only by admin. """
 def admin_rights_required(view):
+    """ Decorate view to be accessed only by admin. """
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is not None and g.user["is_Admin"] == 1:

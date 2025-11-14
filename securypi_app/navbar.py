@@ -21,4 +21,5 @@ def inject_nav_links():
     if g.user is not None and g.user["is_admin"] == 1:
         bottom_nav_links.insert(0, ("Settings", url_for("settings.index")))
     
-    return {"main_nav_links": main_nav_links, "bottom_nav_links": bottom_nav_links}
+    return {"main_nav_links": main_nav_links,
+            "bottom_nav_links": bottom_nav_links}
