@@ -37,7 +37,7 @@ def measure_temp_hum(pin = board.D4, temperature_unit = 'C'):
         
         return temperature, humidity
     except RuntimeError as err:
-        print(err.args[0])
+        print(f"Failed to read from temperature sensor: {err.args[0]}")
         return None, None
     finally:
         dht_device.exit()

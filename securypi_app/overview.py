@@ -95,6 +95,9 @@ def index():
     temperature_unit = 'C'
     temperature, humidity = temphum.measure_temp_hum(
         temperature_unit=temperature_unit)
+    if temperature is None or humidity is None:
+        temperature = "N/A"
+        humidity = "N/A"
 
     # Determine the template and URL for the <img> tag based on the mode
     if mode == 'stream':
