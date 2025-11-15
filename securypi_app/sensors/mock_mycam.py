@@ -1,4 +1,4 @@
-import random 
+import random
 from PIL import Image
 
 
@@ -6,16 +6,19 @@ class MockEncoder:
     def __init__(self, *args, **kwargs):
         pass
 
+
 class MockOutput:
     def __init__(self, output=None):
         self.output = output
-    
+
     def write(self, data):
         if self.output:
             self.output.write(data)
 
+
 class MockPicamera2:
     started = True
+
     def __init__(self):
         self.sensor_resolution = (1920, 1080)
 
@@ -51,7 +54,6 @@ class MockPicamera2:
 
         threading.Thread(target=frame_generator, daemon=True).start()
 
-
     def start(self):
         print("[MockPicamera2] Starting camera simulation...")
 
@@ -63,7 +65,7 @@ class MockPicamera2:
 
     def stop(self):
         print("[MockPicamera2] Stopping mock camera.")
-    
+
     @staticmethod
     def create_random_color_image(width, height, brightness=1.0):
         """Create an image with random colors."""

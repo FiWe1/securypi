@@ -10,8 +10,8 @@ from securypi_app.sensors import temphum
 
 
 ### Globals ###
-bp = Blueprint("overview", __name__) # no url_prefix, main overview page
-camera = None # Shared camera instance
+bp = Blueprint("overview", __name__)  # no url_prefix, main overview page
+camera = None  # Shared camera instance
 
 
 @login_required
@@ -35,11 +35,11 @@ def video_feed():
     """
     global camera
     camera = get_camera()
-    
+
     output = mycam.StreamingOutput()
-    
+
     camera.configureAndStartStream(output)
-           
+
     return Response(mycam.generate_frames(output),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
@@ -48,13 +48,13 @@ def video_feed():
 @login_required
 def picture_feed():
     """Route for a single snapshot."""
-    
+
     global camera
     camera = get_camera()
-    
+
     try:
         jpeg_data = camera.configureAndTakePicture()
-        
+
         return Response(jpeg_data, mimetype='image/jpeg')
     except Exception as e:
         print(f"Error capturing picture: {e}")
@@ -77,9 +77,9 @@ def stop_camera():
             print(f"Error stopping camera: {e}")
         finally:
             camera = None
-            
+
     return ("Camera stopped", 200)
-    
+
 
 @bp.route("/", methods=["GET"])
 @login_required
@@ -87,10 +87,10 @@ def index():
     """Main overview page showing either live stream or snapshot based on mode.
        Also displays temperature and humidity readings.
     """
-    
+
     # Get the desired mode from the request (default to 'picture')
     mode = request.args.get('mode', 'picture')
-    
+
     # temperature and humidity sensor @TODO from db)
     temperature_unit = 'C'
     temperature, humidity = temphum.measure_temp_hum(
@@ -102,13 +102,12 @@ def index():
     # Determine the template and URL for the <img> tag based on the mode
     if mode == 'stream':
         img_src = url_for('overview.video_feed')
-    else: # Default is 'picture'
+    else:  # Default is 'picture'
         img_src = url_for('overview.picture_feed')
-    
+
     return render_template("overview/index.html",
                            mode=mode,
                            img_src=img_src,
                            temperature=temperature,
                            humidity=humidity,
                            temperature_unit=temperature_unit)
-    

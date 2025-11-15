@@ -10,7 +10,7 @@ try:
 except ImportError as e:
     print("Failed to import picamera2 camera library, "
           "reverting to mock class:\n", "\033[31m", e, "\033[0m")
-    
+
     # Mock sensor classes for development outside RPi
     from .mock_mycam import MockPicamera2, MockEncoder, MockOutput
 
@@ -25,6 +25,7 @@ class StreamingOutput(io.BufferedIOBase):
     Uses a Condition to synchronize access to the latest frame.
     """
     # @TODO ? singleton)
+
     def __init__(self):
         self.frame = None
         self.condition = Condition()
@@ -33,6 +34,7 @@ class StreamingOutput(io.BufferedIOBase):
         with self.condition:
             self.frame = buf
             self.condition.notify_all()
+
 
 def generate_frames(output):
     """
@@ -55,25 +57,26 @@ class MyPicamera2(Picamera2):
     My wrapper class for Picamera2 with methods
     for streaming and taking pictures.
     """
+
     def configureAndStartStream(self, fileOutput):
         config = self.create_video_configuration(main={"size": (640, 360), "format": "XRGB8888"},
                                                  raw={"size": self.sensor_resolution})
         self.configure(config)
         self.start_recording(JpegEncoder(), FileOutput(fileOutput))
-        
+
         return self
-    
+
     def configureAndTakePicture(self):
         # Configure for still capture
         config = self.create_still_configuration(main={"size": (1920, 1080), "format": "XRGB8888"},
                                                  raw={"size": self.sensor_resolution})
         self.configure(config)
         self.start()
-        
+
         # Capture an image to a BytesIO object
         stream = io.BytesIO()
         self.capture_file(stream, format='jpeg')
         self.stop()
-        
+
         # Return the byte data
         return stream.getvalue()
