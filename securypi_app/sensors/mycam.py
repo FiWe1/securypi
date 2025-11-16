@@ -3,9 +3,9 @@ from threading import Condition
 
 # Conditional Import
 try:
-    from picamera2 import Picamera2             # pyright: ignore[reportMissingImports]
-    from picamera2.encoders import JpegEncoder  # pyright: ignore[reportMissingImports]
-    from picamera2.outputs import FileOutput    # pyright: ignore[reportMissingImports]
+    from picamera2 import Picamera2    # pyright: ignore[reportMissingImports]
+    from picamera2.encoders import JpegEncoder, H264Encoder    # pyright: ignore[reportMissingImports]
+    from picamera2.outputs import FileOutput, PyavOutput    # pyright: ignore[reportMissingImports]
     
 except ImportError as e:
     print("Failed to import picamera2 camera library, "
@@ -70,13 +70,19 @@ class MyPicamera2(Picamera2):
         if getattr(self, "_initialized", False):
             return
         super().__init__()
+        
         self.configure_streams()
+        self.recording_encoder = None
+        self.streaming_encoder = None
+        self.start()
+        
         self._initialized = True
 
     @classmethod
     def get_instance(cls):
         """ Singleton access method. """
         return cls()
+
 
     def configure_streams(self):
         """
@@ -93,26 +99,39 @@ class MyPicamera2(Picamera2):
         # config.encode = "lores"
 
         self.configure(config)
+        return self
 
-    def start_capture_stream(self, streaming_output):
-        self.start_recording(JpegEncoder(),
+    def start_recording_to_file(self, filename: str, stream: str = "main"):
+        """ Start high-res video recording to file. """
+        self.recording_encoder = H264Encoder()
+        self.start_encoder(self.recording_encoder,
+                           PyavOutput(filename),
+                           name=stream)
+        return self
+
+    def start_capture_stream(self, streaming_output, stream: str = "lores"):
+        self.streaming_encoder = JpegEncoder()
+        self.start_encoder(self.streaming_encoder,
                              FileOutput(streaming_output),
-                             name="lores")
+                             name=stream)
+        return self
+    
+    def stop_recording_to_file(self):
+        if self.recording_encoder is not None:
+            self.stop_encoder(self.recording_encoder)
+            self.recording_encoder = None
         return self
 
     def stop_capture_stream(self):
-        if self.is_recording():
-            self.stop_recording()
-
+        if self.streaming_encoder is not None:
+            self.stop_encoder(self.streaming_encoder)
+            self.streaming_encoder = None
         return self
 
     def capture_picture(self):
-        self.start()
-
         # Capture an image to a BytesIO object
         buffer = io.BytesIO()
         self.capture_file(buffer, format='jpeg')
-        self.stop()
 
         # Return the byte data
         return buffer.getvalue()

@@ -35,6 +35,8 @@ def picture_feed():
     """ Route for a single snapshot. """
     camera = mycam.MyPicamera2.get_instance()
     try:
+        camera.stop_capture_stream()
+        
         jpeg_data = camera.capture_picture()
         return Response(jpeg_data, mimetype='image/jpeg')
 
