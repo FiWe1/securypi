@@ -19,11 +19,27 @@ class MockOutput:
             self.output.write(data)
 
 
+class MockStreamConfig:
+    def __init__(self, size=None):
+        self.size = size
+
+
+class MockVideoConfiguration:
+    def __init__(self):
+        self.main = MockStreamConfig()
+        self.lores = None
+
+    def enable_lores(self):
+        if self.lores is None:
+            self.lores = MockStreamConfig()
+
+
 class MockPicamera2:
-    started = True
 
     def __init__(self):
         self.sensor_resolution = (1920, 1080)
+        self.started = False
+        self.video_configuration = MockVideoConfiguration()
 
     def create_video_configuration(self, **kwargs):
         print("[MockPicamera2] Creating video config:", kwargs)
@@ -36,9 +52,9 @@ class MockPicamera2:
     def configure(self, config):
         print("[MockPicamera2] Configured with:", config)
 
-    def start_recording(self, encoder, output):
+    def start_recording(self, encoder, output, name="main"):
         """ Continuously generate fake frames """
-        print("[MockPicamera2] Simulating video recording start...")
+        print(f"[MockPicamera2] Simulating video recording to {output} using {encoder} on stream '{name}'")
 
         def frame_generator():
             while True:
