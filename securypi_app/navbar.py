@@ -3,9 +3,10 @@ from flask import g
 
 
 def inject_nav_links():
-    """ Returns a dictionary with navigation links for the navbar.
-        Used as a context processor in the Flask app to make nav_links
-        available in all templates.
+    """
+    Returns a dictionary with navigation links for the navbar.
+    Used as a context processor in the Flask app to make nav_links
+    available in all templates.
     """
     main_nav_links = [
         ("Overview", url_for("overview.index")),

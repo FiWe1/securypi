@@ -5,12 +5,7 @@ from PIL import Image
 from io import BytesIO
 
 
-class MockEncoder:
-    def __init__(self, *args, **kwargs):
-        pass
-
-
-class MockOutput:
+class MockStreamingOutput:
     def __init__(self, output=None):
         self.output = output
 
@@ -19,12 +14,21 @@ class MockOutput:
             self.output.write(data)
 
 
+# Mocking Picamera2...
+
+class MockEncoder:
+    def __init__(self, *args, **kwargs):
+        pass
+
+
 class MockStreamConfig:
+    """ Mocking object oriented camera configuration. """
     def __init__(self, size=None):
         self.size = size
 
 
 class MockVideoConfiguration:
+    """ Mocking object oriented camera configuration. """
     def __init__(self):
         self.main = MockStreamConfig()
         self.lores = None
@@ -35,7 +39,10 @@ class MockVideoConfiguration:
 
 
 class MockPicamera2:
-
+    """
+    Mocking Picamera2 library for the purpouses of
+    working with mycam module (MyPicamera2).
+    """
     def __init__(self):
         self.sensor_resolution = (1920, 1080)
         self.started = False

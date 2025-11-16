@@ -9,7 +9,7 @@ import click
 from flask import current_app, g
 
 
-# ~request -> get_db() -> g.db (-> ~another_request) -> 
+# ~request -> get_db() -> g.db (-> ~another_request) ->
 # ~~response -> close_db()
 def get_db():
     if 'db' not in g:
@@ -48,19 +48,19 @@ def init_db_command():
     Creates first admin user with:
     login:      admin
     password:   admin4321
-    
+
     Use: flask --app securypi_app init-db
     """
     init_db()
     # can not call click wrapped function
     register_user("admin", "admin4321", "admin")
-    
+
     click.echo("Initialized the database.\n"
                "Default user named: \'admin\' with password: \'admin4321\'")
 
 
 def register_user(
-    username, password, user_type='standard', hash_method='pbkdf2:sha256'):
+        username, password, user_type='standard', hash_method='pbkdf2:sha256'):
     """
     Registers a new user. 
     -> (True, "succes")
@@ -71,7 +71,7 @@ def register_user(
         db.execute(
             "INSERT INTO user (username, password, is_admin) VALUES (?, ?, ?)",
             (username, generate_password_hash(password, method=hash_method),
-            1 if user_type == 'admin' else 0)
+             1 if user_type == 'admin' else 0)
         )
         db.commit()
     except db.IntegrityError:
@@ -106,6 +106,6 @@ def init_app(app):
     registers cli commands to the app.
     """
     app.teardown_appcontext(close_db)
-    
+
     app.cli.add_command(init_db_command)
     app.cli.add_command(register_user_command)

@@ -14,9 +14,12 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 # @bp.route('/register', methods=('GET', 'POST'))
 def register_form():
     """
-    Route for registering a new user by admin.
-    Depends on sqlite_db.db.register_user
+    Handle the admin registration of a new user.
+
+    Displays the registration form on GET and processes submitted
+    credentials on POST.
     """
+
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']

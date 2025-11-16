@@ -12,16 +12,17 @@ except ImportError as e:
           "reverting to mock class:\n", "\033[31m", e, "\033[0m")
 
     # Mock sensor classes for development outside RPi
-    from .mock_mycam import MockPicamera2, MockEncoder, MockOutput
+    from .mock_mycam import MockPicamera2, MockEncoder, MockStreamingOutput
 
     Picamera2 = MockPicamera2
     JpegEncoder = MockEncoder
-    FileOutput = MockOutput
+    FileOutput = MockStreamingOutput
 
 
 class StreamingOutput(io.BufferedIOBase):
-    """ Handles streaming of camera frames to a HTTP response.
-        Uses a Condition to synchronize access to the latest frame.
+    """
+    Handles streaming of camera frames to a HTTP response.
+    Uses a Condition to synchronize access to the latest frame.
     """
     # @TODO ? singleton)
 
@@ -36,9 +37,10 @@ class StreamingOutput(io.BufferedIOBase):
 
 
 def generate_frames(output):
-    """ Generator function that yields camera frames in byte format.
-        Wailts for a new frame from the camera and
-        yields it as part of a multipart HTTP response.
+    """
+    Generator function that yields camera frames in byte format.
+    Wailts for a new frame from the camera and
+    yields it as part of a multipart HTTP response.
     """
     while True:
         with output.condition:
@@ -51,8 +53,9 @@ def generate_frames(output):
 
 
 class MyPicamera2(Picamera2):
-    """ My singleton wrapper class for Picamera2 with methods
-        for streaming and taking pictures.
+    """
+    My singleton wrapper class for Picamera2 with methods
+    for streaming and taking pictures.
     """
     _instance = None
     _initialised = False
@@ -76,9 +79,10 @@ class MyPicamera2(Picamera2):
         return cls()
 
     def configure_streams(self):
-        """ Configures camera streams:
-            # main stream: high-res recording, snapshots
-            # lores stream: for preview
+        """
+        Configures camera streams:
+        # main stream: high-res recording, snapshots
+        # lores stream: for preview
         """
         config = self.video_configuration
         config.main.size = (1920, 1080)

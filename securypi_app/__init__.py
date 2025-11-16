@@ -3,17 +3,15 @@ import logging
 from flask import Flask, request, url_for
 
 
-# @TODO move to another module)    
+# @TODO move to another module)
 def inject_active_page():
     return {'active_page': url_for(request.endpoint)}
 
 
 def create_app(test_config=None):
-    """
-    Create and configure an instance of the Flask application.
-    """
+    """ Create and configure an instance of the Flask application. """
     app = Flask(__name__, instance_relative_config=True)
-    
+
     app.config.from_mapping(
         # a default secret that should be overridden by instance config
         SECRET_KEY="dev",
@@ -28,13 +26,12 @@ def create_app(test_config=None):
         # load the test config if passed in
         app.config.update(test_config)
 
-
     # ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
     except OSError:
         pass
-    
+
     ##
     # LOGGING
     ##
@@ -46,39 +43,36 @@ def create_app(test_config=None):
     #     level=logging.INFO,
     #     format='%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
     # )
-    
-    
+
     ##
     # CONTEXT PROCESSOR
     ##
-    
+
     # inject the nav links into the template context
     from . import navbar
     app.context_processor(navbar.inject_nav_links)
-    
+
     # inject currently active page - from request
     app.context_processor(inject_active_page)
-    
-    
+
     ##
     # Register blueprints to the app
     ##
     from . import auth, overview, temp_history, recordings, camera_control, settings, account
-    
+
     blueprints = [
         auth.bp, overview.bp, temp_history.bp, recordings.bp, camera_control.bp, settings.bp, account.bp
-        ]
+    ]
     for bp in blueprints:
         app.register_blueprint(bp)
 
     # make url_for('index') == url_for('overview.index') -- overview.index is the main index
     app.add_url_rule("/", endpoint="index")
 
-    
     ##
     # DATABASE
-    ##    
+    ##
     from .sqlite_db import db
     db.init_app(app)
-    
+
     return app

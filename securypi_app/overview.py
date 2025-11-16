@@ -54,8 +54,9 @@ def stop_video_feed():
 @bp.route("/", methods=["GET"])
 @login_required
 def index():
-    """Main overview page showing either live stream or snapshot based on mode.
-       Also displays temperature and humidity readings.
+    """
+    Main overview page showing either live stream or snapshot based on mode,
+    together with temperature and humidity readings.
     """
 
     # Get the desired mode from the request (default to 'picture')
