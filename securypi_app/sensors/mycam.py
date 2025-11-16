@@ -70,12 +70,12 @@ class MyPicamera2(Picamera2):
         if getattr(self, "_initialized", False):
             return
         super().__init__()
-        
+
         self.configure_streams()
         self.recording_encoder = None
         self.streaming_encoder = None
         self.start()
-        
+
         self._initialized = True
 
     @classmethod
@@ -112,10 +112,10 @@ class MyPicamera2(Picamera2):
     def start_capture_stream(self, streaming_output, stream: str = "lores"):
         self.streaming_encoder = JpegEncoder()
         self.start_encoder(self.streaming_encoder,
-                             FileOutput(streaming_output),
-                             name=stream)
+                           FileOutput(streaming_output),
+                           name=stream)
         return self
-    
+
     def stop_recording_to_file(self):
         if self.recording_encoder is not None:
             self.stop_encoder(self.recording_encoder)
