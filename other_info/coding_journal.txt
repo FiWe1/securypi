@@ -5,7 +5,6 @@
 }
 
 CONTINUE WITH:
-0. PEP - CODING CONVENTIONS (+ indentation?)
 1. singleton sensor classes
 2. sources
 3. TESTING - libraries, sensors, db, ...

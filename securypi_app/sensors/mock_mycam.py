@@ -1,5 +1,8 @@
 import random
+import threading
+from time import sleep
 from PIL import Image
+from io import BytesIO
 
 
 class MockEncoder:
@@ -34,15 +37,10 @@ class MockPicamera2:
         print("[MockPicamera2] Configured with:", config)
 
     def start_recording(self, encoder, output):
+        """ Continuously generate fake frames """
         print("[MockPicamera2] Simulating video recording start...")
 
-        # Continuously generate fake frames
-        import threading
-
         def frame_generator():
-            from io import BytesIO
-            from time import sleep
-
             while True:
                 img = self.create_random_color_image(640, 360, brightness=0.5)
                 buffer = BytesIO()
