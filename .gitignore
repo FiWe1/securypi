@@ -32,6 +32,8 @@ htmlcov/
 instance/
 *.env
 
+# testing .mp4 recordings
+recording_demo/*
 
 # python
 # https://github.com/github/gitignore/blob/main/Python.gitignore
