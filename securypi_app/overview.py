@@ -23,7 +23,7 @@ def video_feed():
     """
     camera = mycam.MyPicamera2.get_instance()
     output = mycam.StreamingOutput()
-    
+
     camera.start_capture_stream(output)
     return Response(mycam.generate_frames(output),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
@@ -37,7 +37,7 @@ def picture_feed():
     try:
         jpeg_data = camera.capture_picture()
         return Response(jpeg_data, mimetype='image/jpeg')
-    
+
     except Exception as e:
         print(f"Error capturing picture: {e}")
         return Response(status=500)

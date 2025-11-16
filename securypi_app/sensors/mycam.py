@@ -77,28 +77,28 @@ class MyPicamera2(Picamera2):
     def get_instance(cls):
         """ Singleton access method. """
         return cls()
-    
-    
+
     def configure_streams(self):
         # main stream: high-res recording
         # lores stream: for preview
         config = self.video_configuration
         config.main.size = (1920, 1080)
-        
+
         config.enable_lores()
         config.lores.size = (640, 360)
         # config.encode = "lores" # default stream for encoding
-        
+
         self.configure(config)
 
     def start_capture_stream(self, streaming_output):
-        self.start_recording(JpegEncoder(), FileOutput(streaming_output), name="lores")
+        self.start_recording(JpegEncoder(), FileOutput(
+            streaming_output), name="lores")
         return self
-    
+
     def stop_capture_stream(self):
         if self.is_recording():
             self.stop_recording()
-        
+
         return self
 
     def capture_picture(self):
