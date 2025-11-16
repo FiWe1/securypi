@@ -11,18 +11,6 @@ from securypi_app.sensors import temphum
 
 ### Globals ###
 bp = Blueprint("overview", __name__)  # no url_prefix, main overview page
-camera = None  # Shared camera instance
-
-
-@login_required
-def get_camera():
-    """Get or initialize the shared camera instance."""
-    global camera
-    if camera is None:
-        camera = mycam.MyPicamera2()
-    elif camera.started:
-        camera.stop()
-    return camera
 
 
 @bp.route('/stream.mjpg')
@@ -33,13 +21,10 @@ def video_feed():
     Uses a generator function to stream the response.
     Calls mycam, a picamera2 wrapper class contained in mycam.py
     """
-    global camera
-    camera = get_camera()
-
+    camera = mycam.MyPicamera2.get_instance()
     output = mycam.StreamingOutput()
-
-    camera.configureAndStartStream(output)
-
+    
+    camera.start_capture_stream(output)
     return Response(mycam.generate_frames(output),
                     mimetype='multipart/x-mixed-replace; boundary=frame')
 
@@ -47,38 +32,23 @@ def video_feed():
 @bp.route('/picture.jpg')
 @login_required
 def picture_feed():
-    """Route for a single snapshot."""
-
-    global camera
-    camera = get_camera()
-
+    """ Route for a single snapshot. """
+    camera = mycam.MyPicamera2.get_instance()
     try:
-        jpeg_data = camera.configureAndTakePicture()
-
+        jpeg_data = camera.capture_picture()
         return Response(jpeg_data, mimetype='image/jpeg')
+    
     except Exception as e:
         print(f"Error capturing picture: {e}")
-        # Return a simple error response or default image
         return Response(status=500)
 
 
 @bp.route("/stop_camera", methods=["POST"])
 @login_required
-def stop_camera():
-    """Route to stop the camera and release resources.
-       camera <- None
-    """
-    global camera
-    if camera is not None:
-        try:
-            camera.stop_recording()
-            camera.close()
-        except Exception as e:
-            print(f"Error stopping camera: {e}")
-        finally:
-            camera = None
-
-    return ("Camera stopped", 200)
+def stop_video_feed():
+    camera = mycam.MyPicamera2.get_instance()
+    camera.stop_capture_stream()
+    return ("Video feed stopped", 200)
 
 
 @bp.route("/", methods=["GET"])

@@ -54,29 +54,60 @@ def generate_frames(output):
 
 class MyPicamera2(Picamera2):
     """
-    My wrapper class for Picamera2 with methods
+    My singleton wrapper class for Picamera2 with methods
     for streaming and taking pictures.
     """
+    _instance = None
+    _initialised = False
 
-    def configureAndStartStream(self, fileOutput):
-        config = self.create_video_configuration(main={"size": (640, 360), "format": "XRGB8888"},
-                                                 raw={"size": self.sensor_resolution})
+    def __new__(cls, *args, **kwargs):
+        """ Guarantees only one instance - singleton. """
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+
+    def __init__(self):
+        if getattr(self, "_initialized", False):
+            return
+        super().__init__()
+        self.configure_streams()
+        self._initialized = True
+
+    @classmethod
+    def get_instance(cls):
+        """ Singleton access method. """
+        return cls()
+    
+    
+    def configure_streams(self):
+        # main stream: high-res recording
+        # lores stream: for preview
+        config = self.video_configuration
+        config.main.size = (1920, 1080)
+        
+        config.enable_lores()
+        config.lores.size = (640, 360)
+        # config.encode = "lores" # default stream for encoding
+        
         self.configure(config)
-        self.start_recording(JpegEncoder(), FileOutput(fileOutput))
 
+    def start_capture_stream(self, streaming_output):
+        self.start_recording(JpegEncoder(), FileOutput(streaming_output), name="lores")
+        return self
+    
+    def stop_capture_stream(self):
+        if self.is_recording():
+            self.stop_recording()
+        
         return self
 
-    def configureAndTakePicture(self):
-        # Configure for still capture
-        config = self.create_still_configuration(main={"size": (1920, 1080), "format": "XRGB8888"},
-                                                 raw={"size": self.sensor_resolution})
-        self.configure(config)
+    def capture_picture(self):
         self.start()
 
         # Capture an image to a BytesIO object
-        stream = io.BytesIO()
-        self.capture_file(stream, format='jpeg')
+        buffer = io.BytesIO()
+        self.capture_file(buffer, format='jpeg')
         self.stop()
 
         # Return the byte data
-        return stream.getvalue()
+        return buffer.getvalue()
