@@ -20,9 +20,8 @@ except ImportError as e:
 
 
 class StreamingOutput(io.BufferedIOBase):
-    """
-    Handles streaming of camera frames to a HTTP response.
-    Uses a Condition to synchronize access to the latest frame.
+    """ Handles streaming of camera frames to a HTTP response.
+        Uses a Condition to synchronize access to the latest frame.
     """
     # @TODO ? singleton)
 
@@ -37,10 +36,9 @@ class StreamingOutput(io.BufferedIOBase):
 
 
 def generate_frames(output):
-    """
-    Generator function that yields camera frames in byte format.
-    Wailts for a new frame from the camera and
-    yields it as part of a multipart HTTP response.
+    """ Generator function that yields camera frames in byte format.
+        Wailts for a new frame from the camera and
+        yields it as part of a multipart HTTP response.
     """
     while True:
         with output.condition:
@@ -53,9 +51,8 @@ def generate_frames(output):
 
 
 class MyPicamera2(Picamera2):
-    """
-    My singleton wrapper class for Picamera2 with methods
-    for streaming and taking pictures.
+    """ My singleton wrapper class for Picamera2 with methods
+        for streaming and taking pictures.
     """
     _instance = None
     _initialised = False
@@ -79,20 +76,24 @@ class MyPicamera2(Picamera2):
         return cls()
 
     def configure_streams(self):
-        # main stream: high-res recording
-        # lores stream: for preview
+        """ Configures camera streams:
+            # main stream: high-res recording, snapshots
+            # lores stream: for preview
+        """
         config = self.video_configuration
         config.main.size = (1920, 1080)
 
         config.enable_lores()
         config.lores.size = (640, 360)
-        # config.encode = "lores" # default stream for encoding
+        # default stream for video encoding
+        # config.encode = "lores"
 
         self.configure(config)
 
     def start_capture_stream(self, streaming_output):
-        self.start_recording(JpegEncoder(), FileOutput(
-            streaming_output), name="lores")
+        self.start_recording(JpegEncoder(),
+                             FileOutput(streaming_output),
+                             name="lores")
         return self
 
     def stop_capture_stream(self):
