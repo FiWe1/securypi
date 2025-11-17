@@ -4,7 +4,7 @@ from threading import Condition
 # Conditional Import
 try:
     from picamera2 import Picamera2    # pyright: ignore[reportMissingImports]
-    from libcamera import controls
+    from libcamera import controls    # pyright: ignore[reportMissingImports]
     from picamera2.encoders import JpegEncoder, H264Encoder, Quality    # pyright: ignore[reportMissingImports]
     from picamera2.outputs import FileOutput, PyavOutput    # pyright: ignore[reportMissingImports]
     
@@ -13,11 +13,13 @@ except ImportError as e:
           "reverting to mock class:\n", "\033[31m", e, "\033[0m")
 
     # Mock sensor classes for development outside RPi
-    from .mock_mycam import MockPicamera2, MockEncoder, MockStreamingOutput
+    from .mock_mycam import MockPicamera2, MockEncoder, MockStreamingOutput, MockQuality
 
     Picamera2 = MockPicamera2
     JpegEncoder = MockEncoder
+    H264Encoder = MockEncoder
     FileOutput = MockStreamingOutput
+    Quality = MockQuality
 
 
 class StreamingOutput(io.BufferedIOBase):
@@ -103,7 +105,8 @@ class MyPicamera2(Picamera2):
         return self
     
     def __configure_runtime_controls(self):
-        self.set_noise_reduction()
+        # self.set_noise_reduction() # turn off for now
+        return self
     
     def set_noise_reduction(self):
         """

@@ -16,6 +16,11 @@ class MockStreamingOutput:
 
 # Mocking Picamera2...
 
+class MockQuality:
+    HIGH = 'high'
+    MEDIUM = 'medium'
+    LOW = 'low'
+
 class MockEncoder:
     def __init__(self, *args, **kwargs):
         pass
