@@ -103,7 +103,8 @@ class MyPicamera2(Picamera2):
         return self
     
     def __configure_runtime_controls(self):
-        self.set_noise_reduction()
+        # self.set_noise_reduction() # turn off for now
+        return self
     
     def set_noise_reduction(self):
         """
