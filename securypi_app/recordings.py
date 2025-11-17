@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Blueprint, render_template, redirect, url_for
 
 from securypi_app.auth import login_required
-from securypi_app.sensors.mycam import MyPicamera2
+from securypi_app.sensors.mycam import MyPicamera2, Quality
 
 
 ### Globals ###
@@ -20,7 +20,8 @@ def start_recording():
 
     try:
         camera.start_recording_to_file(full_path,
-                                       stream="main") # @TODO quality interface
+                                       stream="main",
+                                       encode_quality=Quality.LOW)
     except Exception as e:
         print(f"Error starting recording: {e}")
         # @TODO add flash message

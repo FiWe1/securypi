@@ -4,6 +4,7 @@ from threading import Condition
 # Conditional Import
 try:
     from picamera2 import Picamera2    # pyright: ignore[reportMissingImports]
+    from libcamera import controls
     from picamera2.encoders import JpegEncoder, H264Encoder, Quality    # pyright: ignore[reportMissingImports]
     from picamera2.outputs import FileOutput, PyavOutput    # pyright: ignore[reportMissingImports]
     
@@ -70,11 +71,12 @@ class MyPicamera2(Picamera2):
         if getattr(self, "_initialized", False):
             return
         super().__init__()
-
         self.configure_streams()
         self.recording_encoder = None
         self.streaming_encoder = None
+        
         self.start()
+        self.__configure_runtime_controls()
 
         self._initialized = True
 
@@ -82,12 +84,6 @@ class MyPicamera2(Picamera2):
     def get_instance(cls):
         """ Singleton access method. """
         return cls()
-
-    def is_recording(self):
-        return self.recording_encoder is not None
-
-    def is_streaming(self):
-        return self.streaming_encoder is not None
 
     def configure_streams(self):
         """
@@ -105,17 +101,43 @@ class MyPicamera2(Picamera2):
 
         self.configure(config)
         return self
+    
+    def __configure_runtime_controls(self):
+        self.set_noise_reduction()
+    
+    def set_noise_reduction(self):
+        """
+        0 -> Off
+        1 -> Fast
+        2 -> HighQuality
+        """
+        self.set_controls(
+            {"NoiseReductionMode": controls.draft.NoiseReductionModeEnum.Fast}
+        )
+        return self
+
+    def is_recording(self):
+        return self.recording_encoder is not None
+
+    def is_streaming(self):
+        return self.streaming_encoder is not None
+
 
     def start_recording_to_file(self,
-                                filename: str,
+                                output_path: str,
                                 stream: str = "main",
-                                quality: Quality = Quality):
-        """ Start high-res video recording to file. """
+                                encode_quality: Quality = Quality.MEDIUM):
+        """
+        Start high-res video recording to file.
+        -> output_path
+        -> stream: which stream to record from ("main" or "lores")
+        -> encode_quality: Quality.[LOW | MEDIUM | HIGH]
+        """
         self.recording_encoder = H264Encoder()
         self.start_encoder(self.recording_encoder,
-                           PyavOutput(filename),
+                           PyavOutput(output_path),
                            name=stream,
-                           quality=quality)
+                           quality=encode_quality)
         return self
 
     def start_capture_stream(self, streaming_output, stream: str = "lores"):
