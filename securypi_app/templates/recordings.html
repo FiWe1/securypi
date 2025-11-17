@@ -1,5 +1,17 @@
 {% extends 'base.html' %}
 {% block title %}Recordings{% endblock %}
 {% block body %}
-  <p> placeholder recordings page. </p>
+  <section>
+    <h1>
+      Recording to a file
+    </h1>
+      {% if is_recording %}
+      <span>Recording is running as we speak...  ...</span>
+      <a href={{ url_for('recordings.stop_recording') }}>Stop it now</a>
+      {% else %}
+      <span>Currently not running a recording.</span>
+      <a href={{ url_for('recordings.start_recording') }}>I want to record!</a>
+      {% endif %}
+    </span>
+  </section>
 {% endblock %}

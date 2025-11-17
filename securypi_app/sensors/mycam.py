@@ -83,6 +83,11 @@ class MyPicamera2(Picamera2):
         """ Singleton access method. """
         return cls()
 
+    def is_recording(self):
+        return self.recording_encoder is not None
+
+    def is_streaming(self):
+        return self.streaming_encoder is not None
 
     def configure_streams(self):
         """
