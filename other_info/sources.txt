@@ -1,1 +1,6 @@
-@TODO add sources here - pallets)
+@TODO {
+    add sources here:
+    - pallets
+    - picamera2 docs
+    - simple mjpeg server
+}
