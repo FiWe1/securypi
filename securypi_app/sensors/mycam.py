@@ -129,7 +129,7 @@ class MyPicamera2(Picamera2):
     def start_recording_to_file(self,
                                 output_path: str,
                                 stream: str = "main",
-                                encode_quality: Quality = Quality.MEDIUM):
+                                encode_quality = Quality.MEDIUM):
         """
         Start high-res video recording to file.
         -> output_path
