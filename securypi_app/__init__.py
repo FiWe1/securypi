@@ -1,6 +1,8 @@
 import os
-import logging
+import logging #@TODO logging
+
 from flask import Flask, request, url_for
+from .sqlite_db import db
 
 
 # @TODO move to another module)
@@ -72,7 +74,6 @@ def create_app(test_config=None):
     ##
     # DATABASE
     ##
-    from .sqlite_db import db
     db.init_app(app)
 
     return app
