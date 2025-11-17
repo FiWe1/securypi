@@ -4,7 +4,7 @@ from threading import Condition
 # Conditional Import
 try:
     from picamera2 import Picamera2    # pyright: ignore[reportMissingImports]
-    from picamera2.encoders import JpegEncoder, H264Encoder    # pyright: ignore[reportMissingImports]
+    from picamera2.encoders import JpegEncoder, H264Encoder, Quality    # pyright: ignore[reportMissingImports]
     from picamera2.outputs import FileOutput, PyavOutput    # pyright: ignore[reportMissingImports]
     
 except ImportError as e:
@@ -106,12 +106,16 @@ class MyPicamera2(Picamera2):
         self.configure(config)
         return self
 
-    def start_recording_to_file(self, filename: str, stream: str = "main"):
+    def start_recording_to_file(self,
+                                filename: str,
+                                stream: str = "main",
+                                quality: Quality = Quality):
         """ Start high-res video recording to file. """
         self.recording_encoder = H264Encoder()
         self.start_encoder(self.recording_encoder,
                            PyavOutput(filename),
-                           name=stream)
+                           name=stream,
+                           quality=quality)
         return self
 
     def start_capture_stream(self, streaming_output, stream: str = "lores"):

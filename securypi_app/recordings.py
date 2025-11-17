@@ -19,7 +19,8 @@ def start_recording():
     full_path = path + filename
 
     try:
-        camera.start_recording_to_file(full_path, stream="main")
+        camera.start_recording_to_file(full_path,
+                                       stream="main") # @TODO quality interface
     except Exception as e:
         print(f"Error starting recording: {e}")
         # @TODO add flash message
