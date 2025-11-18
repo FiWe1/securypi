@@ -17,9 +17,9 @@ class MockStreamingOutput:
 # Mocking Picamera2...
 
 class MockQuality:
-    HIGH = 'high'
-    MEDIUM = 'medium'
-    LOW = 'low'
+    HIGH = "high"
+    MEDIUM = "medium"
+    LOW = "low"
 
 class MockEncoder:
     def __init__(self, *args, **kwargs):
@@ -98,7 +98,7 @@ class MockPicamera2:
         self.stop_encoder("[all encoders]")
         print("[MockPicamera2] Stopping recording.")
 
-    def capture_file(self, stream, format='jpeg'):
+    def capture_file(self, stream, format="jpeg"):
         print("[MockPicamera2] Capturing fake image...")
         # Create a real JPEG image
         img = self.create_random_color_image(640, 360, brightness=0.5)
@@ -115,7 +115,7 @@ class MockPicamera2:
         """Create an image with random colors."""
         max_value = round(255 * brightness)
         img = Image.new(
-            'RGB',
+            "RGB",
             (width, height),
             color=(
                 random.randint(0, max_value),

@@ -12,9 +12,9 @@ from flask import current_app, g
 # ~request -> get_db() -> g.db (-> ~another_request) ->
 # ~~response -> close_db()
 def get_db():
-    if 'db' not in g:
+    if "db" not in g:
         g.db = sqlite3.connect(
-            current_app.config['DATABASE'],
+            current_app.config["DATABASE"],
             detect_types=sqlite3.PARSE_DECLTYPES
         )
         g.db.row_factory = sqlite3.Row
@@ -27,7 +27,7 @@ def close_db(e=None):
     Closes and removes database from g context.
     Must recieve one positional argument.
     """
-    db = g.pop('db', None)
+    db = g.pop("db", None)
 
     if db is not None:
         db.close()
@@ -36,12 +36,12 @@ def close_db(e=None):
 def init_db():
     db = get_db()
 
-    with current_app.open_resource('sqlite_db/schema.sql') as f:
-        db.executescript(f.read().decode('utf8'))
+    with current_app.open_resource("sqlite_db/schema.sql") as f:
+        db.executescript(f.read().decode("utf8"))
 
 
-# Define a CLI command 'init-db'
-@click.command('init-db')
+# Define a CLI command "init-db"
+@click.command("init-db")
 def init_db_command():
     """
     CLI command to clear the existing data and create new tables.
@@ -60,7 +60,7 @@ def init_db_command():
 
 
 def register_user(
-        username, password, user_type='standard', hash_method='pbkdf2:sha256'):
+        username, password, user_type="standard", hash_method="pbkdf2:sha256"):
     """
     Registers a new user. 
     -> (True, "succes")
@@ -71,7 +71,7 @@ def register_user(
         db.execute(
             "INSERT INTO user (username, password, is_admin) VALUES (?, ?, ?)",
             (username, generate_password_hash(password, method=hash_method),
-             1 if user_type == 'admin' else 0)
+             1 if user_type == "admin" else 0)
         )
         db.commit()
     except db.IntegrityError:
@@ -80,10 +80,10 @@ def register_user(
         return True, f"Successfully registered {username}."
 
 
-@click.command('register-user')
-@click.argument('username')
-@click.argument('password')
-@click.argument('user_type')
+@click.command("register-user")
+@click.argument("username")
+@click.argument("password")
+@click.argument("user_type")
 def register_user_command(username, password, user_type):
     """ 
     CLI command to register a new user.

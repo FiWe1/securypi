@@ -21,7 +21,7 @@ except ImportError as e:
 """
 
 
-def measure_temp_hum(pin=board.D4, temperature_unit='C'):
+def measure_temp_hum(pin=board.D4, temperature_unit="C"):
     """ Measure temperature and humidity using DHT22 sensor."""
     try:
         dht_device = DHT22(pin)
@@ -29,9 +29,9 @@ def measure_temp_hum(pin=board.D4, temperature_unit='C'):
         temperature_c = dht_device.temperature
         humidity = dht_device.humidity
 
-        if temperature_unit == 'C':
+        if temperature_unit == "C":
             temperature = temperature_c
-        elif temperature_unit == 'F':
+        elif temperature_unit == "F":
             temperature = temperature_c * (9 / 5) + 32
         else:
             raise ValueError("Invalid unit. Use 'C' for Celsius "

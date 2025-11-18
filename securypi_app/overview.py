@@ -13,7 +13,7 @@ from securypi_app.sensors import temphum
 bp = Blueprint("overview", __name__)  # no url_prefix, main overview page
 
 
-@bp.route('/stream.mjpg')
+@bp.route("/stream.mjpg")
 @login_required
 def video_feed():
     """
@@ -26,19 +26,19 @@ def video_feed():
 
     camera.start_capture_stream(output)
     return Response(mycam.generate_frames(output),
-                    mimetype='multipart/x-mixed-replace; boundary=frame')
+                    mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
-@bp.route('/picture.jpg')
+@bp.route("/picture.jpg")
 @login_required
 def picture_feed():
     """ Route for a single snapshot. """
     camera = mycam.MyPicamera2.get_instance()
     try:
         camera.stop_capture_stream()
-        
+
         jpeg_data = camera.capture_picture()
-        return Response(jpeg_data, mimetype='image/jpeg')
+        return Response(jpeg_data, mimetype="image/jpeg")
 
     except Exception as e:
         print(f"Error capturing picture: {e}")
@@ -61,11 +61,11 @@ def index():
     together with temperature and humidity readings.
     """
 
-    # Get the desired mode from the request (default to 'picture')
-    mode = request.args.get('mode', 'picture')
+    # Get the desired mode from the request (default to "picture")
+    mode = request.args.get("mode", "picture")
 
     # temperature and humidity sensor @TODO from db)
-    temperature_unit = 'C'
+    temperature_unit = "C"
     temperature, humidity = temphum.measure_temp_hum(
         temperature_unit=temperature_unit)
     if temperature is None or humidity is None:
@@ -73,10 +73,10 @@ def index():
         humidity = "N/A"
 
     # Determine the template and URL for the <img> tag based on the mode
-    if mode == 'stream':
-        img_src = url_for('overview.video_feed')
-    else:  # Default is 'picture'
-        img_src = url_for('overview.picture_feed')
+    if mode == "stream":
+        img_src = url_for("overview.video_feed")
+    else:  # Default is "picture"
+        img_src = url_for("overview.picture_feed")
 
     return render_template("overview/index.html",
                            mode=mode,

@@ -1,5 +1,5 @@
 import os
-import logging #@TODO logging
+import logging  # @TODO logging
 
 from flask import Flask, request, url_for
 from .sqlite_db import db
@@ -7,7 +7,7 @@ from .sqlite_db import db
 
 # @TODO move to another module)
 def inject_active_page():
-    return {'active_page': url_for(request.endpoint)}
+    return {"active_page": url_for(request.endpoint)}
 
 
 def create_app(test_config=None):
@@ -39,11 +39,11 @@ def create_app(test_config=None):
     ##
     # @TODO Logging)
     # # app log file in the instance folder
-    # log_path = os.path.join(app.instance_path, 'app.log')
+    # log_path = os.path.join(app.instance_path, "app.log")
     # logging.basicConfig(
     #     filename=log_path,
     #     level=logging.INFO,
-    #     format='%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]'
+    #     format="%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]"
     # )
 
     ##
@@ -68,7 +68,7 @@ def create_app(test_config=None):
     for bp in blueprints:
         app.register_blueprint(bp)
 
-    # make url_for('index') == url_for('overview.index') -- overview.index is the main index
+    # make url_for("index") == url_for("overview.index") -- overview.index is the main index
     app.add_url_rule("/", endpoint="index")
 
     ##

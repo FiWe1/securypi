@@ -49,10 +49,10 @@ def generate_frames(output):
         with output.condition:
             output.condition.wait()
             frame = output.frame
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n'
-               b'Content-Length: ' + f"{len(frame)}".encode() + b'\r\n\r\n' +
-               frame + b'\r\n')
+        yield (b"--frame\r\n"
+               b"Content-Type: image/jpeg\r\n"
+               b"Content-Length: " + f"{len(frame)}".encode() + b"\r\n\r\n" +
+               frame + b"\r\n")
 
 
 class MyPicamera2(Picamera2):
@@ -165,7 +165,7 @@ class MyPicamera2(Picamera2):
     def capture_picture(self):
         # Capture an image to a BytesIO object
         buffer = io.BytesIO()
-        self.capture_file(buffer, format='jpeg')
+        self.capture_file(buffer, format="jpeg")
 
         # Return the byte data
         return buffer.getvalue()
