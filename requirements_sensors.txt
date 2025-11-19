@@ -9,7 +9,6 @@ Pillow
 # Camera Libraries
 simplejpeg
 picamera2
-libcamera
 
 # Temperature and Humidity Sensor Libraries
 adafruit-circuitpython-dht
