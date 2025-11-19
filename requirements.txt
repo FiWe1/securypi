@@ -3,6 +3,7 @@
 
 # Web Framework
 Flask
+Flask-SQLAlchemy
 
 # Mock libraries for development
 Pillow

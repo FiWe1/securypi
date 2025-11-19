@@ -1,8 +1,8 @@
 import os
 import logging  # @TODO logging
 
-from flask import Flask, request, url_for
-from .sqlite_db import db
+from flask import Flask, request, url_for, current_app
+from .models import db
 
 
 # @TODO move to another module)
@@ -15,18 +15,19 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
 
     app.config.from_mapping(
-        # a default secret that should be overridden by instance config
-        # @TODO instance config
+        # a default secret, should be overridden by instance config
         SECRET_KEY="very_complex_and_unpredictable_secret_key",
-        # store the database in the instance folder
-        DATABASE=os.path.join(app.instance_path, "securypi_app.sqlite"),
+        # db path: instance folder
+        SQLALCHEMY_DATABASE_URI= (
+            "sqlite:///" + os.path.join(app.instance_path,
+                                        "securypi_app.sqlite")
+        )
     )
 
     if test_config is None:
-        # load the instance config, if it exists, when not testing
+        # @TODO instance config
         app.config.from_pyfile("config.py", silent=True)
     else:
-        # load the test config if passed in
         app.config.update(test_config)
 
     # ensure the instance folder exists
@@ -35,46 +36,47 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    ##
+    ###
     # LOGGING
-    ##
+    #
     # @TODO Logging)
     # # app log file in the instance folder
     # log_path = os.path.join(app.instance_path, "app.log")
     # logging.basicConfig(
     #     filename=log_path,
     #     level=logging.INFO,
-    #     format="%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%(lineno)d]"
+    #     format="%(asctime)s %(levelname)s: %(message)s 
+    # ...[in %(pathname)s:%(lineno)d]"
     # )
 
-    ##
-    # CONTEXT PROCESSOR
-    ##
+    # DATABASE
+    # initialize the app with the extension
+    db.init_app(app)
 
-    # inject the nav links into the template context
+    # CONTEXT PROCESSOR
+    # inject into the template context
     from . import navbar
     app.context_processor(navbar.inject_nav_links)
+    app.context_processor(inject_active_page)  # from current request
 
-    # inject currently active page - from request
-    app.context_processor(inject_active_page)
-
-    ##
-    # Register blueprints to the app
-    ##
-    from . import auth, overview, temp_history, recordings, camera_control, settings, account
+    # REGISTER BLUEPRINTS
+    from . import (
+        auth, overview, temp_history, recordings,camera_control,
+        settings, account
+    )
 
     blueprints = [
-        auth.bp, overview.bp, temp_history.bp, recordings.bp, camera_control.bp, settings.bp, account.bp
+        auth.bp, overview.bp, temp_history.bp, recordings.bp,
+        camera_control.bp, settings.bp, account.bp
     ]
     for bp in blueprints:
         app.register_blueprint(bp)
 
-    # make url_for("index") == url_for("overview.index") -- overview.index is the main index
+    # make url_for("index") == url_for("overview.index")
+    # -- overview.index is the main index
     app.add_url_rule("/", endpoint="index")
 
-    ##
-    # DATABASE
-    ##
-    db.init_app(app)
+    from .models.init_db import register_cli_commands
+    register_cli_commands(app)
 
     return app
