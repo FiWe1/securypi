@@ -59,6 +59,18 @@ def init_db_command():
                "Default user named: \'admin\' with password: \'admin4321\'")
 
 
+def fetch_user_meta_by_id(user_id):
+    return get_db().execute(
+        "SELECT id, username, is_admin, email FROM user WHERE id = ?", (user_id,)
+    ).fetchone()
+
+
+def fetch_user_profile_by_name(username):
+    return get_db().execute(
+        "SELECT * FROM user WHERE username = ?", (username,)
+    ).fetchone()
+
+
 def register_user(
         username, password, user_type="standard", hash_method="pbkdf2:sha256"):
     """

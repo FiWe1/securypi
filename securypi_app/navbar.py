@@ -1,5 +1,5 @@
 from flask import url_for
-from flask import g
+from securypi_app.auth import is_logged_in_admin
 
 
 def inject_nav_links():
@@ -19,7 +19,7 @@ def inject_nav_links():
         ("Logout", url_for("auth.logout"))
     ]
     
-    if g.user is not None and g.user["is_admin"] == 1:
+    if is_logged_in_admin():
         bottom_nav_links.insert(0, ("Settings", url_for("settings.index")))
     
     return {"main_nav_links": main_nav_links,
