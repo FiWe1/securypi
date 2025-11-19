@@ -6,7 +6,7 @@
 		<h1>{{ g.user["username"] }}, let's check your account!</h1>
 	</header>
 	<section class="account__user_type">
-		<span>You {% if g.user["is_admin"] == 0 %}are standard user.{% else %}have administrator rights.{% endif %}
+		<span>You {% if g.user["is_admin"] == False %}are standard user.{% else %}have administrator rights.{% endif %}
 		</span>
 	</section>
 </div>
