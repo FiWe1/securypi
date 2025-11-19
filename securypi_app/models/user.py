@@ -1,3 +1,5 @@
+from __future__ import annotations # fix class forward referencing issue
+
 from sqlalchemy import Integer, String, Boolean, select, Row
 from sqlalchemy.orm import Mapped, mapped_column
 from werkzeug.security import generate_password_hash
