@@ -12,3 +12,9 @@ bp = Blueprint("account", __name__, url_prefix="/account")
 def index():
     """ Default (inde) route for account blueprint."""
     return render_template("account.html")
+
+''' @TODO {
+    user preferences configuration:
+    - temperature unit (C/F)
+    - ...
+'''
