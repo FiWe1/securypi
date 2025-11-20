@@ -27,8 +27,6 @@ class StreamingOutput(io.BufferedIOBase):
     Handles streaming of camera frames to a HTTP response.
     Uses a Condition to synchronize access to the latest frame.
     """
-    # @TODO ? singleton)
-
     def __init__(self):
         self.frame = None
         self.condition = Condition()

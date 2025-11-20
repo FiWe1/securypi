@@ -13,10 +13,7 @@ except ImportError as e:
     board = MockBoard
 
 """
-@TODO {
--CLASS
--singleton
--async thread, into @TODO ORM db!
+@TODO async thread, into ORM db!
 """
 
 

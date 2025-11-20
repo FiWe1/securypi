@@ -5,4 +5,6 @@
     - simple mjpeg server
 
     - motion detection: https://github.com/schmidi000/raspberry_pi_motion_detection_cam
+
+    - wather sensor readout
 }

@@ -1,15 +1,4 @@
 {% extends 'base.html' %}
-{% block head %}
-{# @TODO REMOVE FROM HERE 
-  Disabled camera cleanup script for now.
-  Re-enable when implementing background stop_camera behavior.
-  <script>
-    window.addEventListener("beforeunload", function () {
-      // Send a background POST request when the user leaves the page
-      navigator.sendBeacon("/stop_camera");
-    });
-  </script>#}
-{% endblock %}
 {% block body %}
 <div class="overview">
   <header class="overview__title">

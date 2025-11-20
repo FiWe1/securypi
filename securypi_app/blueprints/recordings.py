@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import Blueprint, render_template, redirect, url_for
+from flask import Blueprint, render_template, redirect, url_for, flash
 
 from securypi_app.services.auth import login_required
 from securypi_app.sensors.mycam import MyPicamera2, Quality
@@ -24,7 +24,7 @@ def start_recording():
                                        encode_quality=Quality.LOW)
     except Exception as e:
         print(f"Error starting recording: {e}")
-        # @TODO add flash message
+        flash("Error starting recording.")
 
     return redirect(url_for("recordings.index"))
 
@@ -38,7 +38,7 @@ def stop_recording():
         camera.stop_recording_to_file()
     except Exception as e:
         print(f"Error stopping recording: {e}")
-        # @TODO add flash message
+        flash("Error stopping recording.")
 
     return redirect(url_for("recordings.index"))
 

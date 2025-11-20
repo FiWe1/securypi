@@ -18,6 +18,8 @@ def index():
 
 """
 @TODO {
+    CREATE CONFIG DATABASE
+set username and password length requirements (get them in string_parsing)
 set overview camera resolution for picture, video 
 set temp logging interval
 }

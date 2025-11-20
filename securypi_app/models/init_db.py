@@ -15,7 +15,6 @@ def init_db():
 
 def register_cli_commands(app):
 
-    # @TODO arguments validation!
     @app.cli.command("init-db")
     def init_db_command():
         """
@@ -32,7 +31,6 @@ def register_cli_commands(app):
         click.echo("Initialized the database.\n"
                    "Default user named: \'admin\' with password: \'admin4321\'")
 
-    # @TODO arguments validation!
     @app.cli.command("register-user")
     @click.argument("username")
     @click.argument("password")
@@ -47,12 +45,12 @@ def register_cli_commands(app):
             user_type = True
         else:
             user_type = False
-        
+
         error = None
         error = validate_str_username(username)
         if error is None:
             error = validate_str_password(password)
-        
+
         if error is not None:
             click.echo(error)
             return
