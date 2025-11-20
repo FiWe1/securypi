@@ -13,10 +13,10 @@ class User(db.Model):
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, autoincrement="auto"
     )
-    username: Mapped[str] = mapped_column( # @TODO rename to hashed_password
+    username: Mapped[str] = mapped_column(
         String, unique=True, nullable=False
     )
-    password: Mapped[str] = mapped_column(
+    hashed_password: Mapped[str] = mapped_column( # @TODO rename to hashed_password
         String, nullable=False
     )
     is_admin: Mapped[bool] = mapped_column(
@@ -68,7 +68,7 @@ class User(db.Model):
 
         new_user = cls(
             username=username,
-            password=hashed,
+            hashed_password=hashed,
             is_admin=is_admin,
         )
         db.session.add(new_user)

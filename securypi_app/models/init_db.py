@@ -26,7 +26,9 @@ def register_cli_commands(app):
         Use: flask --app securypi_app init-db
         """
         init_db()
-        User.register("admin", "admin4321", True)
+        User.register(username="admin",
+                      password="admin4321",
+                      is_admin=True)
 
         click.echo("Initialized the database.\n"
                    "Default user named: \'admin\' with password: \'admin4321\'")
@@ -42,9 +44,9 @@ def register_cli_commands(app):
                 [user_type = 'admin' / 'standard']
         """
         if user_type == "admin":
-            user_type = True
+            is_admin = True
         else:
-            user_type = False
+            is_admin = False
 
         error = None
         error = validate_str_username(username)
@@ -54,5 +56,5 @@ def register_cli_commands(app):
         if error is not None:
             click.echo(error)
             return
-        _, message = User.register(username, password, user_type)
+        _, message = User.register(username, password, is_admin)
         click.echo(message)

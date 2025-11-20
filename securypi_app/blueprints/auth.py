@@ -40,14 +40,19 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        
+        # validate input
         error = None
         error = validate_str_username(username)
         if error is None:
             error = validate_str_password(password)
+        
+        # authenticate user
         if error is None:
             user, error = validate_login(username, password)
 
         if error is None:
+            # login successful
             session.clear()
             session["user_id"] = user.id
             session["username"] = user.username
