@@ -53,7 +53,7 @@ class WeatherSensor(object):
 
     def get_temperature(self):
         """ Get temperature in Celsius. (DHT22 sensor). """
-        return self._get_sensor_temperature()
+        return self._sensor.temperature
 
     def get_humidity(self):
         """ Get humidity. (DHT22 sensor). """
