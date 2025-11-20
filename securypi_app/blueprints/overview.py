@@ -4,8 +4,8 @@ from flask import Response, Blueprint, render_template, request, url_for
 
 from securypi_app.services.auth import login_required
 
-from securypi_app.sensors import mycam
-from securypi_app.sensors import temphum
+from securypi_app.sensors.mycam import MyPicamera2, StreamingOutput, generate_frames
+from securypi_app.sensors.sensor import Sensor
 
 
 ### Globals ###
@@ -20,11 +20,11 @@ def video_feed():
     Uses a generator function to stream the response.
     Calls mycam, a picamera2 wrapper class contained in mycam.py
     """
-    camera = mycam.MyPicamera2.get_instance()
-    output = mycam.StreamingOutput()
+    camera = MyPicamera2.get_instance()
+    output = StreamingOutput()
 
     camera.start_capture_stream(output)
-    return Response(mycam.generate_frames(output),
+    return Response(generate_frames(output),
                     mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
@@ -32,7 +32,7 @@ def video_feed():
 @login_required
 def picture_feed():
     """ Route for a single snapshot. """
-    camera = mycam.MyPicamera2.get_instance()
+    camera = MyPicamera2.get_instance()
     try:
         camera.stop_capture_stream()
 
@@ -47,7 +47,7 @@ def picture_feed():
 @bp.route("/stop_camera", methods=["POST"])
 @login_required
 def stop_video_feed():
-    camera = mycam.MyPicamera2.get_instance()
+    camera = MyPicamera2.get_instance()
     camera.stop_capture_stream()
     return ("Video feed stopped", 200)
 
@@ -64,10 +64,15 @@ def index():
     mode = request.args.get("mode", "picture")
 
     # temperature and humidity sensor @TODO from db)
-    temperature_unit = "C"
-    temperature, humidity = temphum.measure_temp_hum(
-        temperature_unit=temperature_unit)
-    if temperature is None or humidity is None:
+    temp_unit = "C" # @TODO from user settings in db
+    sensor = Sensor.get_instance()
+    sensor.set_temp_unit(temp_unit)
+    
+    readings = sensor.measure()
+    if readings is not None:
+        temperature = readings["temperature"]
+        humidity = readings["humidity"]
+    else:
         temperature = "N/A"
         humidity = "N/A"
 
@@ -82,4 +87,4 @@ def index():
                            img_src=img_src,
                            temperature=temperature,
                            humidity=humidity,
-                           temperature_unit=temperature_unit)
+                           temperature_unit=temp_unit)
