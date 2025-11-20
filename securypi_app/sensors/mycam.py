@@ -13,8 +13,9 @@ except ImportError as e:
           "reverting to mock class:\n", "\033[31m", e, "\033[0m")
 
     # Mock sensor classes for development outside RPi
-    from .mock_mycam import MockPicamera2, MockEncoder, MockStreamingOutput, MockQuality
-
+    from .mock_mycam import (
+        MockPicamera2, MockEncoder, MockStreamingOutput, MockQuality
+    )
     Picamera2 = MockPicamera2
     JpegEncoder = MockEncoder
     H264Encoder = MockEncoder
