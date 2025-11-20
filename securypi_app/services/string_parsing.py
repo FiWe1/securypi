@@ -2,6 +2,7 @@
 Utilities for validating string inputs.
 """
 
+# @TODO move to json? config file
 MIN_USERNAME_LENGTH = 4
 MIN_PASSWORD_LENGTH = 8
 MAX_USERNAME_LENGTH = 16
