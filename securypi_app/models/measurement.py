@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import Integer, Float, DateTime
+from sqlalchemy import Integer, Float, DateTime, select, text
 from sqlalchemy.orm import Mapped, mapped_column
 
 from . import db
@@ -12,7 +12,7 @@ class Measurement(db.Model):
         Integer, primary_key=True, autoincrement="auto"
     )
     time: Mapped[datetime] = mapped_column(
-        DateTime, nullable=False, server_default="CURRENT_TIMESTAMP"
+        DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
     )
     temperature: Mapped[float] = mapped_column(
         Float, nullable=False
@@ -26,3 +26,9 @@ class Measurement(db.Model):
             f"Measurement(id={self.id}, time={self.time}, "
             f"temperature={self.temperature}, humidity={self.humidity})"
         )
+
+    @classmethod
+    def testprintall(cls) -> None:
+        measurements = db.session.execute(select(cls))
+        for m in measurements.scalars():
+            print(m)
