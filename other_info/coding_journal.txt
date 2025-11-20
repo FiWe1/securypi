@@ -8,3 +8,10 @@ CONTINUE WITH:
 1. singleton sensor classes
 2. sources
 3. TESTING - libraries, sensors, db, ...
+
+
+
+
+@TODO { someday:
+    - SSL
+}
