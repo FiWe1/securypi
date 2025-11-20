@@ -1,10 +1,10 @@
-import functools
-
 from flask import (
-    Blueprint, flash, g, redirect, render_template, request, session, url_for
+    Blueprint, flash, redirect, render_template, url_for, session, g, request
 )
 from werkzeug.security import check_password_hash
+
 from securypi_app.models.user import User
+from securypi_app.services.auth import logged_out_required
 
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -24,55 +24,6 @@ def load_logged_in_user():
         g.user = None
     else:
         g.user = User.get_meta_by_id(user_id)._mapping
-
-
-def is_logged_in():
-    return session.get("username") is not None
-
-
-def login_required(view):
-    """
-    Decorate view requiring user to be logged in,
-    otherwise redirect to login page.
-    """
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if is_logged_in():
-            return view(**kwargs)
-
-        return redirect(url_for("auth.login"))
-
-    return wrapped_view
-
-
-def logged_out_required(view):
-    """
-    Decorate view preventing logged user to enter the route,
-    redirecting to home page.
-    """
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if not is_logged_in():
-            return view(**kwargs)
-
-        return redirect(url_for("index"))
-
-    return wrapped_view
-
-
-def is_logged_in_admin():
-    return is_logged_in() and g.user["is_admin"] == True
-
-
-def admin_rights_required(view):
-    """ Decorate view to be accessed only by admin. """
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if is_logged_in_admin():
-            return view(**kwargs)
-        return redirect(url_for("index"))
-
-    return wrapped_view
 
 
 @bp.route("/logout")

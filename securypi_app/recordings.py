@@ -2,7 +2,7 @@ from datetime import datetime
 
 from flask import Blueprint, render_template, redirect, url_for
 
-from securypi_app.auth import login_required
+from securypi_app.services.auth import login_required
 from securypi_app.sensors.mycam import MyPicamera2, Quality
 
 

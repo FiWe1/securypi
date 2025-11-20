@@ -1,5 +1,5 @@
 from flask import url_for
-from securypi_app.auth import is_logged_in_admin
+from securypi_app.services.auth import is_logged_in_admin
 
 
 def inject_nav_links():

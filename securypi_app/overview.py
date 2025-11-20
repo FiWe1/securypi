@@ -2,7 +2,7 @@ from flask import Response, Blueprint, render_template, request, url_for
 # from flask import render_template_string, flash, g, redirect, flash, current_app
 # from werkzeug.exceptions import abort
 
-from securypi_app.auth import login_required
+from securypi_app.services.auth import login_required
 
 from securypi_app.sensors import mycam
 from securypi_app.sensors import temphum

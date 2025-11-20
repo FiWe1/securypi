@@ -55,7 +55,7 @@ def create_app(test_config=None):
 
     # CONTEXT PROCESSOR
     # inject into the template context
-    from . import navbar
+    from .services import navbar
     app.context_processor(navbar.inject_nav_links)
     app.context_processor(inject_active_page)  # from current request
 
