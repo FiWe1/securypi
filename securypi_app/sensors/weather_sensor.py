@@ -72,7 +72,7 @@ class WeatherSensor(object):
         """ Get humidity. (DHT22 device). """
         return self.__sensor_device.humidity
 
-    def measure(self) -> dict[float | str, float | str]:
+    def measure(self, repeat=5) -> dict[float | str, float | str]:
         """ Measure temperature and humidity using sensor device."""
         try:
             measurements = {
@@ -80,6 +80,9 @@ class WeatherSensor(object):
                 "humidity": self.get_humidity()
             }
         except Exception as err:
+            if repeat > 0:
+                return self.measure(repeat=(repeat - 1))
+            
             print(f"Failed to read from temperature sensor: {err}")
             measurements = {
                 "temperature": "N/A",
