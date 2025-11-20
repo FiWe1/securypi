@@ -7,20 +7,17 @@ except ImportError as e:
     print("Failed to import temperature sensor libraries, "
           "reverting to mock class:\n", "\033[31m", e, "\033[0m")
     # Mock sensor classes for platform independent development
-    from .mock_temphum import MockDHT22, MockBoard
+    from .mock_weather_sensor import MockDHT22, MockBoard
 
     DHT22 = MockDHT22
     board = MockBoard
 
-"""
-@TODO async thread, into ORM db!
-"""
 
-
-class Sensor(object):
+# @TODO async thread, into ORM db!
+class WeatherSensor(object):
     """
-    My singleton wrapper class for Picamera2 with methods
-    for streaming and taking pictures.
+    Singleton class for reading temperature and humidity.
+    Uses DHT22 sensor connected to specified GPIO pin.
     """
     _instance = None
     _initialised = False
@@ -45,7 +42,6 @@ class Sensor(object):
     def get_instance(cls):
         """ Singleton access method. """
         return cls()
-
 
     def set_pin(self, pin):
         """ Set GPIO pin=board.D{number} for sensor data. """

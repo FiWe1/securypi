@@ -1,11 +1,11 @@
 from flask import Response, Blueprint, render_template, request, url_for
-# from flask import render_template_string, flash, g, redirect, flash, current_app
-# from werkzeug.exceptions import abort
 
 from securypi_app.services.auth import login_required
 
-from securypi_app.sensors.mycam import MyPicamera2, StreamingOutput, generate_frames
-from securypi_app.sensors.sensor import Sensor
+from securypi_app.sensors.mycam import (
+    MyPicamera2, StreamingOutput, generate_frames
+)
+from securypi_app.sensors.weather_sensor import WeatherSensor
 
 
 ### Globals ###
@@ -65,7 +65,7 @@ def index():
 
     # temperature and humidity sensor @TODO from db)
     temp_unit = "C" # @TODO from user settings in db
-    sensor = Sensor.get_instance()
+    sensor = WeatherSensor.get_instance()
     sensor.set_temp_unit(temp_unit)
     
     readings = sensor.measure()

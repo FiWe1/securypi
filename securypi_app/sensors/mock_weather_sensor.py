@@ -1,3 +1,8 @@
+"""
+Mock hardware sensor classes of WeatherSensor
+for platform independent development and testing.
+"""
+
 class MockDHT22:
     def __init__(self, pin):
         pass
