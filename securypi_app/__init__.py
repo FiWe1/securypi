@@ -5,11 +5,6 @@ from flask import Flask, request, url_for, current_app
 from .models import db
 
 
-# @TODO move to another module)
-def inject_active_page():
-    return {"active_page": url_for(request.endpoint)}
-
-
 def create_app(test_config=None):
     """ Create and configure an instance of the Flask application. """
     app = Flask(__name__, instance_relative_config=True)
@@ -55,8 +50,8 @@ def create_app(test_config=None):
 
     # CONTEXT PROCESSOR
     # inject into the template context
-    from .services import navbar
-    app.context_processor(navbar.inject_nav_links)
+    from .services.navbar import inject_nav_links, inject_active_page
+    app.context_processor(inject_nav_links)
     app.context_processor(inject_active_page)  # from current request
 
     # REGISTER BLUEPRINTS
