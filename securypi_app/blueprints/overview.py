@@ -66,15 +66,7 @@ def index():
     # temperature and humidity sensor @TODO from db)
     temp_unit = "C" # @TODO from user settings in db
     sensor = WeatherSensor.get_instance()
-    sensor.set_temp_unit(temp_unit)
-    
-    readings = sensor.measure()
-    if readings is not None:
-        temperature = readings["temperature"]
-        humidity = readings["humidity"]
-    else:
-        temperature = "N/A"
-        humidity = "N/A"
+    readings = sensor.measure_or_na(temp_unit=temp_unit)
 
     # Determine the template and URL for the <img> tag based on the mode
     if mode == "stream":
@@ -85,6 +77,6 @@ def index():
     return render_template("overview/index.html",
                            mode=mode,
                            img_src=img_src,
-                           temperature=temperature,
-                           humidity=humidity,
+                           temperature=readings["temperature"],
+                           humidity=readings["humidity"],
                            temperature_unit=temp_unit)

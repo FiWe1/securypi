@@ -1,3 +1,6 @@
+from securypi_app import db
+from securypi_app.models.measurement import Measurement
+
 # conditional import for RPi DHT22 temp/humidity sensor
 try:
     from adafruit_dht import DHT22  # pyright: ignore[reportMissingImports]
@@ -28,13 +31,13 @@ class WeatherSensor(object):
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self, pin=board.D4, temp_unit="C"):
+    def __init__(self, pin=board.D4):
         """ Initialise once. """
         if getattr(self, "_initialized", False):
             return
         super().__init__()
-        self.set_pin(pin).set_temp_unit(temp_unit)
-        self.__sensor_device = DHT22(self.__pin)
+        self.set_pin(pin)
+        self._sensor = DHT22(self.__pin)
 
         self._initialized = True
 
@@ -48,33 +51,20 @@ class WeatherSensor(object):
         self.__pin = pin
         return self
 
-    def get_temp_unit(self):
-        return self.__temp_unit
-
-    def set_temp_unit(self, unit):
-        """ Set temperature unit = 'C' | 'F'. """
-        if unit in ["C", "F"]:
-            self.__temp_unit = unit
-        return self
-
     def get_temperature(self):
-        """ Get temperature in desired unit. (DHT22 device reading C)"""
-        temperature = self.__sensor_device.temperature
-        if self.__temp_unit == "C":
-            return temperature
-        elif self.__temp_unit == "F":
-            return temperature * (9 / 5) + 32
-        else:
-            raise ValueError("Invalid unit. Use 'C' for Celsius "
-                             "or 'F' for Fahrenheit.")
+        """ Get temperature in Celsius. (DHT22 sensor). """
+        return self._get_sensor_temperature()
 
     def get_humidity(self):
-        """ Get humidity. (DHT22 device). """
-        return self.__sensor_device.humidity
+        """ Get humidity. (DHT22 sensor). """
+        return self._sensor.humidity
 
-    def measure(self, repeat=5) -> dict[float | str, float | str]:
-        """ Measure temperature and humidity using sensor device."""
-        try:
+    def measure(self, repeat=5) -> dict[float] | None:
+        """ 
+        Measure temperature and humidity using sensor device.
+        On failure, retry 'repeat' times before returning None.
+        """
+        try:    
             measurements = {
                 "temperature": self.get_temperature(),
                 "humidity": self.get_humidity()
@@ -84,9 +74,55 @@ class WeatherSensor(object):
                 return self.measure(repeat=(repeat - 1))
             
             print(f"Failed to read from temperature sensor: {err}")
-            measurements = {
+            measurements = None
+        
+        return measurements
+    
+    def measure_or_na(self, temp_unit="C") -> dict[float | str, float | str]:
+        """ 
+        Measure temperature and humidity, return dict["N/A", ...] on failure.
+        Convert temerature to specified
+        unit: "C" (Celsius) or "F" (Fahrenheit).
+        """
+        values = self.measure()
+        
+        if values is None:
+            values = {
                 "temperature": "N/A",
                 "humidity": "N/A"
             }
+        elif temp_unit == "F":
+            values["temperature"] = self.c_to_fahrenheit(
+                values["temperature"]
+            )
+        return values
+    
+    def measure_and_log(self) -> dict[float] | None:
+        """ Measure temperature and humidity and store in db. """
+        values = self.measure()
+        
+        if values is not None:
+            new_measurement = Measurement(
+                temperature=values["temperature"],
+                humidity=values["humidity"]
+            )
+            db.session.add(new_measurement)
 
-        return measurements
+            try:
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                print(e)
+                return None
+        
+        return values
+
+    @staticmethod
+    def c_to_fahrenheit(celsius: float) -> float:
+        """ Convert Celsius to Fahrenheit. """
+        return (celsius * 9/5) + 32
+    
+    @staticmethod
+    def f_to_celsius(self, fahrenheit: float) -> float:
+        """ Convert Fahrenheit to Celsius. """
+        return (fahrenheit - 32) * 5/9
