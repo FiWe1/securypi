@@ -20,7 +20,7 @@ def inject_nav_links():
     ]
     
     if is_logged_in_admin():
-        bottom_nav_links.insert(0, ("Settings", url_for("settings.index")))
+        bottom_nav_links.insert(0, ("Configuration", url_for("configuration.index")))
     
     return {"main_nav_links": main_nav_links,
             "bottom_nav_links": bottom_nav_links}

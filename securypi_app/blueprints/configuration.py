@@ -5,15 +5,15 @@ from securypi_app.services.auth import login_required, admin_rights_required
 
 
 ### Globals ###
-bp = Blueprint("settings", __name__, url_prefix="/settings")
+bp = Blueprint("configuration", __name__, url_prefix="/configuration")
 
 
 @bp.route("/")
 @login_required
 @admin_rights_required
 def index():
-    """ Default (index) route for settings blueprint. """
-    return render_template("settings.html")
+    """ Default (index) route for configuration blueprint. """
+    return render_template("configuration.html")
 
 
 """
