@@ -60,11 +60,10 @@ def create_app(test_config=None):
     app.context_processor(inject_active_page)  # from current request
 
     # REGISTER BLUEPRINTS
-    from . import (
+    from .blueprints import (
         auth, overview, temp_history, recordings,camera_control,
         settings, account
     )
-
     blueprints = [
         auth.bp, overview.bp, temp_history.bp, recordings.bp,
         camera_control.bp, settings.bp, account.bp
