@@ -1,7 +1,7 @@
 import io
 from threading import Condition
 
-# Conditional Import
+# Conditional Import for RPi picamera2 library
 try:
     from picamera2 import Picamera2    # pyright: ignore[reportMissingImports]
     from libcamera import controls    # pyright: ignore[reportMissingImports]
@@ -11,8 +11,7 @@ try:
 except ImportError as e:
     print("Failed to import picamera2 camera library, "
           "reverting to mock class:\n", "\033[31m", e, "\033[0m")
-
-    # Mock sensor classes for development outside RPi
+    # Mock sensor classes for platform independent development
     from .mock_mycam import (
         MockPicamera2, MockEncoder, MockStreamingOutput, MockQuality
     )
@@ -71,6 +70,7 @@ class MyPicamera2(Picamera2):
         return cls._instance
 
     def __init__(self):
+        """ Initialise once. """
         if getattr(self, "_initialized", False):
             return
         super().__init__()
