@@ -3,6 +3,9 @@ import functools
 from flask import (
     redirect, url_for, g, session
 )
+from werkzeug.security import check_password_hash
+
+from securypi_app.models.user import User
 
 
 """ Utility functions as a service around authentication. """
@@ -55,3 +58,20 @@ def admin_rights_required(view):
         return redirect(url_for("index"))
 
     return wrapped_view
+
+
+def validate_login(username, password) -> tuple[User | None, str | None]:
+    """
+    Compare login information against database.
+    Valid:   -> User(), None
+    Invalid: -> None, "Error message"
+    """
+    user = User.get_by_username(username)
+    error = None
+    if user is None:
+        error = "Incorrect username."
+    elif not check_password_hash(user.password, password):
+        error = "Incorrect password."
+        user = None
+    
+    return user, error

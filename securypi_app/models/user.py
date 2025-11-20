@@ -80,5 +80,5 @@ class User(db.Model):
             print(e)
             return False, f"Failed to register {username}: {e}"
 
-        user_type = "admin" if is_admin else "standard"
+        user_type = "admin" if is_admin else "standard user"
         return True, f"Successfully registered {username} as {user_type}."

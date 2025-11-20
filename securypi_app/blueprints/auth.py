@@ -1,10 +1,12 @@
 from flask import (
     Blueprint, flash, redirect, render_template, url_for, session, g, request
 )
-from werkzeug.security import check_password_hash
 
 from securypi_app.models.user import User
-from securypi_app.services.auth import logged_out_required
+from securypi_app.services.auth import validate_login, logged_out_required
+from securypi_app.services.string_parsing import (
+    validate_str_username, validate_str_password
+)
 
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
@@ -38,13 +40,12 @@ def login():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-
-        user = User.get_by_username(username)
         error = None
-        if user is None:
-            error = "Incorrect username."
-        elif not check_password_hash(user.password, password):
-            error = "Incorrect password."
+        error = validate_str_username(username)
+        if error is None:
+            error = validate_str_password(password)
+        if error is None:
+            user, error = validate_login(username, password)
 
         if error is None:
             session.clear()
@@ -53,30 +54,26 @@ def login():
             return redirect(url_for("index"))
 
         flash(error)
-    # @TODO clear form - after app restart
     return render_template("auth/login.html")
 
 
 # @TODO clear? - not enabling register
 # @bp.route("/register", methods=("GET", "POST"))
-def register_form():
+def register():
     """
     Handle the admin registration of a new user.
 
     Displays the registration form on GET and processes submitted
     credentials on POST.
     """
-
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
         is_admin = request.form["is_admin"]
         error = None
-
-        if not username:
-            error = "Username is required."
-        elif not password:
-            error = "Password is required."
+        error = validate_str_username(username)
+        if error is None:
+            error = validate_str_password(password)
 
         if error is None:
             success, message = User.register(username, password, is_admin)
