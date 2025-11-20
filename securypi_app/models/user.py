@@ -13,7 +13,7 @@ class User(db.Model):
     id: Mapped[int] = mapped_column(
         Integer, primary_key=True, autoincrement="auto"
     )
-    username: Mapped[str] = mapped_column(
+    username: Mapped[str] = mapped_column( # @TODO rename to hashed_password
         String, unique=True, nullable=False
     )
     password: Mapped[str] = mapped_column(
@@ -57,21 +57,20 @@ class User(db.Model):
     def register(cls,
                  username,
                  password,
-                 user_type="standard",
+                 is_admin=False,
                  hash_method="pbkdf2:sha256") -> tuple[bool, str]:
-        """
+        """ @TODO check hash method: soft
         Registers a new user. 
-        -> (True, "succes")
-        -> (False, "user already registered")
+        -> (True, "succes message")
+        -> (False, "error message")
         """
         hashed = generate_password_hash(password, method=hash_method)
 
         new_user = cls(
             username=username,
             password=hashed,
-            is_admin=(user_type == "admin"),
+            is_admin=is_admin,
         )
-
         db.session.add(new_user)
 
         try:
@@ -79,6 +78,7 @@ class User(db.Model):
         except Exception as e:
             db.session.rollback()
             print(e)
-            return False, f"User {username} is already registered."
+            return False, f"Failed to register {username}: {e}"
 
-        return True, f"Successfully registered {username}."
+        user_type = "admin" if is_admin else "standard"
+        return True, f"Successfully registered {username} as {user_type}."
