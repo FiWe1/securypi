@@ -15,7 +15,7 @@ def inject_nav_links():
         ("Recordings", url_for("recordings.index"))
     ]
     bottom_nav_links = [
-        ("Account", url_for("account.index")),
+        ("User settings", url_for("user_settings.index")),
         ("Logout", url_for("auth.logout"))
     ]
     
