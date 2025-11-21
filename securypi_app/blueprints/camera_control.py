@@ -26,7 +26,7 @@ def start_recording():
         print(f"Error starting recording: {e}")
         flash("Error starting recording.")
 
-    return redirect(url_for("recordings.index"))
+    return redirect(url_for("camera_control.index"))
 
 
 @bp.route("/stop_recording")
@@ -40,7 +40,7 @@ def stop_recording():
         print(f"Error stopping recording: {e}")
         flash("Error stopping recording.")
 
-    return redirect(url_for("recordings.index"))
+    return redirect(url_for("camera_control.index"))
 
 
 @bp.route("/")
