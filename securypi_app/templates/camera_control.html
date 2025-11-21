@@ -1,5 +1,18 @@
 {% extends 'base.html' %}
-{% block title %}Camera Control{% endblock %}
 {% block body %}
-  <p> placeholder camera control page. </p>
+<div>
+  <h1>{% block title %}Camera Control{% endblock %}</h1>
+  <div>
+    <h2>Recording to a file</h2>
+    <span>
+      {% if is_recording %}
+      <span>Recording is running as we speak...  ...</span>
+      <a href={{ url_for('camera_control.stop_recording') }}>Stop it now</a>
+      {% else %}
+      <span>Currently not running a recording.</span>
+      <a href={{ url_for('camera_control.start_recording') }}>I want to record!</a>
+      {% endif %}
+    </span>
+  </div>
+</div>
 {% endblock %}

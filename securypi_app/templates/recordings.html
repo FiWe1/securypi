@@ -1,18 +1,7 @@
 {% extends 'base.html' %}
 {% block body %}
 <div>
-<h1>{% block title %}Recordings{% endblock %}</h1>
-  <div>
-    <h2>Recording to a file</h2>
-    <span>
-      {% if is_recording %}
-      <span>Recording is running as we speak...  ...</span>
-      <a href={{ url_for('recordings.stop_recording') }}>Stop it now</a>
-      {% else %}
-      <span>Currently not running a recording.</span>
-      <a href={{ url_for('recordings.start_recording') }}>I want to record!</a>
-      {% endif %}
-    </span>
-  </div>
+  <h1>{% block title %}Recordings{% endblock %}</h1>
+  <span>placeholder recordings page</span>
 </div>
 {% endblock %}
