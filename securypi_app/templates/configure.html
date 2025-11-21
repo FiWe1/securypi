@@ -1,5 +1,18 @@
 {% extends 'base.html' %}
-{% block title %}Configure{% endblock %}
 {% block body %}
-  <p> placeholder configure page. </p>
+<div>
+<h1>{% block title %}Configure{% endblock %}</h1>
+  <div>
+    <h2>Background sensor measurement</h2>
+      <span>
+      {% if is_weather_logging %}
+      <span>Running background measurements as we speak...  ...</span>
+      <a href={{ url_for('configure.stop_weather_logging') }}>Stop it now</a>
+      {% else %}
+      <span>Currently not running background measurements.</span>
+      <a href={{ url_for('configure.start_weather_logging') }}>I want log!</a>
+      {% endif %}
+    </span>
+  </div>
+</div>
 {% endblock %}

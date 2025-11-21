@@ -1,3 +1,7 @@
+import threading
+from time import sleep
+
+from flask import current_app
 from securypi_app import db
 from securypi_app.models.measurement import Measurement
 
@@ -14,6 +18,10 @@ except ImportError as e:
 
     DHT22 = MockDHT22
     board = MockBoard
+
+
+# @TODO move to centralised serialised json config
+MEASUREMENT_LOGGING_INTERVAL_SEC = 30
 
 
 # @TODO async thread, into ORM db!
@@ -36,8 +44,14 @@ class WeatherSensor(object):
         if getattr(self, "_initialized", False):
             return
         super().__init__()
+        self._app = current_app._get_current_object()
         self.set_pin(pin)
         self._sensor = DHT22(self.__pin)
+        self._background_logger_thread = None
+        self._background_logger_stop_event = threading.Event()
+
+        # implicitly log in background
+        self.start_background_logger()
 
         self._initialized = True
 
@@ -64,20 +78,25 @@ class WeatherSensor(object):
         Measure temperature and humidity using sensor device.
         On failure, retry 'repeat' times before returning None.
         """
-        try:    
-            measurements = {
-                "temperature": self.get_temperature(),
-                "humidity": self.get_humidity()
-            }
+        try:
+            temperature = self.get_temperature()
+            humidity = self.get_humidity()
+            if temperature is None or humidity is None:
+                measurements = None
+            else:
+                measurements = {
+                    "temperature": temperature,
+                    "humidity": humidity
+                }
         except Exception as err:
             if repeat > 0:
                 return self.measure(repeat=(repeat - 1))
-            
+
             print(f"Failed to read from temperature sensor: {err}")
             measurements = None
-        
+
         return measurements
-    
+
     def measure_or_na(self, temp_unit="C") -> dict[float | str, float | str]:
         """ 
         Measure temperature and humidity, return dict["N/A", ...] on failure.
@@ -85,7 +104,7 @@ class WeatherSensor(object):
         unit: "C" (Celsius) or "F" (Fahrenheit).
         """
         values = self.measure()
-        
+
         if values is None:
             values = {
                 "temperature": "N/A",
@@ -96,11 +115,11 @@ class WeatherSensor(object):
                 values["temperature"]
             )
         return values
-    
+
     def measure_and_log(self) -> dict[float] | None:
         """ Measure temperature and humidity and store in db. """
         values = self.measure()
-        
+
         if values is not None:
             new_measurement = Measurement(
                 temperature=values["temperature"],
@@ -114,14 +133,55 @@ class WeatherSensor(object):
                 db.session.rollback()
                 print(e)
                 return None
-        
+
         return values
+
+    def background_loger(self):
+        """
+        Countinuously log sensor measurements to the database
+        in configured interval, until signalized on:
+        self._background_logger_stop_event.set()
+        """
+        sleep(2)  # avoid sensor colisions on start # @TODO remove with sht30
+        with self._app.app_context():
+            while True:
+                self.measure_and_log()
+                interval = MEASUREMENT_LOGGING_INTERVAL_SEC
+                if self._background_logger_stop_event.wait(timeout=interval):
+                    print("Background WeatherSensor logger exited cleanly.")
+                    break
+
+    def is_background_logging(self) -> bool:
+        return self._background_logger_thread is not None
+
+    def start_background_logger(self):
+        if self.is_background_logging():
+            print("Background WeatherSensor logger was not stopped, "
+                  "stopping now...")
+            self.stop_background_logger()
+
+        self._background_logger_thread = (
+            threading.Thread(target=self.background_loger)
+        )
+        self._background_logger_stop_event.clear()  # clear stop signal
+        self._background_logger_thread.start()
+        print("Background WeatherSensor logging has started")
+
+    def stop_background_logger(self):
+        if self.is_background_logging():
+            self._background_logger_stop_event.set()  # signal stop
+            self._background_logger_thread.join()
+
+            self._background_logger_thread = None
+        else:
+            print("Can't stop background WeatherSensor logger, "
+                  "it is not running.")
 
     @staticmethod
     def c_to_fahrenheit(celsius: float) -> float:
         """ Convert Celsius to Fahrenheit. """
         return (celsius * 9/5) + 32
-    
+
     @staticmethod
     def f_to_celsius(self, fahrenheit: float) -> float:
         """ Convert Fahrenheit to Celsius. """

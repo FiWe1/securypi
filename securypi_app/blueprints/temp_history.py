@@ -14,5 +14,5 @@ bp = Blueprint("temp_history", __name__, url_prefix="/temp_history")
 def index():
     """ Default (index) route for temp_history blueprint. """
     # test
-    Measurement.printall()
+    Measurement.testprintall()
     return render_template("temp_history.html")

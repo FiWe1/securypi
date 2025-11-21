@@ -1,11 +1,39 @@
-from flask import Blueprint
-from flask import render_template
+from flask import Blueprint, render_template, redirect, url_for, flash
 
 from securypi_app.services.auth import login_required, admin_rights_required
+from securypi_app.sensors.weather_sensor import WeatherSensor
 
 
 ### Globals ###
 bp = Blueprint("configure", __name__, url_prefix="/configure")
+
+
+@bp.route("/start_weather_logging")
+@login_required
+def start_weather_logging():
+    sensor = WeatherSensor.get_instance()
+
+    try:
+        sensor.start_background_logger()
+    except Exception as e:
+        print(f"Error starting recording: {e}")
+        flash("Error starting recording.")
+
+    return redirect(url_for("configure.index"))
+
+
+@bp.route("/stop_weather_logging")
+@login_required
+def stop_weather_logging():
+    sensor = WeatherSensor.get_instance()
+
+    try:
+        sensor.stop_background_logger()
+    except Exception as e:
+        print(f"Error stopping recording: {e}")
+        flash("Error stopping recording.")
+
+    return redirect(url_for("configure.index"))
 
 
 @bp.route("/")
@@ -13,7 +41,10 @@ bp = Blueprint("configure", __name__, url_prefix="/configure")
 @admin_rights_required
 def index():
     """ Default (index) route for configure blueprint. """
-    return render_template("configure.html")
+    sensor = WeatherSensor.get_instance()
+    is_weather_logging = sensor.is_background_logging()
+    return render_template("configure.html",
+                           is_weather_logging=is_weather_logging)
 
 
 """
