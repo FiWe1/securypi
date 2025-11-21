@@ -13,12 +13,14 @@ except ImportError as e:
           "reverting to mock class:\n", "\033[31m", e, "\033[0m")
     # Mock sensor classes for platform independent development
     from .mock_mycam import (
-        MockPicamera2, MockEncoder, MockStreamingOutput, MockQuality
+        MockPicamera2, MockEncoder, MockStreamingOutput, MockPyavOutput,
+        MockQuality
     )
     Picamera2 = MockPicamera2
     JpegEncoder = MockEncoder
     H264Encoder = MockEncoder
     FileOutput = MockStreamingOutput
+    PyavOutput = MockPyavOutput
     Quality = MockQuality
 
 

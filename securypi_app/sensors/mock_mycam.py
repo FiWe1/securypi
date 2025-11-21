@@ -13,6 +13,10 @@ class MockStreamingOutput:
         if self.output:
             self.output.write(data)
 
+class MockPyavOutput(MockStreamingOutput):
+    def write(self, data):
+        pass
+
 
 # Mocking Picamera2...
 
@@ -20,6 +24,7 @@ class MockQuality:
     HIGH = "high"
     MEDIUM = "medium"
     LOW = "low"
+
 
 class MockEncoder:
     def __init__(self, *args, **kwargs):
@@ -68,11 +73,16 @@ class MockPicamera2:
     def configure(self, config):
         print("[MockPicamera2] Configured with:", config)
 
-    def start_encoder(self, encoder, output, name="main"):
+    def start_encoder(self,
+                      encoder,
+                      output,
+                      name="main",
+                      quality=MockQuality.MEDIUM):
         """ Continuously generate fake frames """
         print(
             f"[MockPicamera2] Simulating video recording " +
-            f"to {output} using {encoder} on stream '{name}'")
+            f"to {output} using {encoder} on stream '{name} "
+            f"with quality '{quality}'")
 
         def frame_generator():
             while True:
