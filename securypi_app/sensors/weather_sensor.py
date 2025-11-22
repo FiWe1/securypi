@@ -41,7 +41,7 @@ class WeatherSensor(object):
 
     def __init__(self, pin=board.D4):
         """ Initialise once. """
-        if getattr(self, "_initialized", False):
+        if self._initialized:
             return
         super().__init__()
         self._app = current_app._get_current_object()
