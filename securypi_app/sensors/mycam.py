@@ -78,7 +78,7 @@ class MyPicamera2(Picamera2):
 
     def __init__(self):
         """ Initialise once. """
-        if getattr(self, "_initialized", False):
+        if self._initialized:
             return
         super().__init__()
         self.configure_streams()
