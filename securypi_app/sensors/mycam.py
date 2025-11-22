@@ -29,6 +29,7 @@ class StreamingOutput(io.BufferedIOBase):
     Handles streaming of camera frames to a HTTP response.
     Uses a Condition to synchronize access to the latest frame.
     """
+
     def __init__(self):
         self.frame = None
         self.condition = Condition()
@@ -75,9 +76,10 @@ class MyPicamera2(Picamera2):
             return
         super().__init__()
         self.configure_streams()
+        self.streaming_output = StreamingOutput()
         self.recording_encoder = None
         self.streaming_encoder = None
-        
+
         self.start()
         self.__configure_runtime_controls()
 
@@ -104,11 +106,11 @@ class MyPicamera2(Picamera2):
 
         self.configure(config)
         return self
-    
+
     def __configure_runtime_controls(self):
         # self.set_noise_reduction() # turn off for now
         return self
-    
+
     def set_noise_reduction(self):
         """
         0 -> Off
@@ -126,11 +128,10 @@ class MyPicamera2(Picamera2):
     def is_streaming(self):
         return self.streaming_encoder is not None
 
-
     def start_recording_to_file(self,
                                 output_path: str,
                                 stream: str = "main",
-                                encode_quality = Quality.MEDIUM):
+                                encode_quality=Quality.MEDIUM):
         """
         Start high-res video recording to file.
         -> output_path
@@ -144,18 +145,30 @@ class MyPicamera2(Picamera2):
                            quality=encode_quality)
         return self
 
-    def start_capture_stream(self, streaming_output, stream: str = "lores"):
-        self.streaming_encoder = JpegEncoder()
-        self.start_encoder(self.streaming_encoder,
-                           FileOutput(streaming_output),
-                           name=stream)
-        return self
+    def start_capture_stream(
+        self, stream: str = "lores"
+    ) -> StreamingOutput:
+        if self.streaming_encoder is None:
+            self.streaming_encoder = JpegEncoder()
+            self.start_encoder(self.streaming_encoder,
+                               FileOutput(self.streaming_output),
+                               name=stream)
+        return self.streaming_output
 
     def stop_recording_to_file(self):
         if self.recording_encoder is not None:
             self.stop_encoder(self.recording_encoder)
             self.recording_encoder = None
         return self
+
+    '''
+    @TODO {
+        mjpeg live stream never stops (another user might use it)
+        >> find solution:
+            -counting streamers, decrease on leave
+            -global timer after start (5 mins), then stop
+    }
+    '''
 
     def stop_capture_stream(self):
         if self.streaming_encoder is not None:

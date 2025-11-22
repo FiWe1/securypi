@@ -2,9 +2,7 @@ from flask import Response, Blueprint, render_template, request, url_for
 
 from securypi_app.services.auth import login_required
 
-from securypi_app.sensors.mycam import (
-    MyPicamera2, StreamingOutput, generate_frames
-)
+from securypi_app.sensors.mycam import MyPicamera2, generate_frames
 from securypi_app.sensors.weather_sensor import WeatherSensor
 
 
@@ -21,9 +19,8 @@ def video_feed():
     Calls mycam, a picamera2 wrapper class contained in mycam.py
     """
     camera = MyPicamera2.get_instance()
-    output = StreamingOutput()
+    output = camera.start_capture_stream()
 
-    camera.start_capture_stream(output)
     return Response(generate_frames(output),
                     mimetype="multipart/x-mixed-replace; boundary=frame")
 
@@ -34,8 +31,6 @@ def picture_feed():
     """ Route for a single snapshot. """
     camera = MyPicamera2.get_instance()
     try:
-        camera.stop_capture_stream()
-
         jpeg_data = camera.capture_picture()
         return Response(jpeg_data, mimetype="image/jpeg")
 
@@ -64,7 +59,7 @@ def index():
     mode = request.args.get("mode", "picture")
 
     # temperature and humidity sensor @TODO from db)
-    temp_unit = "C" # @TODO from user settings in db
+    temp_unit = "C"  # @TODO from user settings in db
     sensor = WeatherSensor.get_instance()
     readings = sensor.measure_or_na(temp_unit=temp_unit)
 
