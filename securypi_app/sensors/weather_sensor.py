@@ -31,7 +31,7 @@ class WeatherSensor(object):
     Uses DHT22 sensor connected to specified GPIO pin.
     """
     _instance = None
-    _initialised = False
+    _initialized = False
 
     def __new__(cls, *args, **kwargs):
         """ Guarantees only one instance - singleton. """

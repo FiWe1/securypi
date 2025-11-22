@@ -10,4 +10,4 @@ class Base(DeclarativeBase):
 
 db = SQLAlchemy(model_class=Base)
 
-# Needs to be imported and initialised as first in the app factory.
+# Needs to be imported and initialized as first in the app factory.

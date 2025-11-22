@@ -66,7 +66,7 @@ class MyPicamera2(Picamera2):
     for streaming and taking pictures.
     """
     _instance = None
-    _initialised = False
+    _initialized = False
 
     def __new__(cls, *args, **kwargs):
         """ Guarantees only one instance - singleton. """
