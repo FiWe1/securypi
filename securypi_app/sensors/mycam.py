@@ -1,5 +1,5 @@
 import io
-from threading import Condition
+from threading import Condition, Timer
 
 # Conditional Import for RPi picamera2 library
 try:
@@ -22,6 +22,10 @@ except ImportError as e:
     FileOutput = MockStreamingOutput
     PyavOutput = MockPyavOutput
     Quality = MockQuality
+
+
+# @TODO move to global config
+STREAM_TIMEOUT = 5 * 60 # 5 minutes
 
 
 class StreamingOutput(io.BufferedIOBase):
@@ -77,6 +81,7 @@ class MyPicamera2(Picamera2):
         super().__init__()
         self.configure_streams()
         self.streaming_output = StreamingOutput()
+        self.stream_timer = None
         self.recording_encoder = None
         self.streaming_encoder = None
 
@@ -145,35 +150,37 @@ class MyPicamera2(Picamera2):
                            quality=encode_quality)
         return self
 
-    def start_capture_stream(
-        self, stream: str = "lores"
-    ) -> StreamingOutput:
-        if self.streaming_encoder is None:
-            self.streaming_encoder = JpegEncoder()
-            self.start_encoder(self.streaming_encoder,
-                               FileOutput(self.streaming_output),
-                               name=stream)
-        return self.streaming_output
-
     def stop_recording_to_file(self):
         if self.recording_encoder is not None:
             self.stop_encoder(self.recording_encoder)
             self.recording_encoder = None
         return self
 
-    '''
-    @TODO {
-        mjpeg live stream never stops (another user might use it)
-        >> find solution:
-            -counting streamers, decrease on leave
-            -global timer after start (5 mins), then stop
-    }
-    '''
+    def start_capture_stream(
+        self, stream: str = "lores"
+    ) -> StreamingOutput:
+        # cancel stream timeout, if set - avoid timing out prematurely
+        if self.stream_timer is not None:
+            self.stream_timer.cancel()
+            self.stream_timer = None
+        # won't be starting two encoders
+        if self.streaming_encoder is None:
+            self.streaming_encoder = JpegEncoder()
+            self.start_encoder(self.streaming_encoder,
+                               FileOutput(self.streaming_output),
+                               name=stream)
+            
+        self.stream_timer = Timer(STREAM_TIMEOUT, self.stop_capture_stream)
+        self.stream_timer.start()
+        
+        return self.streaming_output
 
     def stop_capture_stream(self):
         if self.streaming_encoder is not None:
             self.stop_encoder(self.streaming_encoder)
             self.streaming_encoder = None
+            self.stream_timer = None
+            print("Stopped video streaming (timer).")
         return self
 
     def capture_picture(self):
