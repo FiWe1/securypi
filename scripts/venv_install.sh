@@ -27,9 +27,11 @@ fi
 
 
 
+echo "---"
 echo "Installing required packages from requirements.txt..."
+echo "---"
 
-python -m pip install --upgrade pip
+python -m pip install --upgrade pip setuptools wheel
 
 # Install base app requirements
 python -m pip install -r requirements.txt
@@ -37,18 +39,14 @@ python -m pip install -r requirements.txt
 
 
 if $IS_RPI; then
-echo "Installing packages from Raspberry Pi from rpi-requirements.txt..."
-
-# On RPI ensure numpy and simplejpeg have compatible builds
-python -m pip install --upgrade setuptools wheel
-python -m pip install --upgrade numpy
-python -m pip install --upgrade --force-reinstall simplejpeg # @TODO Test on a fresh install without reinstall)
-
-
+echo "---"
+echo "Installing packages for Raspberry Pi from rpi_requirements.txt..."
+echo "---"
 python -m pip install -r rpi_requirements.txt
 fi
 
 
 
-echo "-------------------------------------"
-echo "Install script finished successfully."
+echo "---"
+echo "Install script finished."
+echo "---"

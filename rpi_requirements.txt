@@ -1,0 +1,13 @@
+# Raspberry Pi platform-specific pip requirements
+
+
+# Camera Libraries
+numpy==2.2.4
+simplejpeg==1.8.1
+picamera2==0.3.31
+
+# Temperature and Humidity Sensor Libraries
+adafruit-circuitpython-dht==4.0.10
+RPi.GPIO==0.7.1
+lgpio==0.2.2.0
+Adafruit-Blinka==8.68.0

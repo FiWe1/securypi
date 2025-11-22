@@ -1,10 +1,14 @@
 # Securypi
 
 ## 1. Initialize db
-- with source .venv/bin/activate
+
+- Activate virtual environment:
+
+    source .venv/bin/activate
+
 - Run the init-db command in a terminal:
 
-    flask --app securypi_app init-db
+    python -m flask --app securypi_app init-db
 
 - \>\> Initialized the database.
 - \>\> Default user 'admin' with password: 'admin4321'
