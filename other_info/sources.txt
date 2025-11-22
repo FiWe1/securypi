@@ -2,7 +2,7 @@
     add sources here:
     - pallets
     - picamera2 docs: https://datasheets.raspberrypi.com/camera/picamera2-manual.pdf
-    - simple mjpeg server
+    - simple mjpeg server: https://github.com/raspberrypi/picamera2/blob/2082fe61/examples/mjpeg_server.py
 
     - motion detection: https://github.com/schmidi000/raspberry_pi_motion_detection_cam
 
