@@ -82,10 +82,11 @@ class MyPicamera2(Picamera2):
             return
         super().__init__()
         self.configure_streams()
-        self.streaming_output = StreamingOutput()
-        self.stream_timer = None
-        self.recording_encoder = None
-        self.streaming_encoder = None
+        self._streaming_output = StreamingOutput()
+        self._stream_timer = None
+        
+        self._recording_encoder = None
+        self._streaming_encoder = None
 
         self.start()
         self.__configure_runtime_controls()
@@ -130,10 +131,10 @@ class MyPicamera2(Picamera2):
         return self
 
     def is_recording(self):
-        return self.recording_encoder is not None
+        return self._recording_encoder is not None
 
     def is_streaming(self):
-        return self.streaming_encoder is not None
+        return self._streaming_encoder is not None
 
     def start_recording_to_file(self,
                                 output_path: str,
@@ -145,8 +146,8 @@ class MyPicamera2(Picamera2):
         -> stream: which stream to record from ("main" or "lores")
         -> encode_quality: Quality.[LOW | MEDIUM | HIGH]
         """
-        self.recording_encoder = H264Encoder()
-        self.start_encoder(self.recording_encoder,
+        self._recording_encoder = H264Encoder()
+        self.start_encoder(self._recording_encoder,
                            PyavOutput(output_path),
                            name=stream,
                            quality=encode_quality)
@@ -165,35 +166,35 @@ class MyPicamera2(Picamera2):
         self.start_recording_to_file(full_path, stream, encode_quality)
 
     def stop_recording_to_file(self):
-        if self.recording_encoder is not None:
-            self.stop_encoder(self.recording_encoder)
-            self.recording_encoder = None
+        if self._recording_encoder is not None:
+            self.stop_encoder(self._recording_encoder)
+            self._recording_encoder = None
         return self
 
     def start_capture_stream(
         self, stream: str = "lores"
     ) -> StreamingOutput:
         # cancel stream timeout, if set - avoid timing out prematurely
-        if self.stream_timer is not None:
-            self.stream_timer.cancel()
-            self.stream_timer = None
+        if self._stream_timer is not None:
+            self._stream_timer.cancel()
+            self._stream_timer = None
         # won't be starting two encoders
-        if self.streaming_encoder is None:
-            self.streaming_encoder = JpegEncoder()
-            self.start_encoder(self.streaming_encoder,
-                               FileOutput(self.streaming_output),
+        if self._streaming_encoder is None:
+            self._streaming_encoder = JpegEncoder()
+            self.start_encoder(self._streaming_encoder,
+                               FileOutput(self._streaming_output),
                                name=stream)
             
-        self.stream_timer = Timer(STREAM_TIMEOUT, self.stop_capture_stream)
-        self.stream_timer.start()
+        self._stream_timer = Timer(STREAM_TIMEOUT, self.stop_capture_stream)
+        self._stream_timer.start()
         
-        return self.streaming_output
+        return self._streaming_output
 
     def stop_capture_stream(self):
-        if self.streaming_encoder is not None:
-            self.stop_encoder(self.streaming_encoder)
-            self.streaming_encoder = None
-            self.stream_timer = None
+        if self._streaming_encoder is not None:
+            self.stop_encoder(self._streaming_encoder)
+            self._streaming_encoder = None
+            self._stream_timer = None
             print("Stopped video streaming (timer).")
         return self
 
