@@ -1,12 +1,8 @@
-# pip requirements for Raspberry Pi installation
+# Raspberry Pi platform-specific pip requirements
 
-# Web Framework
-Flask
-
-# Mock libraries for development
-Pillow
 
 # Camera Libraries
+numpy
 simplejpeg
 picamera2
 

@@ -1,12 +1,8 @@
-# pip requirements for deploying outside of Raspberry pi
-#for testing with mocked sensors
+# basic application pip requirements
 
 # Web Framework
 Flask
 Flask-SQLAlchemy
 
-# Mock libraries for development
+# Mock libraries dependencies for platform-independent development
 Pillow
-
-# Camera Libraries
-simplejpeg
