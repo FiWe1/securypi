@@ -15,7 +15,7 @@ bp = Blueprint("camera_control", __name__, url_prefix="/camera_control")
 def start_recording():
     camera = MyPicamera2.get_instance()
     filename = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".mp4"
-    path = "recording_demo/"
+    path = "captures/recordings/"
     full_path = path + filename
 
     try:

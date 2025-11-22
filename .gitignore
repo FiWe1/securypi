@@ -2,6 +2,9 @@
 # to ignore local changes in app_run.sh (changing ports), run:
 # git update-index --assume-unchanged scripts/app_run.sh
 
+# local media: recordings, snapshots
+captures/*
+
 
 # macOS system files, recursively:
 **/.DS_Store
@@ -31,9 +34,6 @@ htmlcov/
 ##
 instance/
 *.env
-
-# testing .mp4 recordings
-recording_demo/*
 
 # python
 # https://github.com/github/gitignore/blob/main/Python.gitignore
