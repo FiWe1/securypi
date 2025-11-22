@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from flask import Blueprint, render_template, redirect, url_for, flash
 
 from securypi_app.services.auth import login_required
@@ -14,14 +12,12 @@ bp = Blueprint("camera_control", __name__, url_prefix="/camera_control")
 @login_required
 def start_recording():
     camera = MyPicamera2.get_instance()
-    filename = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".mp4"
-    path = "captures/recordings/"
-    full_path = path + filename
 
     try:
-        camera.start_recording_to_file(full_path,
-                                       stream="main",
-                                       encode_quality=Quality.LOW)
+        camera.start_default_recording(
+            stream="main",
+            encode_quality=Quality.LOW
+        )
     except Exception as e:
         print(f"Error starting recording: {e}")
         flash("Error starting recording.")

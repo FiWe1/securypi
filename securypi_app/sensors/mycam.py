@@ -1,5 +1,7 @@
 import io
 from threading import Condition, Timer
+from datetime import datetime
+from pathlib import Path
 
 # Conditional Import for RPi picamera2 library
 try:
@@ -149,6 +151,18 @@ class MyPicamera2(Picamera2):
                            name=stream,
                            quality=encode_quality)
         return self
+    
+    def start_default_recording(self,
+                                stream="main",
+                                encode_quality=Quality.LOW):
+        filename = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".mp4"
+        path_str = "captures/recordings/"
+        
+        path = Path(path_str)
+        path.mkdir(parents=True, exist_ok=True)
+        full_path = path / filename
+        
+        self.start_recording_to_file(full_path, stream, encode_quality)
 
     def stop_recording_to_file(self):
         if self.recording_encoder is not None:
