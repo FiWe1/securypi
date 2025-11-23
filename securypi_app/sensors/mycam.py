@@ -30,7 +30,6 @@ except ImportError as e:
 # @TODO move to global config
 STREAM_TIMEOUT = 5 * 60 # 5 minutes
 RECORDING_FRAMERATE = 25
-SENSOR_RESOLUTION = (2304, 1296)
 MAIN_RESOLUTION = (1920, 1080)
 STREAM_RESOLUTION = (800, 450)
 
@@ -86,21 +85,73 @@ class MyPicamera2(Picamera2):
         if self._initialized:
             return
         super().__init__()
+        
+        self.configure_video_sensor()
         self.configure_video_streams()
+        self.configure_runtime_controls()
+        
         self._streaming_output = StreamingOutput()
         self._stream_timer = None
         
         self._recording_encoder = None
         self._streaming_encoder = None
 
-        self.configure_runtime_controls()
-
+        # Really only once.
         self._initialized = True
 
     @classmethod
     def get_instance(cls):
         """ Singleton access method. """
         return cls()
+    
+    def get_best_sensor_mode(self, resolution, fps):
+        """
+        Find highest resolution sensor mode
+        with ability to provide requested framerate.
+        """
+        all_modes = self.sensor_modes
+        
+        fps_eligible = []
+        for mode in all_modes:
+            if mode["fps"] >= fps:
+                fps_eligible.append(mode)
+
+        if fps_eligible[-1]["size"] >= resolution:
+            # Last mode provides the highes sensor resolution
+            best_mode = fps_eligible[-1]
+        else:
+            best_mode = None
+        
+        return best_mode
+
+    def configure_video_sensor(self):
+        """
+        Set sensor configuration to the best mode
+        inside the passed config.
+        """
+        # @TODO retrieve from config.json
+        resolution = MAIN_RESOLUTION
+        fps = RECORDING_FRAMERATE
+        
+        config = self.video_configuration
+        
+        best_config = self.get_best_sensor_mode(resolution, fps)
+        if best_config is not None:
+            size = best_config["size"]
+            bit_depth = best_config["bit_depth"]
+            config.sensor = {
+                "output_size": size,
+                "bit_depth": bit_depth
+            }
+            self.configure(config)
+            print(f"Configured video sensor resolution to "
+                  f"{size} with bit depth {bit_depth} at {fps} fps.")
+        else:
+            print(f"WARNING: Cannot configure sensor to "
+                  f"resolution {resolution} at {fps} fps.\n"
+                  f"Using default sensor mode (might be cropped - "
+                  f"check camera.sensor_modes).")
+        return self
 
     def configure_video_streams(self):
         """
@@ -109,7 +160,6 @@ class MyPicamera2(Picamera2):
         - lores stream: for preview
         """
         config = self.video_configuration
-        config.sensor = {'output_size': SENSOR_RESOLUTION, 'bit_depth': 10}
         config.main.size = MAIN_RESOLUTION
 
         stream_res = STREAM_RESOLUTION
@@ -151,7 +201,7 @@ class MyPicamera2(Picamera2):
         self.set_controls(
             {"FrameDurationLimits": (duration_limit, duration_limit)}
         )
-        print(self.controls)
+        
         return self
 
     def is_recording(self):

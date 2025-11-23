@@ -7,11 +7,12 @@
 # to exclude directory:
 # ! -path "*/dirname/*"
 
-find . -type f \
+find securypi_app -type f \
+  ! -path "*/captures/*/*" \
   ! -path "*/__pycache__/*" \
+  ! -path "*/__init__.py" \
   ! -path "*/.venv/*" \
   ! -path "*/.git/*" \
-  ! -path "*/picamera_tests/*" \
   ! -path "*/instance/*" \
   ! -path "*/tests/*" \
   -exec wc -l {} + | sort -n

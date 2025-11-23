@@ -1,0 +1,5 @@
+[tool.setuptools.packages.find]
+include = ["securypi_app"]
+exclude = ["tests*"]
+
+# @TODO move requirements! -> V
