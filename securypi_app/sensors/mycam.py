@@ -237,7 +237,7 @@ class MyPicamera2(Picamera2):
     
     def start_default_recording(self,
                                 stream="main",
-                                encode_quality=Quality.LOW):
+                                encode_quality=Quality.LOW) -> Path:
         filename = timed_filename(".mp4")
         path_str = "captures/recordings/"
         
@@ -247,7 +247,7 @@ class MyPicamera2(Picamera2):
         
         self.start_recording_to_file(full_path, stream, encode_quality)
         
-        return self
+        return full_path
 
     def stop_recording_to_file(self):
         if self._recording_encoder is not None:
