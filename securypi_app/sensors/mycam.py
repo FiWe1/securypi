@@ -180,14 +180,20 @@ class MyPicamera2(Picamera2):
         self.set_framerate(RECORDING_FRAMERATE)
         return self
 
-    def set_noise_reduction(self):
+    def set_noise_reduction(self, noise_reduction_mode="Fast"):
         """
-        0 -> Off
-        1 -> Fast
-        2 -> HighQuality
+        Noise Reduction Modes:
+        {
+            'Off': <NoiseReductionModeEnum.Off: 0>,
+            'Fast': <NoiseReductionModeEnum.Fast: 1>,
+            'HighQuality': <NoiseReductionModeEnum.HighQuality: 2>,
+            'Minimal': <NoiseReductionModeEnum.Minimal: 3>,
+            'ZSL': <NoiseReductionModeEnum.ZSL: 4>
+        }
         """
+        nr_modes = controls.draft.NoiseReductionModeEnum.__members__
         self.set_controls(
-            {"NoiseReductionMode": controls.draft.NoiseReductionModeEnum.Fast}
+            {"NoiseReductionMode": nr_modes[noise_reduction_mode]}
         )
         return self
     
@@ -226,6 +232,7 @@ class MyPicamera2(Picamera2):
                            PyavOutput(output_path),
                            name=stream,
                            quality=encode_quality)
+        self.start()
         return self
     
     def start_default_recording(self,
@@ -259,6 +266,7 @@ class MyPicamera2(Picamera2):
             self.start_encoder(self._streaming_encoder,
                                FileOutput(self._streaming_output),
                                name=stream)
+            self.start()
             
         self._stream_timer = Timer(STREAM_TIMEOUT, self.stop_capture_stream)
         self._stream_timer.start()
