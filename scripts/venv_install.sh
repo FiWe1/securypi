@@ -14,7 +14,7 @@ if [ -f /proc/device-tree/model ] && grep -qi "raspberry pi" /proc/device-tree/m
 
     # --system-site-packages -> ensure system packages (libcamera, picamera) are included
     echo "Creating .venv/ directory with --system-site-packages for virtual environment..."
-    $PYTHON -m venv .venv --system-site-packages # @TODO Test on a fresh install without system-site, explicit numpy and simplejpeg)
+    $PYTHON -m venv .venv --system-site-packages
 else
     echo "Not on Raspberry Pi."
 
