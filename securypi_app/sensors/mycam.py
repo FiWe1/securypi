@@ -30,7 +30,7 @@ except ImportError as e:
 
 # @TODO move to global config
 STREAM_TIMEOUT = 5 * 60 # 5 minutes
-RECORDING_FRAMERATE = 30
+RECORDING_FRAMERATE = 25
 SENSOR_RESOLUTION = (2304, 1296)
 MAIN_RESOLUTION = (1920, 1080)
 STREAM_RESOLUTION = (800, 450)
@@ -94,8 +94,8 @@ class MyPicamera2(Picamera2):
         self._recording_encoder = None
         self._streaming_encoder = None
 
+        self.configure_runtime_controls()
         self.start()
-        self.__configure_runtime_controls()
 
         self._initialized = True
 
@@ -126,7 +126,7 @@ class MyPicamera2(Picamera2):
         self.configure(config)
         return self
 
-    def __configure_runtime_controls(self):
+    def configure_runtime_controls(self):
         self.set_noise_reduction() # turn off for now
         self.set_framerate(RECORDING_FRAMERATE)
         return self
