@@ -31,7 +31,7 @@ class Controls:
     draft = Draft
 
 
-# mmocking Picamera2...
+# mocking Picamera2...
 
 class MockQuality:
     HIGH = "high"
@@ -68,7 +68,7 @@ class MockPicamera2:
     Mocking Picamera2 library for the purpouses of
     working with mycam module (MyPicamera2).
     """
-    # Mocking sensor modes of RPI Camera Module 3 Wide
+    # mocked sensor modes of RPI Camera Module 3 Wide
     sensor_modes = [
         {'format': "SRGGB10_CSI2P",
          'unpacked': "SRGGB10",
