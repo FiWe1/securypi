@@ -1,3 +1,7 @@
+"""
+Utility functions as a service around authentication.
+"""
+
 import functools
 
 from flask import (
@@ -6,9 +10,6 @@ from flask import (
 from werkzeug.security import check_password_hash
 
 from securypi_app.models.user import User
-
-
-""" Utility functions as a service around authentication. """
 
 
 def is_logged_in():

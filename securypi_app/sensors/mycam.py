@@ -3,6 +3,8 @@ from threading import Condition, Timer
 from datetime import datetime
 from pathlib import Path
 
+from securypi_app.services.string_parsing import timed_filename
+
 # Conditional Import for RPi picamera2 library
 try:
     from picamera2 import Picamera2    # pyright: ignore[reportMissingImports]
@@ -28,6 +30,10 @@ except ImportError as e:
 
 # @TODO move to global config
 STREAM_TIMEOUT = 5 * 60 # 5 minutes
+RECORDING_FRAMERATE = 30
+SENSOR_RESOLUTION = (2304, 1296)
+MAIN_RESOLUTION = (1920, 1080)
+STREAM_RESOLUTION = (800, 450)
 
 
 class StreamingOutput(io.BufferedIOBase):
@@ -105,18 +111,24 @@ class MyPicamera2(Picamera2):
         # lores stream: for preview
         """
         config = self.video_configuration
-        config.main.size = (1920, 1080)
+        config.sensor = {'output_size': SENSOR_RESOLUTION, 'bit_depth': 10}
+        config.main.size = MAIN_RESOLUTION
 
+        stream_res = STREAM_RESOLUTION
+        if STREAM_RESOLUTION > MAIN_RESOLUTION:
+            stream_res = MAIN_RESOLUTION
+        
         config.enable_lores()
-        config.lores.size = (640, 360)
+        config.lores.size = stream_res
         # default stream for video encoding
-        # config.encode = "lores"
+        # config.encode = "main" (defaul value)
 
         self.configure(config)
         return self
 
     def __configure_runtime_controls(self):
-        # self.set_noise_reduction() # turn off for now
+        self.set_noise_reduction() # turn off for now
+        self.set_framerate(RECORDING_FRAMERATE)
         return self
 
     def set_noise_reduction(self):
@@ -128,6 +140,20 @@ class MyPicamera2(Picamera2):
         self.set_controls(
             {"NoiseReductionMode": controls.draft.NoiseReductionModeEnum.Fast}
         )
+        return self
+    
+    def set_framerate(self, framerate=None):
+        if framerate is None:
+            framerate = RECORDING_FRAMERATE
+        if framerate < 1:
+            framerate = 30
+        
+        duration_limit = int(round(1 / framerate * 1000000, 0))
+        
+        self.set_controls(
+            {"FrameDurationLimits": (duration_limit, duration_limit)}
+        )
+        print(self.controls)
         return self
 
     def is_recording(self):
@@ -156,7 +182,7 @@ class MyPicamera2(Picamera2):
     def start_default_recording(self,
                                 stream="main",
                                 encode_quality=Quality.LOW):
-        filename = datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + ".mp4"
+        filename = timed_filename(".mp4")
         path_str = "captures/recordings/"
         
         path = Path(path_str)

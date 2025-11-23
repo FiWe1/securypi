@@ -1,6 +1,8 @@
 """
 Utilities for validating string inputs.
 """
+from datetime import datetime
+
 
 # @TODO move to json? config file
 MIN_USERNAME_LENGTH = 4
@@ -40,3 +42,18 @@ def validate_str_password(password) -> None | str:
                                   min_len=MIN_PASSWORD_LENGTH,
                                   max_len=MAX_PASSWORD_LENGTH,
                                   expr_name="password")
+
+
+def timed_filename(file_type="") -> str:
+    """
+    Return a name of the file
+    consisting from current date and time.
+    file_type examples: "mp4", ".mp4", txt", ".json"
+    """
+    if file_type:
+        file_type = file_type.strip(".")
+    # user might pass "."
+    if file_type:
+        file_type = "." + file_type
+    
+    return datetime.now().strftime("%Y-%m-%d_%H-%M-%S") + file_type
