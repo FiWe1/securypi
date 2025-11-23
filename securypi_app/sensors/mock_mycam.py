@@ -17,9 +17,21 @@ class MockStreamingOutput:
 class MockPyavOutput(MockStreamingOutput):
     def write(self, data):
         pass
+    
+# mocking controls.draft.NoiseReductionModeEnum
+class NoiseReductionModeEnum:
+    Off = 0
+    Fast = 1
+    HighQuality = 2
+
+class Draft:
+    NoiseReductionModeEnum = NoiseReductionModeEnum
+
+class Controls:
+    draft = Draft
 
 
-# Mocking Picamera2...
+# mmocking Picamera2...
 
 class MockQuality:
     HIGH = "high"
@@ -56,6 +68,32 @@ class MockPicamera2:
     Mocking Picamera2 library for the purpouses of
     working with mycam module (MyPicamera2).
     """
+    # Mocking sensor modes of RPI Camera Module 3 Wide
+    sensor_modes = [
+        {'format': "SRGGB10_CSI2P",
+         'unpacked': "SRGGB10",
+         'bit_depth': 10,
+         'size': (1536, 864),
+         'fps': 120.13,
+         'crop_limits': (768, 432, 3072, 1728),
+         'exposure_limits': (9, 77208145, 20000)},
+
+        {'format': "SRGGB10_CSI2P",
+         'unpacked': "SRGGB10",
+         'bit_depth': 10,
+         'size': (2304, 1296),
+         'fps': 56.03,
+         'crop_limits': (0, 0, 4608, 2592),
+         'exposure_limits': (13, 112015096, 20000)},
+
+        {'format': "SRGGB10_CSI2P",
+         'unpacked': "SRGGB10",
+         'bit_depth': 10,
+         'size': (4608, 2592),
+         'fps': 14.35,
+         'crop_limits': (0, 0, 4608, 2592),
+         'exposure_limits': (26, 220416802, 20000)}
+    ]
 
     def __init__(self):
         self.sensor_resolution = (1920, 1080)
@@ -120,6 +158,9 @@ class MockPicamera2:
 
     def stop(self):
         print("[MockPicamera2] Stopping mock camera.")
+    
+    def set_controls(self, controls):
+        print(f"Setting camera controls: {controls}")
 
     @staticmethod
     def create_random_color_image(width, height, brightness=1.0):

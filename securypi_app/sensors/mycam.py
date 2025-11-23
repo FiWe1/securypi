@@ -17,7 +17,7 @@ except ImportError as e:
     # Mock sensor classes for platform independent development
     from .mock_mycam import (
         MockPicamera2, MockEncoder, MockStreamingOutput, MockPyavOutput,
-        MockQuality
+        MockQuality, Controls
     )
     Picamera2 = MockPicamera2
     JpegEncoder = MockEncoder
@@ -25,6 +25,7 @@ except ImportError as e:
     FileOutput = MockStreamingOutput
     PyavOutput = MockPyavOutput
     Quality = MockQuality
+    controls = Controls
 
 
 # @TODO move to global config
