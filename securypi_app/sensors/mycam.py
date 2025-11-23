@@ -1,6 +1,5 @@
 import io
 from threading import Condition, Timer
-from datetime import datetime
 from pathlib import Path
 
 from securypi_app.services.string_parsing import timed_filename
@@ -87,7 +86,7 @@ class MyPicamera2(Picamera2):
         if self._initialized:
             return
         super().__init__()
-        self.configure_streams()
+        self.configure_video_streams()
         self._streaming_output = StreamingOutput()
         self._stream_timer = None
         
@@ -95,7 +94,6 @@ class MyPicamera2(Picamera2):
         self._streaming_encoder = None
 
         self.configure_runtime_controls()
-        self.start()
 
         self._initialized = True
 
@@ -104,11 +102,11 @@ class MyPicamera2(Picamera2):
         """ Singleton access method. """
         return cls()
 
-    def configure_streams(self):
+    def configure_video_streams(self):
         """
         Configures camera streams:
-        # main stream: high-res recording, snapshots
-        # lores stream: for preview
+        - main stream: high-res recording, snapshots
+        - lores stream: for preview
         """
         config = self.video_configuration
         config.sensor = {'output_size': SENSOR_RESOLUTION, 'bit_depth': 10}
@@ -190,6 +188,8 @@ class MyPicamera2(Picamera2):
         full_path = path / filename
         
         self.start_recording_to_file(full_path, stream, encode_quality)
+        
+        return self
 
     def stop_recording_to_file(self):
         if self._recording_encoder is not None:
@@ -197,9 +197,7 @@ class MyPicamera2(Picamera2):
             self._recording_encoder = None
         return self
 
-    def start_capture_stream(
-        self, stream: str = "lores"
-    ) -> StreamingOutput:
+    def start_capture_stream(self, stream: str = "lores") -> StreamingOutput:
         # cancel stream timeout, if set - avoid timing out prematurely
         if self._stream_timer is not None:
             self._stream_timer.cancel()
@@ -227,6 +225,7 @@ class MyPicamera2(Picamera2):
     def capture_picture(self):
         # Capture an image to a BytesIO object
         buffer = io.BytesIO()
+        self.start()
         self.capture_file(buffer, format="jpeg")
 
         # Return the byte data
