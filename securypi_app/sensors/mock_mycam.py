@@ -23,6 +23,8 @@ class NoiseReductionModeEnum:
     Off = 0
     Fast = 1
     HighQuality = 2
+    Minimal = 3
+    ZSL = 4
 
 class Draft:
     NoiseReductionModeEnum = NoiseReductionModeEnum
