@@ -259,10 +259,9 @@ class MyPicamera2(Picamera2):
         return self
 
     def start_capture_stream(self, stream: str = "lores") -> StreamingOutput:
-        # cancel stream timeout, if set - avoid timing out prematurely
+        # cancel stream timeout if set - avoid timing out prematurely
         if self._stream_timer is not None:
             self._stream_timer.cancel()
-            self._stream_timer = None
         # won't be starting two encoders
         if self._streaming_encoder is None:
             self._streaming_encoder = JpegEncoder()
