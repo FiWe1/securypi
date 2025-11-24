@@ -1,11 +1,77 @@
 import pytest
+import os
+from time import sleep
 
-from securypi_app.sensors.mycam import MyPicamera2
+from securypi_app.sensors.mycam import MyPicamera2, StreamingOutput
 
 
+def test_singleton():
+    """ Try to break singleton """
+    obj1 = MyPicamera2()
+    obj2 = MyPicamera2()
+    assert obj1 is obj2
 
-my_picam = MyPicamera2.get_instance()
 
+@pytest.fixture
+def picam():
+    """
+    Every time yield the same MyPicamera2 instance,
+    but with default configuration.
+    """
+    cam = MyPicamera2.get_instance()
+    yield cam
+
+    # try to get MyPicamera2 to default state
+    cam.stop()
+    cam.configure_video_sensor()
+    cam.configure_video_streams()
+    cam.configure_runtime_controls()
+
+    cam._streaming_output = StreamingOutput()
+    cam._stream_timer = None
+
+    cam._recording_encoder = None
+    cam._streaming_encoder = None
+
+    del cam  # delete object reference
+
+
+def test_instance_type(picam):
+    assert isinstance(picam, MyPicamera2)
+
+
+def test_capture_picture(picam):
+    assert picam.capture_picture() is not None
+
+
+def test_stream(picam):
+    output = picam._streaming_output
+    assert isinstance(output, StreamingOutput)
+
+    picam.start_capture_stream()
+    sleep(1)
+    assert picam.is_streaming()
+    assert output.frame is not None
+
+    picam.stop_capture_stream()
+    assert picam._stream_timer is None
+    assert picam._streaming_encoder is None
+
+
+def test_default_recording(picam):
+    recording_path = picam.start_default_recording()
+    sleep(1)
+    assert picam.is_recording()
+
+    assert recording_path.exists()
+    assert recording_path.stat().st_size > 0  # verify not empty
+
+    picam.stop_recording_to_file()
+    assert picam._recording_encoder is None
+
+    # Remove file afterwards
+    os.remove(recording_path)
+    assert not recording_path.exists()
 
 
 """
@@ -41,7 +107,8 @@ print(Picamera2().sensor_modes)
   exposure_limits: (26, 220416802, 20000)
 """
 
-modes = my_picam.sensor_modes
+modes = MyPicamera2.get_instance().sensor_modes
+
 
 @pytest.mark.parametrize(
     "resolution,fps,expected",
@@ -57,5 +124,5 @@ modes = my_picam.sensor_modes
         ((2000, 1500), 50, modes[1]),
     ],
 )
-def test_get_best_sensor_mode(resolution, fps, expected):
-    assert my_picam.get_best_sensor_mode(resolution, fps) == expected
+def test_get_best_sensor_mode(picam, resolution, fps, expected):
+    assert picam.get_best_sensor_mode(resolution, fps) == expected
