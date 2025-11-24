@@ -1,9 +1,11 @@
 import random
-import threading
-from time import sleep
+from threading import Thread, Event
 from io import BytesIO
 
 from PIL import Image
+
+
+MOCK_ENCODER_TIMEOUT = 5
 
 
 class MockStreamingOutput:
@@ -14,6 +16,7 @@ class MockStreamingOutput:
         if self.output:
             self.output.write(data)
 
+
 class MockPyavOutput():
     def __init__(self, output=None):
         self.output = output
@@ -22,19 +25,24 @@ class MockPyavOutput():
         if self.output:
             with self.output.open("w") as f:
                 f.write("Mocking recording to a video output.")
-    
+
 # mocking controls.draft.NoiseReductionModeEnum
+
+
 class NoiseReductionModeEnum:
     Off = 0
     Fast = 1
     HighQuality = 2
     Minimal = 3
     ZSL = 4
-    
-    __members__ = {'Off': 0, 'Fast':1, 'HighQuality': 2, 'Minimal': 3, 'ZSL': 4}
+
+    __members__ = {'Off': 0, 'Fast': 1,
+                   'HighQuality': 2, 'Minimal': 3, 'ZSL': 4}
+
 
 class Draft:
     NoiseReductionModeEnum = NoiseReductionModeEnum
+
 
 class Controls:
     draft = Draft
@@ -73,10 +81,15 @@ class MockVideoConfiguration:
 
 
 class MockPicamera2:
+
     """
     Mocking Picamera2 library for the purpouses of
     working with mycam module (MyPicamera2).
     """
+
+    _mock_encoder_thread = None
+    _mock_encoder_stop_event = Event()
+
     # mocked sensor modes of RPI Camera Module 3 Wide
     sensor_modes = [
         {'format': "SRGGB10_CSI2P",
@@ -139,17 +152,29 @@ class MockPicamera2:
                 img.save(buffer, format="JPEG")
                 jpeg_bytes = buffer.getvalue()
 
-                output.write(jpeg_bytes)  # StreamOutput.write()
-                sleep(self.new_frame_interval_seconds)
+                output.write(jpeg_bytes)
+                if self._mock_encoder_stop_event.wait(
+                    timeout=self.new_frame_interval_seconds
+                ):
+                    print("Mock encoder exited cleanly.")
+                    break
 
-        threading.Thread(target=frame_generator, daemon=True).start()
+        self._mock_encoder_stop_event.clear()  # clear stop signal
+
+        self._mock_encoder_thread = Thread(target=frame_generator, daemon=True)
+        self._mock_encoder_thread.start()
 
     def start_recording(self, encoder, output, name="main"):
         self.start_encoder(self, encoder, output, name=name)
         self.start()
 
-    def stop_encoder(self, recording_encoder):
+    def stop_encoder(self, recording_encoder="<default mock encoder"):
         print(f"[MockPicamera2] Stopping encoder {recording_encoder}.")
+        self._mock_encoder_stop_event.set()  # signal stop
+        self._mock_encoder_thread.join()
+        self._mock_encoder_stop_event.clear()  # clear stop signal
+
+        self._mock_encoder_thread = None
 
     def stop_recording(self):
         self.stop()
@@ -167,7 +192,7 @@ class MockPicamera2:
 
     def stop(self):
         print("[MockPicamera2] Stopping mock camera.")
-    
+
     def set_controls(self, controls):
         print(f"Setting camera controls: {controls}")
 
