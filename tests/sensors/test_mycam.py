@@ -5,124 +5,124 @@ from time import sleep
 from securypi_app.sensors.mycam import MyPicamera2, StreamingOutput
 
 
-def test_singleton():
-    """ Try to break singleton """
-    obj1 = MyPicamera2()
-    obj2 = MyPicamera2()
-    assert obj1 is obj2
-
-
-@pytest.fixture
-def picam():
-    """
-    Every time yield the same MyPicamera2 instance,
-    but with default configuration.
-    """
-    cam = MyPicamera2.get_instance()
-    yield cam
-
-    # try to get MyPicamera2 to default state
-    cam.stop()
-    cam.configure_video_sensor()
-    cam.configure_video_streams()
-    cam.configure_runtime_controls()
-
-    cam._streaming_output = StreamingOutput()
-    cam._stream_timer = None
-
-    cam._recording_encoder = None
-    cam._streaming_encoder = None
-
-    del cam  # delete object reference
-
-
-def test_instance_type(picam):
-    assert isinstance(picam, MyPicamera2)
-
-
-def test_capture_picture(picam):
-    assert picam.capture_picture() is not None
-
-
-def test_stream(picam):
-    output = picam._streaming_output
-    assert isinstance(output, StreamingOutput)
-
-    picam.start_capture_stream()
-    sleep(1)
-    assert picam.is_streaming()
-    assert output.frame is not None
-
-    picam.stop_capture_stream()
-    assert picam._stream_timer is None
-    assert picam._streaming_encoder is None
-
-
-def test_default_recording(picam):
-    recording_path = picam.start_default_recording()
-    sleep(1)
-    assert picam.is_recording()
-
-    assert recording_path.exists()
-    assert recording_path.stat().st_size > 0  # verify not empty
-
-    picam.stop_recording_to_file()
-    assert picam._recording_encoder is None
-
-    # Remove file afterwards
-    os.remove(recording_path)
-    assert not recording_path.exists()
-
-
 """
-Testing method MyPicamera2().get_best_sensor_mode(res, fps)
-
-! parametrized for Raspberry Pi Camera Module 3 Wide !
-
-print(Picamera2().sensor_modes)
->>>
-[0]
-  format: SRGGB10_CSI2P
-  unpacked: SRGGB10
-  bit_depth: 10
-  size: (1536, 864)
-  fps: 120.13
-  crop_limits: (768, 432, 3072, 1728)
-  exposure_limits: (9, 77208145, 20000)
-[1]
-  format: SRGGB10_CSI2P
-  unpacked: SRGGB10
-  bit_depth: 10
-  size: (2304, 1296)
-  fps: 56.03
-  crop_limits: (0, 0, 4608, 2592)
-  exposure_limits: (13, 112015096, 20000)
-[2]
-  format: SRGGB10_CSI2P
-  unpacked: SRGGB10
-  bit_depth: 10
-  size: (4608, 2592)
-  fps: 14.35
-  crop_limits: (0, 0, 4608, 2592)
-  exposure_limits: (26, 220416802, 20000)
+Mycam package tests using pytest
 """
 
-modes = MyPicamera2.get_instance().sensor_modes
+
+class TestMycamClass():
+
+    @pytest.fixture
+    def picam(self):
+        """
+        Every time yield the same MyPicamera2 instance,
+        but with default configuration.
+        """
+        cam = MyPicamera2.get_instance()
+        yield cam
+
+        # try to get MyPicamera2 to default state
+        cam.stop()
+        cam.configure_video_sensor()
+        cam.configure_video_streams()
+        cam.configure_runtime_controls()
+
+        cam._streaming_output = StreamingOutput()
+        cam._stream_timer = None
+
+        cam._recording_encoder = None
+        cam._streaming_encoder = None
+
+        del cam  # delete object reference
 
 
-@pytest.mark.parametrize(
-    "resolution,fps,expected",
-    [
-        ((1920, 1080), 30, modes[1]),
-        ((1920, 1080), 10, modes[2]),
-        ((1280, 720), 120, modes[0]),
-        ((1280, 720), 60, modes[0]),
-        ((1280, 720), 55, modes[1]),
-        ((1280, 720), 14, modes[2]),
-        ((3840, 2160), 15, None),
-        ((3840, 2160), 14, modes[2]),
-        ((2000, 1500), 50, modes[1]),
-    ],
-)
-def test_get_best_sensor_mode(picam, resolution, fps, expected):
-    assert picam.get_best_sensor_mode(resolution, fps) == expected
+    def test_singleton(self, picam):
+        """ Try to break singleton """
+        obj2 = MyPicamera2.get_instance()
+        assert picam is not obj2
+
+    def test_instance_type(self, picam):
+        assert isinstance(picam, MyPicamera2)
+
+    def test_capture_picture(self, picam):
+        assert picam.capture_picture() is not None
+
+    def test_stream(self, picam):
+        output = picam._streaming_output
+        assert isinstance(output, StreamingOutput)
+
+        picam.start_capture_stream()
+        sleep(1)
+        assert picam.is_streaming()
+        assert output.frame is not None
+
+        picam.stop_capture_stream()
+        assert picam._stream_timer is None
+        assert picam._streaming_encoder is None
+
+    def test_default_recording(self, picam):
+        recording_path = picam.start_default_recording()
+        sleep(1)
+        assert picam.is_recording()
+
+        assert recording_path.exists()
+        assert recording_path.stat().st_size > 0  # verify not empty
+
+        picam.stop_recording_to_file()
+        assert picam._recording_encoder is None
+
+        # Remove file afterwards
+        os.remove(recording_path)
+        assert not recording_path.exists()
+
+    """
+    Testing method Mypicamera2().get_best_sensor_mode(res, fps)
+
+    ! parametrized for Raspberry Pi Camera Module 3 Wide !
+
+    print(picamera2().sensor_modes)
+    >>>
+    [0]
+    format: SRGGB10_CSI2P
+    unpacked: SRGGB10
+    bit_depth: 10
+    size: (1536, 864)
+    fps: 120.13
+    crop_limits: (768, 432, 3072, 1728)
+    exposure_limits: (9, 77208145, 20000)
+    [1]
+    format: SRGGB10_CSI2P
+    unpacked: SRGGB10
+    bit_depth: 10
+    size: (2304, 1296)
+    fps: 56.03
+    crop_limits: (0, 0, 4608, 2592)
+    exposure_limits: (13, 112015096, 20000)
+    [2]
+    format: SRGGB10_CSI2P
+    unpacked: SRGGB10
+    bit_depth: 10
+    size: (4608, 2592)
+    fps: 14.35
+    crop_limits: (0, 0, 4608, 2592)
+    exposure_limits: (26, 220416802, 20000)
+    """
+
+    modes = MyPicamera2.get_instance().sensor_modes
+
+    @pytest.mark.parametrize(
+        "resolution,fps,expected",
+        [
+            ((1920, 1080), 30, modes[1]),
+            ((1920, 1080), 10, modes[2]),
+            ((1280, 720), 120, modes[0]),
+            ((1280, 720), 60, modes[0]),
+            ((1280, 720), 55, modes[1]),
+            ((1280, 720), 14, modes[2]),
+            ((3840, 2160), 15, None),
+            ((3840, 2160), 14, modes[2]),
+            ((2000, 1500), 50, modes[1]),
+        ],
+    )
+    def test_get_best_sensor_mode(self, picam, resolution, fps, expected):
+        assert picam.get_best_sensor_mode(resolution, fps) == expected
