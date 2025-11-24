@@ -1,4 +1,4 @@
-import threading
+from threading import Thread, Event
 from time import sleep
 
 from flask import current_app
@@ -48,7 +48,7 @@ class WeatherSensor(object):
         self.set_pin(pin)
         self._sensor = DHT22(self.__pin)
         self._background_logger_thread = None
-        self._background_logger_stop_event = threading.Event()
+        self._background_logger_stop_event = Event()
 
         # implicitly log in background
         self.start_background_logger()
@@ -85,8 +85,8 @@ class WeatherSensor(object):
                 measurements = None
             else:
                 measurements = {
-                    "temperature": temperature,
-                    "humidity": humidity
+                    "temperature": round(temperature, 1),
+                    "humidity": round(humidity, 1)
                 }
         except Exception as err:
             if repeat > 0:
@@ -161,7 +161,7 @@ class WeatherSensor(object):
             self.stop_background_logger()
 
         self._background_logger_thread = (
-            threading.Thread(target=self.background_loger)
+            Thread(target=self.background_loger)
         )
         self._background_logger_stop_event.clear()  # clear stop signal
         self._background_logger_thread.start()
