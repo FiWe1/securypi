@@ -67,6 +67,7 @@ def generate_frames(output):
                frame + b"\r\n")
 
 
+# @ TODO: inherit from MySingleton - mixin? -> same behaviour as WeatherSensor
 class MyPicamera2(Picamera2):
     """
     My singleton wrapper class for Picamera2 with methods

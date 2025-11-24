@@ -32,3 +32,14 @@ class Measurement(db.Model):
         measurements = db.session.execute(select(cls))
         for m in measurements.scalars():
             print(m)
+    
+    def log(self) -> bool:
+        db.session.add(self)
+        try:
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+            print(e)
+            return True
+        
+        return False

@@ -2,7 +2,6 @@ from threading import Thread, Event
 from time import sleep
 
 from flask import current_app
-from securypi_app import db
 from securypi_app.models.measurement import Measurement
 
 # conditional import for RPi DHT22 temp/humidity sensor
@@ -24,7 +23,6 @@ except ImportError as e:
 MEASUREMENT_LOGGING_INTERVAL_SEC = 30
 
 
-# @TODO async thread, into ORM db!
 class WeatherSensor(object):
     """
     Singleton class for reading temperature and humidity.
@@ -125,13 +123,7 @@ class WeatherSensor(object):
                 temperature=values["temperature"],
                 humidity=values["humidity"]
             )
-            db.session.add(new_measurement)
-
-            try:
-                db.session.commit()
-            except Exception as e:
-                db.session.rollback()
-                print(e)
+            if not new_measurement.log():
                 return None
 
         return values
@@ -143,6 +135,8 @@ class WeatherSensor(object):
         self._background_logger_stop_event.set()
         """
         sleep(2)  # avoid sensor colisions on start # @TODO remove with sht30
+        # The new thread needs app context in order to have access
+        # to app variables, access to database
         with self._app.app_context():
             while True:
                 self.measure_and_log()

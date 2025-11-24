@@ -38,7 +38,7 @@ class TestMycamClass():
 
     def test_singleton(self, picam):
         """ Try to break singleton """
-        obj2 = MyPicamera2.get_instance()
+        obj2 = MyPicamera2()
         assert picam is obj2
 
     def test_instance_type(self, picam):
