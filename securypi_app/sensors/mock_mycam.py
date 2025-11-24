@@ -14,9 +14,14 @@ class MockStreamingOutput:
         if self.output:
             self.output.write(data)
 
-class MockPyavOutput(MockStreamingOutput):
+class MockPyavOutput():
+    def __init__(self, output=None):
+        self.output = output
+
     def write(self, data):
-        pass
+        if self.output:
+            with self.output.open("w") as f:
+                f.write("Mocking recording to a video output.")
     
 # mocking controls.draft.NoiseReductionModeEnum
 class NoiseReductionModeEnum:
@@ -25,6 +30,8 @@ class NoiseReductionModeEnum:
     HighQuality = 2
     Minimal = 3
     ZSL = 4
+    
+    __members__ = {'Off': 0, 'Fast':1, 'HighQuality': 2, 'Minimal': 3, 'ZSL': 4}
 
 class Draft:
     NoiseReductionModeEnum = NoiseReductionModeEnum

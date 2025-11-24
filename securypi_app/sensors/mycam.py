@@ -192,6 +192,9 @@ class MyPicamera2(Picamera2):
         }
         """
         nr_modes = controls.draft.NoiseReductionModeEnum.__members__
+        if noise_reduction_mode not in nr_modes.keys():
+            raise ValueError(f"Unknown NR mode value {noise_reduction_mode}. "
+                             f"Expected one of: {[key for key in nr_modes.keys()]}")
         self.set_controls(
             {"NoiseReductionMode": nr_modes[noise_reduction_mode]}
         )
