@@ -62,15 +62,17 @@ class TestWeatherSensor():
     def test_measure_or_na(self, sensor):
         pass
     
-    def test_background_logger_start():
+    def test_background_logger_start(self):
         pass
     
-    def test_background_logger():
+    def test_background_logger(self):
         pass
         # @TODO - check results appearing in db
     
+    
+    # static methods
     def test_c_to_fahrenheit(celsius: float):
         pass
     
-    def test_f_to_celsius(self, fahrenheit: float):
+    def test_f_to_celsius(fahrenheit: float):
         pass
