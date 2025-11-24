@@ -6,7 +6,7 @@ for platform independent development and testing.
 """
 
 MOCKED_TEMPERATURE = -273.15
-MOCKED_HUMIDITY = 0
+MOCKED_HUMIDITY = 0.0
 
 
 class MockDHT22:
