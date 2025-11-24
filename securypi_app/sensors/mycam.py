@@ -274,10 +274,12 @@ class MyPicamera2(Picamera2):
         return self._streaming_output
 
     def stop_capture_stream(self):
+        if self._stream_timer is not None:
+            self._stream_timer.cancel() # just to be sure
+            self._stream_timer = None
         if self._streaming_encoder is not None:
             self.stop_encoder(self._streaming_encoder)
             self._streaming_encoder = None
-            self._stream_timer = None
             print("Stopped video streaming (timer).")
         return self
 
