@@ -31,6 +31,7 @@ echo "---"
 echo "Installing required packages from requirements.txt..."
 echo "---"
 
+# Package install tools (installer + build backends)
 python -m pip install --upgrade pip setuptools wheel
 
 # Install base app requirements

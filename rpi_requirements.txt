@@ -1,4 +1,4 @@
-# Raspberry Pi platform-specific pip requirements
+# RASPBERRY PI platform-specific pip requirements
 
 
 # Camera Libraries

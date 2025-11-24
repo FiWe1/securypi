@@ -1,29 +1,73 @@
-@TODO Update project structure
+# Project file structure with some comments. Obtained from:
+# $ tree --gitignore
 
 /home/user/*/*/securypi
-├── securypi_app/
+├── captures
+├── other_info
+│   ├── coding_journal.txt
+│   ├── project_tree.txt
+│   └── sources.txt
+│
+│                          #.# PROJECT INFORMATION AND DEPENDENCIES
+├── pyproject.toml          # configuration of tools: pytest
+├── README.md
+├── requirements.txt        # base app pip packages
+├── rpi_requirements.txt    # rpi sensors pip packages
+│
+│
+├── scripts
+│   ├── app_run.sh          # activate .venv and start the app
+│   ├── count_project_lines.sh
+│   ├── init_db.sh
+│   └── venv_install.sh     # create virtual environment
+│                           # and install pip dependencies
+│
+├── securypi_app
 │   ├── __init__.py
-│   ├── db.py
-│   ├── schema.sql
-│   ├── auth.py
-│   ├── overview.py
-│   ├── templates/
-│   │   ├── base.html
-│   │   ├── auth/
-│   │   │   ├── login.html
-│   │   │   └── register.html
-│   │   └── overview/
-│   │       ├── index.html
-│   │       └── snapshot.html
-│   │       └── stream.html
-│   └── static/
-│       └── style.css
-├── tests/
-│   ├── conftest.py
-│   ├── data.sql
-│   ├── test_factory.py
-│   ├── test_db.py
-│   ├── test_auth.py
-│   └── test_blog.py
-├── .venv/
-└── pyproject.toml # @TODO what is pyproject.toml
+│   ├── blueprints
+│   │   ├── __init__.py
+│   │   ├── auth.py
+│   │   ├── camera_control.py
+│   │   ├── configure.py
+│   │   ├── overview.py
+│   │   ├── recordings.py
+│   │   ├── temp_history.py
+│   │   └── user_settings.py
+│   ├── models
+│   │   ├── __init__.py
+│   │   ├── init_db.py
+│   │   ├── measurement.py
+│   │   └── user.py
+│   ├── sensors
+│   │   ├── __init__.py
+│   │   ├── mock_mycam.py
+│   │   ├── mock_weather_sensor.py
+│   │   ├── mycam.py
+│   │   └── weather_sensor.py
+│   ├── services
+│   │   ├── __init__.py
+│   │   ├── auth.py
+│   │   ├── navbar.py
+│   │   └── string_parsing.py
+│   ├── static
+│   │   └── style.css
+│   └── templates
+│       ├── auth
+│       │   ├── login.html
+│       │   └── register.html
+│       ├── base.html
+│       ├── camera_control.html
+│       ├── configure.html
+│       ├── includes
+│       │   └── navbar.html
+│       ├── overview
+│       │   ├── index.html
+│       │   ├── snapshot.html
+│       │   └── stream.html
+│       ├── recordings.html
+│       ├── temp_history.html
+│       └── user_settings.html
+│
+│
+└── tests
+    └── ...
