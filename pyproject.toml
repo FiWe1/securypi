@@ -3,3 +3,6 @@ minversion = "6.0"
 pythonpath = "securypi_app"
 testpaths = "tests"
 addopts = "-ra"     # extra test summary info
+filterwarnings = [
+    "ignore::DeprecationWarning"    # Pycamera2 internal deprecation warnings
+]
