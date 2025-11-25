@@ -67,7 +67,73 @@ def generate_frames(output):
                frame + b"\r\n")
 
 
-class MyPicamera2(Picamera2):
+class MyPicamera2Interface:
+    """
+    Interface for MyPicamera2's public methods.
+    Must Not be instanciated.
+    """
+    def get_instance(cls):
+        """ Singleton access method. """
+        pass
+
+    def set_noise_reduction(self, noise_reduction_mode="Fast"):
+        """
+        Noise Reduction Modes:
+        {
+            'Off': <NoiseReductionModeEnum.Off: 0>,
+            'Fast': <NoiseReductionModeEnum.Fast: 1>,
+            'HighQuality': <NoiseReductionModeEnum.HighQuality: 2>,
+            'Minimal': <NoiseReductionModeEnum.Minimal: 3>,
+            'ZSL': <NoiseReductionModeEnum.ZSL: 4>
+        }
+        """
+        pass
+
+    def set_framerate(self, framerate=None):
+        pass
+
+    def is_recording(self):
+        pass
+
+    def is_streaming(self):
+        pass
+
+    def start_recording_to_file(self,
+                                output_path: str,
+                                stream: str = "main",
+                                encode_quality=Quality.MEDIUM):
+        """
+        Start high-res video recording to file.
+        -> output_path
+        -> stream: which stream to record from ("main" or "lores")
+        -> encode_quality: Quality.[LOW | MEDIUM | HIGH]
+        """
+        pass
+
+    def start_default_recording(self,
+                                stream="main",
+                                encode_quality=Quality.LOW) -> Path:
+        """
+        Start recording to /captures/recordings
+        with returned default filename (current datetime).
+        """
+        pass
+
+    def stop_recording_to_file(self):
+        pass
+
+    def start_capture_stream(self, stream: str = "lores") -> StreamingOutput:
+        """ Start live streaming mjpeg to the returned StreamingOutput. """
+        pass
+
+    def stop_capture_stream(self):
+        pass
+
+    def capture_picture(self):
+        """ Capture an image, return image data. """
+
+
+class MyPicamera2(MyPicamera2Interface, Picamera2):
     """
     My singleton wrapper class for Picamera2 with methods
     for streaming and taking pictures.
@@ -102,7 +168,6 @@ class MyPicamera2(Picamera2):
 
     @classmethod
     def get_instance(cls):
-        """ Singleton access method. """
         return cls()
 
     def get_best_sensor_mode(self, resolution, fps):
@@ -176,7 +241,7 @@ class MyPicamera2(Picamera2):
         return self
 
     def configure_runtime_controls(self):
-        self.set_noise_reduction()  # turn off for now
+        self.set_noise_reduction()
         self.set_framerate(RECORDING_FRAMERATE)
         return self
 
@@ -286,7 +351,6 @@ class MyPicamera2(Picamera2):
         return self
 
     def capture_picture(self):
-        # Capture an image to a BytesIO object
         buffer = io.BytesIO()
         self.start()
         self.capture_file(buffer, format="jpeg")
