@@ -29,7 +29,7 @@ except ImportError as e:
 
 
 # @TODO move to global config
-STREAM_TIMEOUT = 5 * 60 # 5 minutes
+STREAM_TIMEOUT = 5 * 60  # 5 minutes
 RECORDING_FRAMERATE = 25
 MAIN_RESOLUTION = (1920, 1080)
 STREAM_RESOLUTION = (800, 450)
@@ -67,7 +67,6 @@ def generate_frames(output):
                frame + b"\r\n")
 
 
-# @ TODO: inherit from MySingleton - mixin? -> same behaviour as WeatherSensor
 class MyPicamera2(Picamera2):
     """
     My singleton wrapper class for Picamera2 with methods
@@ -87,14 +86,14 @@ class MyPicamera2(Picamera2):
         if self._initialized:
             return
         super().__init__()
-        
+
         self.configure_video_sensor()
         self.configure_video_streams()
         self.configure_runtime_controls()
-        
+
         self._streaming_output = StreamingOutput()
         self._stream_timer = None
-        
+
         self._recording_encoder = None
         self._streaming_encoder = None
 
@@ -105,14 +104,14 @@ class MyPicamera2(Picamera2):
     def get_instance(cls):
         """ Singleton access method. """
         return cls()
-    
+
     def get_best_sensor_mode(self, resolution, fps):
         """
         Find highest resolution sensor mode
         with ability to provide requested framerate.
         """
         all_modes = self.sensor_modes
-        
+
         fps_eligible = []
         for mode in all_modes:
             if mode["fps"] >= fps:
@@ -123,7 +122,7 @@ class MyPicamera2(Picamera2):
             best_mode = fps_eligible[-1]
         else:
             best_mode = None
-        
+
         return best_mode
 
     def configure_video_sensor(self):
@@ -134,9 +133,9 @@ class MyPicamera2(Picamera2):
         # @TODO retrieve from config.json
         resolution = MAIN_RESOLUTION
         fps = RECORDING_FRAMERATE
-        
+
         config = self.video_configuration
-        
+
         best_config = self.get_best_sensor_mode(resolution, fps)
         if best_config is not None:
             size = best_config["size"]
@@ -167,7 +166,7 @@ class MyPicamera2(Picamera2):
         stream_res = STREAM_RESOLUTION
         if STREAM_RESOLUTION > MAIN_RESOLUTION:
             stream_res = MAIN_RESOLUTION
-        
+
         config.enable_lores()
         config.lores.size = stream_res
         # default stream for video encoding
@@ -177,7 +176,7 @@ class MyPicamera2(Picamera2):
         return self
 
     def configure_runtime_controls(self):
-        self.set_noise_reduction() # turn off for now
+        self.set_noise_reduction()  # turn off for now
         self.set_framerate(RECORDING_FRAMERATE)
         return self
 
@@ -200,19 +199,19 @@ class MyPicamera2(Picamera2):
             {"NoiseReductionMode": nr_modes[noise_reduction_mode]}
         )
         return self
-    
+
     def set_framerate(self, framerate=None):
         if framerate is None:
             framerate = RECORDING_FRAMERATE
         if framerate < 1:
             framerate = 30
-        
+
         duration_limit = int(round(1 / framerate * 1000000, 0))
-        
+
         self.set_controls(
             {"FrameDurationLimits": (duration_limit, duration_limit)}
         )
-        
+
         return self
 
     def is_recording(self):
@@ -238,19 +237,19 @@ class MyPicamera2(Picamera2):
                            quality=encode_quality)
         self.start()
         return self
-    
+
     def start_default_recording(self,
                                 stream="main",
                                 encode_quality=Quality.LOW) -> Path:
         filename = timed_filename(".mp4")
         path_str = "captures/recordings/"
-        
+
         path = Path(path_str)
         path.mkdir(parents=True, exist_ok=True)
         full_path = path / filename
-        
+
         self.start_recording_to_file(full_path, stream, encode_quality)
-        
+
         return full_path
 
     def stop_recording_to_file(self):
@@ -270,15 +269,15 @@ class MyPicamera2(Picamera2):
                                FileOutput(self._streaming_output),
                                name=stream)
             self.start()
-            
+
         self._stream_timer = Timer(STREAM_TIMEOUT, self.stop_capture_stream)
         self._stream_timer.start()
-        
+
         return self._streaming_output
 
     def stop_capture_stream(self):
         if self._stream_timer is not None:
-            self._stream_timer.cancel() # just to be sure
+            self._stream_timer.cancel()  # just to be sure
             self._stream_timer = None
         if self._streaming_encoder is not None:
             self.stop_encoder(self._streaming_encoder)
