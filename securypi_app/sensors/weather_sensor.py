@@ -24,7 +24,72 @@ LOGGING_INTERVAL_SEC = 30
 LOG_WEATHER_IN_BACKGROUND = True
 
 
-class WeatherSensor(object):
+class WeatherSensorInterface:
+    """
+    Interface for WeatherSensor's public methods.
+    Must Not be instanciated.
+    """
+    @classmethod
+    def get_instance(cls):
+        """ Singleton access method. """
+        pass
+
+    def set_pin(self, pin: board):  # type: ignore
+        """ Set GPIO pin=board.D{number} for sensor data. """
+        pass
+
+    def get_temperature(self) -> float | None:
+        """ Get temperature in Celsius. (DHT22 sensor). """
+        pass
+
+    def get_humidity(self) -> float | None:
+        """ Get humidity in %. (DHT22 sensor). """
+        pass
+
+    def measure(self, repeat) -> dict[float] | None:
+        """ 
+        Measure temperature and humidity using sensor device.
+        On failure, retry 'repeat' times before returning None.
+        """
+        pass
+
+    def measure_or_na(self, temp_unit="C") -> dict[float | str, float | str]:
+        """ 
+        Measure temperature and humidity, on failure format the results:
+        return dict{x: "N/A", ..., z: "N/A"}.
+        Convert temerature to specified unit:
+        "C" (Celsius) or "F" (Fahrenheit)
+        """
+        pass
+
+    def measure_and_log(self) -> dict[float] | None:
+        """
+        Measure temperature and humidity and store in db.
+        On success return dictionary of measured values, None othervise.
+        """
+        pass
+
+    # Background measurement logging into database.
+    def is_logging(self) -> bool:
+        """ Is background logger running? """
+        pass
+
+    def set_log_in_background(self, set: bool):
+        """ Set and start/stop background logging. """
+        pass
+
+    def get_logging_interval(self) -> int:
+        pass
+
+    def set_logging_interval(self, seconds: int):
+        """
+        Update logging interval.
+        If logging is running, restart and log in this interval.
+        """
+        pass
+
+
+class WeatherSensor(WeatherSensorInterface):
     """
     Singleton class for reading temperature and humidity.
     Uses DHT22 sensor connected to specified GPIO pin.
@@ -47,7 +112,7 @@ class WeatherSensor(object):
 
         # sensor
         self.set_pin(pin)
-        self._sensor = DHT22(self.__pin)
+        self._sensor = DHT22(self._pin)
 
         # background logging
         self._logging_thread = None
@@ -58,52 +123,44 @@ class WeatherSensor(object):
 
     @classmethod
     def get_instance(cls):
-        """ Singleton access method. """
         return cls()
 
     def set_pin(self, pin):
-        """ Set GPIO pin=board.D{number} for sensor data. """
-        self.__pin = pin
+        self._pin = pin
         return self
 
-    def get_temperature(self):
-        """ Get temperature in Celsius. (DHT22 sensor). """
-        return self._sensor.temperature
+    def get_temperature(self) -> float | None:
+        try:
+            readout = self._sensor.temperature
+        except Exception as err:
+            readout = None
+            print(f"Failed to read from temperature sensor: {err}")
+        return readout
 
-    def get_humidity(self):
-        """ Get humidity. (DHT22 sensor). """
-        return self._sensor.humidity
+    def get_humidity(self) -> float | None:
+        try:
+            readout = self._sensor.humidity
+        except Exception as err:
+            readout = None
+            print(f"Failed to read from temperature sensor: {err}")
+        return readout
 
     def measure(self, repeat=5) -> dict[float] | None:
-        """ 
-        Measure temperature and humidity using sensor device.
-        On failure, retry 'repeat' times before returning None.
-        """
-        try:
-            temperature = self.get_temperature()
-            humidity = self.get_humidity()
-            if temperature is None or humidity is None:
-                measurements = None
-            else:
-                measurements = {
-                    "temperature": round(temperature, 1),
-                    "humidity": round(humidity, 1)
-                }
-        except Exception as err:
-            if repeat > 0:
-                return self.measure(repeat=(repeat - 1))
+        temperature = self.get_temperature()
+        humidity = self.get_humidity()
 
-            print(f"Failed to read from temperature sensor: {err}")
-            measurements = None
+        if temperature is not None and humidity is not None:
+            return {
+                "temperature": round(temperature, 1),
+                "humidity": round(humidity, 1)
+            }
 
-        return measurements
+        if repeat > 0:
+            return self.measure(repeat=(repeat - 1))
+
+        return None
 
     def measure_or_na(self, temp_unit="C") -> dict[float | str, float | str]:
-        """ 
-        Measure temperature and humidity, return dict["N/A", ...] on failure.
-        Convert temerature to specified
-        unit: "C" (Celsius) or "F" (Fahrenheit).
-        """
         values = self.measure()
 
         if values is None:
@@ -118,7 +175,6 @@ class WeatherSensor(object):
         return values
 
     def measure_and_log(self) -> dict[float] | None:
-        """ Measure temperature and humidity and store in db. """
         values = self.measure()
 
         if values is not None:
@@ -131,11 +187,10 @@ class WeatherSensor(object):
 
         return values
 
-    def loger(self):
+    def logger(self):
         """
         Countinuously log sensor measurements to the database
-        in configured interval, until signalized on:
-        self._logging_stop_event.set()
+        in configured interval.
         """
         sleep(2)  # avoid sensor colisions on start # @TODO remove with sht30
         # The new thread needs app context in order to have access
@@ -159,28 +214,22 @@ class WeatherSensor(object):
         if self._log_in_background:
             self.start_logging()
 
-    # @@@TODO: implement this interface
     def set_log_in_background(self, set: bool):
-        """ Set and start/stop background logging. """
         self._log_in_background = set
         # @TODO: update json
         if set:
             self.start_logging()
         else:
             self.stop_logging()
-    
+
     def get_logging_interval(self) -> int:
         return self._logging_interval
 
     def set_logging_interval(self, seconds: int):
-        """
-        Update logging interval.
-        If logging is running, restart and apply immediately.
-        """
         self._logging_interval = seconds
         # @TODO: update json
         if self.is_logging():
-            self.start_logging() # restarts the running logging
+            self.start_logging()  # restarts the running logging
 
     def start_logging(self):
         """
@@ -193,7 +242,7 @@ class WeatherSensor(object):
             self.stop_logging()
 
         self._logging_thread = (
-            Thread(target=self.loger)
+            Thread(target=self.logger)
         )
         self._logging_stop_event.clear()  # clear stop signal
         self._logging_thread.start()
