@@ -67,16 +67,27 @@ class TestWeatherSensor():
         assert isinstance(res["humidity"], (float, str))
 
     def test_logging_running(self, sensor):
-        sensor.stop_logging()
-        sensor.stop_logging()
-        assert not sensor.is_logging()
+        original_state = sensor.is_logging()
+        try:
+            # force test internal start/stop interface
+            sensor.stop_logging()
+            sensor.stop_logging()
+            assert not sensor.is_logging()
 
-        sensor.start_logging()
-        sensor.start_logging()
-        assert sensor.is_logging()
+            sensor.start_logging()
+            sensor.start_logging()
+            assert sensor.is_logging()
 
-        sensor.stop_logging()
-        assert not sensor.is_logging()
+            # test set interface
+            sensor.set_log_in_background(False)
+            assert not sensor.is_logging()
+            
+            sensor.set_log_in_background(True)
+            assert sensor.is_logging()
+            
+        # reapply the previous config value
+        finally:
+            sensor.set_log_in_background(original_state)
 
     def test_logging(self, sensor):
         old_mes = Measurement.fetch_latest()
@@ -95,8 +106,10 @@ class TestWeatherSensor():
         Setting a new background measurement interval should result
         in an immediate change (don't want to be stuck)
         """
-        old_interval = sensor.get_logging_interval()
+        original_state = sensor.is_logging()
+        original_interval = sensor.get_logging_interval()
         try:
+            sensor.set_log_in_background(True)
             sensor.set_logging_interval(60)
             sleep(3)
             first_mes = Measurement.fetch_latest()
@@ -104,14 +117,16 @@ class TestWeatherSensor():
             sensor.set_logging_interval(5)
             sleep(3)
             second_mes = Measurement.fetch_latest()
+            assert first_mes.time < second_mes.time
             
             sleep(5)
             third_mes = Measurement.fetch_latest()
-            assert first_mes.time < second_mes.time < third_mes.time
+            assert second_mes.time < third_mes.time
             
         finally:
-            # reapply the previous value
-            sensor.set_logging_interval(old_interval)
+            # reapply the previous config value
+            sensor.set_log_in_background(original_state)
+            sensor.set_logging_interval(original_interval)
         
 
 
