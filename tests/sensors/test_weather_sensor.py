@@ -5,7 +5,7 @@ from securypi_app.sensors.weather_sensor import WeatherSensor
 
 
 class TestWeatherSensor():
-    
+
     @pytest.fixture
     def app(self):
         """
@@ -16,7 +16,6 @@ class TestWeatherSensor():
         with app.app_context():
             yield app
 
-    
     @pytest.fixture
     def sensor(self, app):
         """
@@ -34,7 +33,7 @@ class TestWeatherSensor():
         sensor._background_logger_stop_event.clear()
 
         del sensor  # delete object reference
-    
+
     def test_singleton(self, sensor):
         """ Try to break singleton """
         obj2 = WeatherSensor()
@@ -47,35 +46,44 @@ class TestWeatherSensor():
         except:
             # might fail - not handling exceptions
             return
-        
+
         assert isinstance(temp, float)
         assert isinstance(hum, float)
-    
+
     def test_measure(self, sensor):
         res = sensor.measure()
         if res == None:
             return
-        
+
         assert isinstance(res["temperature"], float)
         assert isinstance(res["humidity"], float)
-    
+
     def test_measure_or_na(self, sensor):
         res = sensor.measure_or_na()
-        
+
         assert isinstance(res["temperature"], (float, str))
         assert isinstance(res["humidity"], (float, str))
-    
+
     def test_background_logger_start(self):
         pass
-    
+
     def test_background_logger(self):
         pass
         # @TODO - check results appearing in db
-    
-    
+
+
+    C_TO_F_DATA = [
+        (0, 32.0),
+        (100, 212.0),
+        (-40, -40.0),
+        (20, 68.0),
+        (37, 98.6)
+    ]
     # static methods
-    def test_c_to_fahrenheit(celsius: float):
-        pass
-    
-    def test_f_to_celsius(fahrenheit: float):
-        pass
+    @pytest.mark.parametrize("celsius,fahrenheit", C_TO_F_DATA)
+    def test_conversions(self, sensor, celsius, fahrenheit):
+        c_result = sensor.f_to_celsius(fahrenheit)
+        assert celsius == c_result
+
+        f_result = sensor.c_to_fahrenheit(celsius)
+        assert fahrenheit == f_result

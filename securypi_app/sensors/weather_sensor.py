@@ -177,6 +177,6 @@ class WeatherSensor(object):
         return (celsius * 9/5) + 32
 
     @staticmethod
-    def f_to_celsius(self, fahrenheit: float) -> float:
+    def f_to_celsius(fahrenheit: float) -> float:
         """ Convert Fahrenheit to Celsius. """
         return (fahrenheit - 32) * 5/9
