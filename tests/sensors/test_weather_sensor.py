@@ -105,9 +105,9 @@ class TestWeatherSensor():
             sleep(3)
             second_mes = Measurement.fetch_latest()
             
-            sleep(3)
+            sleep(5)
             third_mes = Measurement.fetch_latest()
-            assert first_mes.time < second_mes.time# < third_mes.time
+            assert first_mes.time < second_mes.time < third_mes.time
             
         finally:
             # reapply the previous value
