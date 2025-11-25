@@ -1,3 +1,5 @@
+from __future__ import annotations  # fix class forward referencing issue
+
 from datetime import datetime
 from sqlalchemy import Integer, Float, DateTime, select, text
 from sqlalchemy.orm import Mapped, mapped_column
@@ -32,7 +34,15 @@ class Measurement(db.Model):
         measurements = db.session.execute(select(cls))
         for m in measurements.scalars():
             print(m)
-    
+
+    @classmethod
+    def fetch_latest(cls) -> Measurement:
+        stmt = (select(cls)
+                .order_by(cls.time.desc())
+                .limit(1)
+                )
+        return db.session.execute(stmt).scalar_one_or_none()
+
     def log(self) -> bool:
         db.session.add(self)
         try:
@@ -41,5 +51,5 @@ class Measurement(db.Model):
             db.session.rollback()
             print(e)
             return True
-        
+
         return False

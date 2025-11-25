@@ -1,6 +1,8 @@
 import pytest
+from time import sleep
 
 from securypi_app import create_app
+from securypi_app.models.measurement import Measurement
 from securypi_app.sensors.weather_sensor import WeatherSensor
 
 
@@ -64,12 +66,29 @@ class TestWeatherSensor():
         assert isinstance(res["temperature"], (float, str))
         assert isinstance(res["humidity"], (float, str))
 
-    def test_background_logger_start(self):
-        pass
+    def test_background_logger_running(self, sensor):
+        sensor.stop_background_logger()
+        sensor.stop_background_logger()
+        assert not sensor.is_background_logging()
+        
+        sensor.start_background_logger()
+        sensor.start_background_logger()
+        assert sensor.is_background_logging()
+        
+        sensor.stop_background_logger()
+        assert not sensor.is_background_logging()
 
-    def test_background_logger(self):
-        pass
-        # @TODO - check results appearing in db
+    def test_background_logger(self, sensor):
+        old_mes = Measurement.fetch_latest()
+        old_time = old_mes.time
+        
+        sensor.start_background_logger()
+        sleep(3)
+        
+        new_mes = Measurement.fetch_latest()
+        new_time = new_mes.time
+        
+        assert old_time < new_time
 
 
     C_TO_F_DATA = [
