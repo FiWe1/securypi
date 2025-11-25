@@ -28,11 +28,11 @@ class TestWeatherSensor():
         yield sensor
 
         # try to get WeatherSensor to default state
-        sensor._background_logger_stop_event.set()
-        if sensor.is_background_logging():
-            sensor._background_logger_thread.join()
-            sensor._background_logger_thread = None
-        sensor._background_logger_stop_event.clear()
+        sensor._logger_stop_event.set()
+        if sensor.is_logging():
+            sensor._logger_thread.join()
+            sensor._logger_thread = None
+        sensor._logger_stop_event.clear()
 
         del sensor  # delete object reference
 
@@ -66,23 +66,23 @@ class TestWeatherSensor():
         assert isinstance(res["temperature"], (float, str))
         assert isinstance(res["humidity"], (float, str))
 
-    def test_background_logger_running(self, sensor):
-        sensor.stop_background_logger()
-        sensor.stop_background_logger()
-        assert not sensor.is_background_logging()
+    def test_logger_running(self, sensor):
+        sensor.stop_logger()
+        sensor.stop_logger()
+        assert not sensor.is_logging()
         
-        sensor.start_background_logger()
-        sensor.start_background_logger()
-        assert sensor.is_background_logging()
+        sensor.start_logger()
+        sensor.start_logger()
+        assert sensor.is_logging()
         
-        sensor.stop_background_logger()
-        assert not sensor.is_background_logging()
+        sensor.stop_logger()
+        assert not sensor.is_logging()
 
-    def test_background_logger(self, sensor):
+    def test_logger(self, sensor):
         old_mes = Measurement.fetch_latest()
         old_time = old_mes.time
         
-        sensor.start_background_logger()
+        sensor.start_logger()
         sleep(3)
         
         new_mes = Measurement.fetch_latest()

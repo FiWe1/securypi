@@ -20,7 +20,8 @@ except ImportError as e:
 
 
 # @TODO move to centralised serialised json config
-MEASUREMENT_LOGGING_INTERVAL_SEC = 30
+LOGGING_INTERVAL_SEC = 30
+LOG_WEATHER_IN_BACKGROUND = True
 
 
 class WeatherSensor(object):
@@ -43,13 +44,15 @@ class WeatherSensor(object):
             return
         super().__init__()
         self._app = current_app._get_current_object()
+        
+        # sensor
         self.set_pin(pin)
         self._sensor = DHT22(self.__pin)
-        self._background_logger_thread = None
-        self._background_logger_stop_event = Event()
-
-        # implicitly log in background
-        self.start_background_logger()
+        
+        # background logger
+        self._logger_thread = None
+        self._logger_stop_event = Event()
+        self.apply_logger_config()
 
         self._initialized = True
 
@@ -128,7 +131,7 @@ class WeatherSensor(object):
 
         return values
 
-    def background_loger(self):
+    def loger(self):
         """
         Countinuously log sensor measurements to the database
         in configured interval, until signalized on:
@@ -140,33 +143,58 @@ class WeatherSensor(object):
         with self._app.app_context():
             while True:
                 self.measure_and_log()
-                interval = MEASUREMENT_LOGGING_INTERVAL_SEC
-                if self._background_logger_stop_event.wait(timeout=interval):
+                interval = self._logger_interval
+                if self._logger_stop_event.wait(timeout=interval):
                     print("Background WeatherSensor logger exited cleanly.")
                     break
 
-    def is_background_logging(self) -> bool:
-        return self._background_logger_thread is not None
+    def is_logging(self) -> bool:
+        return self._logger_thread is not None
+    
+    def apply_logger_config(self):
+        """ Load and apply background logging configuration. """
+        # @TODO: from json
+        self._log_in_background = LOG_WEATHER_IN_BACKGROUND
+        self._logger_interval = LOGGING_INTERVAL_SEC
+        if self._log_in_background:
+            self.start_logger()
+    
+    # @@@TODO: implement this interface
+    def set_background_logging(self, set: bool):
+        """ Set and start/stop background logger. """
+        self._log_in_background = set
+        # @TODO: update json
+        if set:
+            self.start_logger()
+        else:
+            self.stop_logger()
+    
+    def set_logging_interval(self, seconds: int):
+        self._logger_interval = seconds
+        # @TODO: update json
+        if self.is_logging(): # @TODO: test: might not need this
+            self.stop_logger()
+            self.start_logger()
 
-    def start_background_logger(self):
-        if self.is_background_logging():
+    def start_logger(self):
+        if self.is_logging():
             print("Background WeatherSensor logger was not stopped, "
                   "stopping now...")
-            self.stop_background_logger()
+            self.stop_logger()
 
-        self._background_logger_thread = (
-            Thread(target=self.background_loger)
+        self._logger_thread = (
+            Thread(target=self.loger)
         )
-        self._background_logger_stop_event.clear()  # clear stop signal
-        self._background_logger_thread.start()
+        self._logger_stop_event.clear()  # clear stop signal
+        self._logger_thread.start()
         print("Background WeatherSensor logging has started")
 
-    def stop_background_logger(self):
-        if self.is_background_logging():
-            self._background_logger_stop_event.set()  # signal stop
-            self._background_logger_thread.join()
+    def stop_logger(self):
+        if self.is_logging():
+            self._logger_stop_event.set()  # signal stop
+            self._logger_thread.join()
 
-            self._background_logger_thread = None
+            self._logger_thread = None
         else:
             print("Can't stop background WeatherSensor logger, "
                   "it is not running.")

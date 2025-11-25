@@ -14,7 +14,7 @@ def start_weather_logging():
     sensor = WeatherSensor.get_instance()
 
     try:
-        sensor.start_background_logger()
+        sensor.start_logger()
     except Exception as e:
         print(f"Error starting recording: {e}")
         flash("Error starting recording.")
@@ -28,7 +28,7 @@ def stop_weather_logging():
     sensor = WeatherSensor.get_instance()
 
     try:
-        sensor.stop_background_logger()
+        sensor.stop_logger()
     except Exception as e:
         print(f"Error stopping recording: {e}")
         flash("Error stopping recording.")
@@ -42,7 +42,7 @@ def stop_weather_logging():
 def index():
     """ Default (index) route for configure blueprint. """
     sensor = WeatherSensor.get_instance()
-    is_weather_logging = sensor.is_background_logging()
+    is_weather_logging = sensor.is_logging()
     return render_template("configure.html",
                            is_weather_logging=is_weather_logging)
 
