@@ -90,6 +90,7 @@ class TestWeatherSensor():
 
         assert old_time < new_time
 
+
     C_TO_F_DATA = [
         (0, 32.0),
         (100, 212.0),
@@ -98,7 +99,6 @@ class TestWeatherSensor():
         (37, 98.6)
     ]
     # static methods
-
     @pytest.mark.parametrize("celsius,fahrenheit", C_TO_F_DATA)
     def test_conversions(self, sensor, celsius, fahrenheit):
         c_result = sensor.f_to_celsius(fahrenheit)

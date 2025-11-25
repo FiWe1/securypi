@@ -160,7 +160,7 @@ class WeatherSensor(object):
             self.start_logging()
 
     # @@@TODO: implement this interface
-    def set_background_logging(self, set: bool):
+    def set_log_in_background(self, set: bool):
         """ Set and start/stop background logging. """
         self._log_in_background = set
         # @TODO: update json
@@ -170,6 +170,7 @@ class WeatherSensor(object):
             self.stop_logging()
 
     def set_logging_interval(self, seconds: int):
+        """ Update logging interval. If running, apply immediately. """
         self._logging_interval = seconds
         # @TODO: update json
         if self.is_logging():  # @TODO: test: might not need this
