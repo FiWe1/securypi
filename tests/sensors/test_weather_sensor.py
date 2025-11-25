@@ -89,6 +89,30 @@ class TestWeatherSensor():
         new_time = new_mes.time
 
         assert old_time < new_time
+    
+    def test_set_logging_interval(self, sensor):
+        """
+        Setting a new background measurement interval should result
+        in an immediate change (don't want to be stuck)
+        """
+        old_interval = sensor.get_logging_interval()
+        try:
+            sensor.set_logging_interval(60)
+            sleep(3)
+            first_mes = Measurement.fetch_latest()
+            
+            sensor.set_logging_interval(5)
+            sleep(3)
+            second_mes = Measurement.fetch_latest()
+            
+            sleep(3)
+            third_mes = Measurement.fetch_latest()
+            assert first_mes.time < second_mes.time# < third_mes.time
+            
+        finally:
+            # reapply the previous value
+            sensor.set_logging_interval(old_interval)
+        
 
 
     C_TO_F_DATA = [

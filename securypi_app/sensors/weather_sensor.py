@@ -168,16 +168,25 @@ class WeatherSensor(object):
             self.start_logging()
         else:
             self.stop_logging()
+    
+    def get_logging_interval(self) -> int:
+        return self._logging_interval
 
     def set_logging_interval(self, seconds: int):
-        """ Update logging interval. If running, apply immediately. """
+        """
+        Update logging interval.
+        If logging is running, restart and apply immediately.
+        """
         self._logging_interval = seconds
         # @TODO: update json
-        if self.is_logging():  # @TODO: test: might not need this
-            self.stop_logging()
-            self.start_logging()
+        if self.is_logging():
+            self.start_logging() # restarts the running logging
 
     def start_logging(self):
+        """
+        Start background measurement logging.
+        If logging was running, restart it.
+        """
         if self.is_logging():
             print("Background WeatherSensor logger was not stopped, "
                   "stopping now...")
