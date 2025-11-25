@@ -28,11 +28,11 @@ class TestWeatherSensor():
         yield sensor
 
         # try to get WeatherSensor to default state
-        sensor._logger_stop_event.set()
+        sensor._logging_stop_event.set()
         if sensor.is_logging():
-            sensor._logger_thread.join()
-            sensor._logger_thread = None
-        sensor._logger_stop_event.clear()
+            sensor._logging_thread.join()
+            sensor._logging_thread = None
+        sensor._logging_stop_event.clear()
 
         del sensor  # delete object reference
 
@@ -66,30 +66,29 @@ class TestWeatherSensor():
         assert isinstance(res["temperature"], (float, str))
         assert isinstance(res["humidity"], (float, str))
 
-    def test_logger_running(self, sensor):
-        sensor.stop_logger()
-        sensor.stop_logger()
-        assert not sensor.is_logging()
-        
-        sensor.start_logger()
-        sensor.start_logger()
-        assert sensor.is_logging()
-        
-        sensor.stop_logger()
+    def test_logging_running(self, sensor):
+        sensor.stop_logging()
+        sensor.stop_logging()
         assert not sensor.is_logging()
 
-    def test_logger(self, sensor):
+        sensor.start_logging()
+        sensor.start_logging()
+        assert sensor.is_logging()
+
+        sensor.stop_logging()
+        assert not sensor.is_logging()
+
+    def test_logging(self, sensor):
         old_mes = Measurement.fetch_latest()
         old_time = old_mes.time
-        
-        sensor.start_logger()
+
+        sensor.start_logging()
         sleep(3)
-        
+
         new_mes = Measurement.fetch_latest()
         new_time = new_mes.time
-        
-        assert old_time < new_time
 
+        assert old_time < new_time
 
     C_TO_F_DATA = [
         (0, 32.0),
@@ -99,6 +98,7 @@ class TestWeatherSensor():
         (37, 98.6)
     ]
     # static methods
+
     @pytest.mark.parametrize("celsius,fahrenheit", C_TO_F_DATA)
     def test_conversions(self, sensor, celsius, fahrenheit):
         c_result = sensor.f_to_celsius(fahrenheit)

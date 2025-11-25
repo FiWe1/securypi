@@ -14,7 +14,7 @@ def start_weather_logging():
     sensor = WeatherSensor.get_instance()
 
     try:
-        sensor.start_logger()
+        sensor.start_logging()
     except Exception as e:
         print(f"Error starting recording: {e}")
         flash("Error starting recording.")
@@ -28,7 +28,7 @@ def stop_weather_logging():
     sensor = WeatherSensor.get_instance()
 
     try:
-        sensor.stop_logger()
+        sensor.stop_logging()
     except Exception as e:
         print(f"Error stopping recording: {e}")
         flash("Error stopping recording.")

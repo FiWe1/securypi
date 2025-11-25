@@ -44,15 +44,15 @@ class WeatherSensor(object):
             return
         super().__init__()
         self._app = current_app._get_current_object()
-        
+
         # sensor
         self.set_pin(pin)
         self._sensor = DHT22(self.__pin)
-        
-        # background logger
-        self._logger_thread = None
-        self._logger_stop_event = Event()
-        self.apply_logger_config()
+
+        # background logging
+        self._logging_thread = None
+        self._logging_stop_event = Event()
+        self.apply_logging_config()
 
         self._initialized = True
 
@@ -135,7 +135,7 @@ class WeatherSensor(object):
         """
         Countinuously log sensor measurements to the database
         in configured interval, until signalized on:
-        self._background_logger_stop_event.set()
+        self._logging_stop_event.set()
         """
         sleep(2)  # avoid sensor colisions on start # @TODO remove with sht30
         # The new thread needs app context in order to have access
@@ -143,58 +143,58 @@ class WeatherSensor(object):
         with self._app.app_context():
             while True:
                 self.measure_and_log()
-                interval = self._logger_interval
-                if self._logger_stop_event.wait(timeout=interval):
+                interval = self._logging_interval
+                if self._logging_stop_event.wait(timeout=interval):
                     print("Background WeatherSensor logger exited cleanly.")
                     break
 
     def is_logging(self) -> bool:
-        return self._logger_thread is not None
-    
-    def apply_logger_config(self):
+        return self._logging_thread is not None
+
+    def apply_logging_config(self):
         """ Load and apply background logging configuration. """
         # @TODO: from json
         self._log_in_background = LOG_WEATHER_IN_BACKGROUND
-        self._logger_interval = LOGGING_INTERVAL_SEC
+        self._logging_interval = LOGGING_INTERVAL_SEC
         if self._log_in_background:
-            self.start_logger()
-    
+            self.start_logging()
+
     # @@@TODO: implement this interface
     def set_background_logging(self, set: bool):
-        """ Set and start/stop background logger. """
+        """ Set and start/stop background logging. """
         self._log_in_background = set
         # @TODO: update json
         if set:
-            self.start_logger()
+            self.start_logging()
         else:
-            self.stop_logger()
-    
-    def set_logging_interval(self, seconds: int):
-        self._logger_interval = seconds
-        # @TODO: update json
-        if self.is_logging(): # @TODO: test: might not need this
-            self.stop_logger()
-            self.start_logger()
+            self.stop_logging()
 
-    def start_logger(self):
+    def set_logging_interval(self, seconds: int):
+        self._logging_interval = seconds
+        # @TODO: update json
+        if self.is_logging():  # @TODO: test: might not need this
+            self.stop_logging()
+            self.start_logging()
+
+    def start_logging(self):
         if self.is_logging():
             print("Background WeatherSensor logger was not stopped, "
                   "stopping now...")
-            self.stop_logger()
+            self.stop_logging()
 
-        self._logger_thread = (
+        self._logging_thread = (
             Thread(target=self.loger)
         )
-        self._logger_stop_event.clear()  # clear stop signal
-        self._logger_thread.start()
+        self._logging_stop_event.clear()  # clear stop signal
+        self._logging_thread.start()
         print("Background WeatherSensor logging has started")
 
-    def stop_logger(self):
+    def stop_logging(self):
         if self.is_logging():
-            self._logger_stop_event.set()  # signal stop
-            self._logger_thread.join()
+            self._logging_stop_event.set()  # signal stop
+            self._logging_thread.join()
 
-            self._logger_thread = None
+            self._logging_thread = None
         else:
             print("Can't stop background WeatherSensor logger, "
                   "it is not running.")
