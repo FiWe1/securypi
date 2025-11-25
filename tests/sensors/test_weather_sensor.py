@@ -60,7 +60,10 @@ class TestWeatherSensor():
         assert isinstance(res["humidity"], float)
     
     def test_measure_or_na(self, sensor):
-        pass
+        res = sensor.measure_or_na()
+        
+        assert isinstance(res["temperature"], (float, str))
+        assert isinstance(res["humidity"], (float, str))
     
     def test_background_logger_start(self):
         pass
