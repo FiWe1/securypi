@@ -44,6 +44,8 @@ echo "---"
 echo "Installing packages for Raspberry Pi from rpi_requirements.txt..."
 echo "---"
 python -m pip install -r rpi_requirements.txt
+# explicitly reinstalling for numpy compatibility
+python -m pip install --upgrade --force-reinstall simplejpeg
 fi
 
 

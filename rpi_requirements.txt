@@ -3,7 +3,7 @@
 
 # Camera Libraries
 numpy==2.2.4
-simplejpeg==1.8.1
+simplejpeg==1.8.1 # in scripts/venv-install.sh -> explicitly reinstalling for numpy compatibility
 picamera2==0.3.31
 
 # Temperature and Humidity Sensor Libraries
