@@ -46,7 +46,7 @@ class WeatherSensorInterface:
         """ Get humidity in %. (DHT22 sensor). """
         pass
 
-    def measure(self, repeat) -> dict[float] | None:
+    def measure(self, repeat) -> dict[str, float] | None:
         """ 
         Measure temperature and humidity using sensor device.
         On failure, retry 'repeat' times before returning None.
@@ -62,7 +62,7 @@ class WeatherSensorInterface:
         """
         pass
 
-    def measure_and_log(self) -> dict[float] | None:
+    def measure_and_log(self) -> dict[str, float] | None:
         """
         Measure temperature and humidity and store in db.
         On success return dictionary of measured values, None othervise.
@@ -145,7 +145,7 @@ class WeatherSensor(WeatherSensorInterface):
             print(f"Failed to read from temperature sensor: {err}")
         return readout
 
-    def measure(self, repeat=5) -> dict[float] | None:
+    def measure(self, repeat=5) -> dict[str, float] | None:
         temperature = self.get_temperature()
         humidity = self.get_humidity()
 
@@ -174,7 +174,7 @@ class WeatherSensor(WeatherSensorInterface):
             )
         return values
 
-    def measure_and_log(self) -> dict[float] | None:
+    def measure_and_log(self) -> dict[str, float] | None:
         values = self.measure()
 
         if values is not None:

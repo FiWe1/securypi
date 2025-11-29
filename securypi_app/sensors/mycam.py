@@ -72,6 +72,7 @@ class MyPicamera2Interface:
     Interface for MyPicamera2's public methods.
     Must Not be instanciated.
     """
+    @classmethod
     def get_instance(cls):
         """ Singleton access method. """
         pass
@@ -229,7 +230,8 @@ class MyPicamera2(MyPicamera2Interface, Picamera2):
         config.main.size = MAIN_RESOLUTION
 
         stream_res = STREAM_RESOLUTION
-        if STREAM_RESOLUTION > MAIN_RESOLUTION:
+        if (STREAM_RESOLUTION[0] > MAIN_RESOLUTION[0] or
+            STREAM_RESOLUTION[1] > MAIN_RESOLUTION[1]):
             stream_res = MAIN_RESOLUTION
 
         config.enable_lores()
@@ -313,7 +315,7 @@ class MyPicamera2(MyPicamera2Interface, Picamera2):
         path.mkdir(parents=True, exist_ok=True)
         full_path = path / filename
 
-        self.start_recording_to_file(full_path, stream, encode_quality)
+        self.start_recording_to_file(str(full_path), stream, encode_quality)
 
         return full_path
 
