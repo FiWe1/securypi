@@ -6,7 +6,7 @@ from securypi_app.models.measurement import Measurement
 from securypi_app.sensors.weather_station import WeatherStation
 
 
-class TestWeatherSensor():
+class TestWeatherStation():
 
     @pytest.fixture
     def app(self):
@@ -19,32 +19,33 @@ class TestWeatherSensor():
             yield app
 
     @pytest.fixture
-    def sensor(self, app):
+    def station(self, app):
         """
-        Every time yield the same WeatherSensor instance,
+        Every time yield the same Weatherstation instance,
         but with default configuration.
         """
-        sensor = WeatherStation.get_instance()
-        yield sensor
+        station = WeatherStation.get_instance()
+        yield station
 
-        # try to get WeatherSensor to default state
-        sensor._logging_stop_event.set()
-        if sensor.is_logging():
-            sensor._logging_thread.join()
-            sensor._logging_thread = None
-        sensor._logging_stop_event.clear()
+        # try to get Weatherstation to default state
+        station._logging_stop_event.set()
+        if station.is_logging():
+            if station._logging_thread is not None:
+                station._logging_thread.join()
+                station._logging_thread = None
+        station._logging_stop_event.clear()
 
-        del sensor  # delete object reference
+        del station  # delete object reference
 
-    def test_singleton(self, sensor):
+    def test_singleton(self, station):
         """ Try to break singleton """
         obj2 = WeatherStation()
-        assert sensor is obj2
+        assert station is obj2
 
-    def test_get_temperature(self, sensor):
+    def test_get_temperature(self, station):
         try:
-            temp = sensor.get_temperature()
-            hum = sensor.get_temperature()
+            temp = station.get_temperature()
+            hum = station.get_temperature()
         except:
             # might fail - not handling exceptions
             return
@@ -52,48 +53,48 @@ class TestWeatherSensor():
         assert isinstance(temp, float)
         assert isinstance(hum, float)
 
-    def test_measure(self, sensor):
-        res = sensor.measure()
+    def test_measure(self, station):
+        res = station.measure()
         if res == None:
             return
 
         assert isinstance(res["temperature"], float)
         assert isinstance(res["humidity"], float)
 
-    def test_measure_or_na(self, sensor):
-        res = sensor.measure_or_na()
+    def test_measure_or_na(self, station):
+        res = station.measure_or_na()
 
         assert isinstance(res["temperature"], (float, str))
         assert isinstance(res["humidity"], (float, str))
 
-    def test_logging_running(self, sensor):
-        original_state = sensor.is_logging()
+    def test_logging_running(self, station):
+        original_state = station.is_logging()
         try:
             # force test internal start/stop interface
-            sensor.stop_logging()
-            sensor.stop_logging()
-            assert not sensor.is_logging()
+            station.stop_logging()
+            station.stop_logging()
+            assert not station.is_logging()
 
-            sensor.start_logging()
-            sensor.start_logging()
-            assert sensor.is_logging()
+            station.start_logging()
+            station.start_logging()
+            assert station.is_logging()
 
             # test set interface
-            sensor.set_log_in_background(False)
-            assert not sensor.is_logging()
+            station.set_log_in_background(False)
+            assert not station.is_logging()
             
-            sensor.set_log_in_background(True)
-            assert sensor.is_logging()
+            station.set_log_in_background(True)
+            assert station.is_logging()
             
         # reapply the previous config value
         finally:
-            sensor.set_log_in_background(original_state)
+            station.set_log_in_background(original_state)
 
-    def test_logging(self, sensor):
+    def test_logging(self, station):
         old_mes = Measurement.fetch_latest()
         old_time = old_mes.time
 
-        sensor.start_logging()
+        station.start_logging()
         sleep(3)
 
         new_mes = Measurement.fetch_latest()
@@ -101,20 +102,20 @@ class TestWeatherSensor():
 
         assert old_time < new_time
     
-    def test_set_logging_interval(self, sensor):
+    def test_set_logging_interval(self, station):
         """
         Setting a new background measurement interval should result
         in an immediate change (don't want to be stuck)
         """
-        original_state = sensor.is_logging()
-        original_interval = sensor.get_logging_interval()
+        original_state = station.is_logging()
+        original_interval = station.get_logging_interval()
         try:
-            sensor.set_log_in_background(True)
-            sensor.set_logging_interval(60)
+            station.set_log_in_background(True)
+            station.set_logging_interval(60)
             sleep(3)
             first_mes = Measurement.fetch_latest()
             
-            sensor.set_logging_interval(5)
+            station.set_logging_interval(5)
             sleep(3)
             second_mes = Measurement.fetch_latest()
             assert first_mes.time < second_mes.time
@@ -125,8 +126,8 @@ class TestWeatherSensor():
             
         finally:
             # reapply the previous config value
-            sensor.set_log_in_background(original_state)
-            sensor.set_logging_interval(original_interval)
+            station.set_log_in_background(original_state)
+            station.set_logging_interval(original_interval)
         
 
 
@@ -139,9 +140,9 @@ class TestWeatherSensor():
     ]
     # static methods
     @pytest.mark.parametrize("celsius,fahrenheit", C_TO_F_DATA)
-    def test_conversions(self, sensor, celsius, fahrenheit):
-        c_result = sensor.f_to_celsius(fahrenheit)
+    def test_conversions(self, station, celsius, fahrenheit):
+        c_result = station.f_to_celsius(fahrenheit)
         assert celsius == c_result
 
-        f_result = sensor.c_to_fahrenheit(celsius)
+        f_result = station.c_to_fahrenheit(celsius)
         assert fahrenheit == f_result

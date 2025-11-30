@@ -7,7 +7,12 @@ simplejpeg==1.8.1 # in scripts/venv-install.sh -> explicitly reinstalling for nu
 picamera2==0.3.31
 
 # Temperature and Humidity Sensor Libraries
+# DHT22
 adafruit-circuitpython-dht==4.0.10
 RPi.GPIO==0.7.1
 lgpio==0.2.2.0
 Adafruit-Blinka==8.68.0
+
+# SHT30
+adafruit-circuitpython-sht31d==2.3.29
+piqmp6988==1.0.1

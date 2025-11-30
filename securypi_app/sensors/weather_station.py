@@ -5,19 +5,11 @@ from abc import ABC, abstractmethod
 from flask import current_app
 from securypi_app.models.measurement import Measurement
 
-# conditional import for RPi DHT22 temp/humidity sensor
-try:
-    from adafruit_dht import DHT22  # pyright: ignore[reportMissingImports]
-    import board                    # pyright: ignore[reportMissingImports]
+# sensors
+from securypi_app.sensors.sensor_dht22 import SensorDht22
+from securypi_app.sensors.sensor_sht30 import SensorSht30
+from securypi_app.sensors.sensor_qmp6988 import SensorQmp6988
 
-except ImportError as e:
-    print("Failed to import temperature sensor libraries, "
-          "reverting to mock class:\n", "\033[31m", e, "\033[0m")
-    # Mock sensor classes for platform independent development
-    from .mock_weather_sensor import MockDHT22, MockBoard
-
-    DHT22 = MockDHT22
-    board = MockBoard
 
 
 # @TODO move to centralised serialised json config
@@ -34,11 +26,6 @@ class WeatherStationInterface(ABC):
     @abstractmethod
     def get_instance(cls):
         """ Singleton access method. """
-        pass
-
-    @abstractmethod
-    def set_pin(self, pin: board):  # type: ignore
-        """ Set GPIO pin=board.D{number} for sensor data. """
         pass
 
     @abstractmethod
@@ -115,16 +102,13 @@ class WeatherStation(WeatherStationInterface):
             cls._instance = super().__new__(cls)
         return cls._instance
 
-    def __init__(self, pin=board.D4):
+    def __init__(self):
         """ Initialise once. """
         if self._initialized:
             return
         super().__init__()
         self._app = current_app._get_current_object() # pyright: ignore[reportAttributeAccessIssue]
-
-        # sensor
-        self.set_pin(pin)
-        self._sensor = DHT22(self._pin)
+        self.init_sensors()
 
         # background logging
         self._logging_thread = None
@@ -136,75 +120,65 @@ class WeatherStation(WeatherStationInterface):
     @classmethod
     def get_instance(cls):
         return cls()
-
-    def set_pin(self, pin):
-        self._pin = pin
-        return self
+    
+    def init_sensors(self):
+        """ Set and initialize concrete sensors for measurement. """
+        self._sensor_humidity = SensorSht30()
+        self._sensor_pressure = SensorQmp6988()
+        
+        self._sensor_temperature = self._sensor_humidity
 
     def get_temperature(self) -> float | None:
-        try:
-            readout = self._sensor.temperature
-        except Exception as err:
-            readout = None
-            print(f"Failed to read from temperature sensor: {err}")
-        return readout
+        if self._sensor_temperature is not None:
+            return self._sensor_temperature.sensor_read_temperature()
 
     def get_humidity(self) -> float | None:
-        try:
-            readout = self._sensor.humidity
-        except Exception as err:
-            readout = None
-            print(f"Failed to read from temperature sensor: {err}")
-        return readout
+        if self._sensor_humidity is not None:
+            return self._sensor_humidity.sensor_read_humidity()
+    
+    def get_pressure(self) -> float | None:
+        if self._sensor_pressure is not None:
+            return self._sensor_pressure.sensor_read_pressure()
 
-    def measure(self, repeat=5) -> dict[str, float] | None:
-        temperature = self.get_temperature()
-        humidity = self.get_humidity()
-
-        if temperature is not None and humidity is not None:
-            return {
-                "temperature": round(temperature, 1),
-                "humidity": round(humidity, 1)
-            }
-
-        if repeat > 0:
-            return self.measure(repeat=(repeat - 1))
-
-        return None
+    def measure(self, repeat=5) -> dict[str, float | None]:
+        return {
+            "temperature": self.get_temperature(),
+            "humidity": self.get_humidity(),
+            "pressure": self.get_pressure()
+        }
 
     def measure_or_na(self, temp_unit="C") -> dict[str, float] | dict[str, str]:
         values = self.measure()
-
-        if values is None:
-            values = {
-                "temperature": "N/A",
-                "humidity": "N/A"
-            }
-        elif temp_unit == "F":
-            values["temperature"] = self.c_to_fahrenheit(
-                values["temperature"]
-            )
+        temp = values["temperature"]
+        
+        if temp is not None and temp_unit == "F":
+            values["temperature"] = self.c_to_fahrenheit(temp)
+            
+        for key, val in values.items():
+            if val == None:
+                values[key] = "N/A"
+        
         return values
 
     def measure_and_log(self) -> dict[str, float] | None:
-        values = self.measure()
+        measurements = self.measure()
 
-        if values is not None:
+        if any(value is not None for value in measurements.values()):
             new_measurement = Measurement(
-                temperature=values["temperature"],
-                humidity=values["humidity"]
+                temperature=measurements["temperature"],
+                humidity=measurements["humidity"],
+                pressure=measurements["pressure"]
             )
             if not new_measurement.log():
                 return None
 
-        return values
+        return measurements
 
     def logger(self):
         """
         Countinuously log sensor measurements to the database
         in configured interval.
         """
-        sleep(2)  # avoid sensor colisions on start # @TODO remove with sht30
         # The new thread needs app context in order to have access
         # to app variables, access to database
         with self._app.app_context():

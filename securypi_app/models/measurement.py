@@ -17,16 +17,20 @@ class Measurement(db.Model):
         DateTime, nullable=False, server_default=text("CURRENT_TIMESTAMP")
     )
     temperature: Mapped[float] = mapped_column(
-        Float, nullable=False
+        Float, nullable=True
     )
     humidity: Mapped[float] = mapped_column(
-        Float, nullable=False
+        Float, nullable=True
+    )
+    pressure: Mapped[float] = mapped_column(
+        Float, nullable=True
     )
 
     def __repr__(self) -> str:
         return (
             f"Measurement(id={self.id}, time={self.time}, "
-            f"temperature={self.temperature}, humidity={self.humidity})"
+            f"temperature={self.temperature}, humidity={self.humidity}, "
+            f"pressure={self.pressure})"
         )
 
     @classmethod
