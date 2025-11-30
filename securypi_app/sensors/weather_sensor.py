@@ -1,5 +1,6 @@
 from threading import Thread, Event
 from time import sleep
+from abc import ABC, abstractmethod
 
 from flask import current_app
 from securypi_app.models.measurement import Measurement
@@ -24,28 +25,33 @@ LOGGING_INTERVAL_SEC = 30
 LOG_WEATHER_IN_BACKGROUND = True
 
 
-class WeatherSensorInterface:
+class WeatherSensorInterface(ABC):
     """
     Interface for WeatherSensor's public methods.
     Must Not be instanciated.
     """
     @classmethod
+    @abstractmethod
     def get_instance(cls):
         """ Singleton access method. """
         pass
 
+    @abstractmethod
     def set_pin(self, pin: board):  # type: ignore
         """ Set GPIO pin=board.D{number} for sensor data. """
         pass
 
+    @abstractmethod
     def get_temperature(self) -> float | None:
         """ Get temperature in Celsius. (DHT22 sensor). """
         pass
 
+    @abstractmethod
     def get_humidity(self) -> float | None:
         """ Get humidity in %. (DHT22 sensor). """
         pass
 
+    @abstractmethod
     def measure(self, repeat) -> dict[str, float] | None:
         """ 
         Measure temperature and humidity using sensor device.
@@ -53,6 +59,7 @@ class WeatherSensorInterface:
         """
         pass
 
+    @abstractmethod
     def measure_or_na(self, temp_unit="C") -> dict[float | str, float | str]:
         """ 
         Measure temperature and humidity, on failure format the results:
@@ -62,6 +69,7 @@ class WeatherSensorInterface:
         """
         pass
 
+    @abstractmethod
     def measure_and_log(self) -> dict[str, float] | None:
         """
         Measure temperature and humidity and store in db.
@@ -70,17 +78,21 @@ class WeatherSensorInterface:
         pass
 
     # Background measurement logging into database.
+    @abstractmethod
     def is_logging(self) -> bool:
         """ Is background logger running? """
         pass
 
+    @abstractmethod
     def set_log_in_background(self, set: bool):
         """ Set and start/stop background logging. """
         pass
 
+    @abstractmethod
     def get_logging_interval(self) -> int:
         pass
 
+    @abstractmethod
     def set_logging_interval(self, seconds: int):
         """
         Update logging interval.
@@ -108,7 +120,7 @@ class WeatherSensor(WeatherSensorInterface):
         if self._initialized:
             return
         super().__init__()
-        self._app = current_app._get_current_object()
+        self._app = current_app._get_current_object() # pyright: ignore[reportAttributeAccessIssue]
 
         # sensor
         self.set_pin(pin)
@@ -160,7 +172,7 @@ class WeatherSensor(WeatherSensorInterface):
 
         return None
 
-    def measure_or_na(self, temp_unit="C") -> dict[float | str, float | str]:
+    def measure_or_na(self, temp_unit="C") -> dict[str, float] | dict[str, str]:
         values = self.measure()
 
         if values is None:
@@ -251,7 +263,8 @@ class WeatherSensor(WeatherSensorInterface):
     def stop_logging(self):
         if self.is_logging():
             self._logging_stop_event.set()  # signal stop
-            self._logging_thread.join()
+            if self._logging_thread:
+                self._logging_thread.join()
 
             self._logging_thread = None
         else:

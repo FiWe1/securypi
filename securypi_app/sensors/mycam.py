@@ -1,13 +1,14 @@
 import io
 from threading import Condition, Timer
 from pathlib import Path
+from abc import ABC, abstractmethod
 
 from securypi_app.services.string_parsing import timed_filename
 
 # Conditional Import for RPi picamera2 library
 try:
     from picamera2 import Picamera2    # pyright: ignore[reportMissingImports]
-    from libcamera import controls    # pyright: ignore[reportMissingImports]
+    from libcamera import controls    # pyright: ignore[reportAttributeAccessIssue, reportMissingImports]
     from picamera2.encoders import JpegEncoder, H264Encoder, Quality    # pyright: ignore[reportMissingImports]
     from picamera2.outputs import FileOutput, PyavOutput    # pyright: ignore[reportMissingImports]
     
@@ -67,16 +68,18 @@ def generate_frames(output):
                frame + b"\r\n")
 
 
-class MyPicamera2Interface:
+class MyPicamera2Interface(ABC):
     """
     Interface for MyPicamera2's public methods.
     Must Not be instanciated.
     """
     @classmethod
+    @abstractmethod
     def get_instance(cls):
         """ Singleton access method. """
         pass
 
+    @abstractmethod
     def set_noise_reduction(self, noise_reduction_mode="Fast"):
         """
         Noise Reduction Modes:
@@ -89,16 +92,20 @@ class MyPicamera2Interface:
         }
         """
         pass
-
+    
+    @abstractmethod
     def set_framerate(self, framerate=None):
         pass
 
+    @abstractmethod
     def is_recording(self):
         pass
 
+    @abstractmethod
     def is_streaming(self):
         pass
 
+    @abstractmethod
     def start_recording_to_file(self,
                                 output_path: str,
                                 stream: str = "main",
@@ -110,7 +117,7 @@ class MyPicamera2Interface:
         -> encode_quality: Quality.[LOW | MEDIUM | HIGH]
         """
         pass
-
+    @abstractmethod
     def start_default_recording(self,
                                 stream="main",
                                 encode_quality=Quality.LOW) -> Path:
@@ -120,16 +127,20 @@ class MyPicamera2Interface:
         """
         pass
 
+    @abstractmethod
     def stop_recording_to_file(self):
         pass
 
+    @abstractmethod
     def start_capture_stream(self, stream: str = "lores") -> StreamingOutput:
         """ Start live streaming mjpeg to the returned StreamingOutput. """
         pass
 
+    @abstractmethod
     def stop_capture_stream(self):
         pass
 
+    @abstractmethod
     def capture_picture(self):
         """ Capture an image, return image data. """
 
