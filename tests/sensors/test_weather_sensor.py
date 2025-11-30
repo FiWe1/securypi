@@ -3,7 +3,7 @@ from time import sleep
 
 from securypi_app import create_app
 from securypi_app.models.measurement import Measurement
-from securypi_app.sensors.weather_sensor import WeatherSensor
+from securypi_app.sensors.weather_station import WeatherStation
 
 
 class TestWeatherSensor():
@@ -24,7 +24,7 @@ class TestWeatherSensor():
         Every time yield the same WeatherSensor instance,
         but with default configuration.
         """
-        sensor = WeatherSensor.get_instance()
+        sensor = WeatherStation.get_instance()
         yield sensor
 
         # try to get WeatherSensor to default state
@@ -38,7 +38,7 @@ class TestWeatherSensor():
 
     def test_singleton(self, sensor):
         """ Try to break singleton """
-        obj2 = WeatherSensor()
+        obj2 = WeatherStation()
         assert sensor is obj2
 
     def test_get_temperature(self, sensor):

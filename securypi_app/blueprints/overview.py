@@ -3,7 +3,7 @@ from flask import Response, Blueprint, render_template, request, url_for
 from securypi_app.services.auth import login_required
 
 from securypi_app.sensors.mycam import MyPicamera2, generate_frames
-from securypi_app.sensors.weather_sensor import WeatherSensor
+from securypi_app.sensors.weather_station import WeatherStation
 
 
 ### Globals ###
@@ -60,7 +60,7 @@ def index():
 
     # temperature and humidity sensor @TODO from db)
     temp_unit = "C"  # @TODO from user settings in db
-    sensor = WeatherSensor.get_instance()
+    sensor = WeatherStation.get_instance()
     readings = sensor.measure_or_na(temp_unit=temp_unit)
 
     # Determine the template and URL for the <img> tag based on the mode

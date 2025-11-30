@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 
 from securypi_app.services.auth import login_required, admin_rights_required
-from securypi_app.sensors.weather_sensor import WeatherSensor
+from securypi_app.sensors.weather_station import WeatherStation
 
 
 ### Globals ###
@@ -11,7 +11,7 @@ bp = Blueprint("configure", __name__, url_prefix="/configure")
 @bp.route("/start_weather_logging")
 @login_required
 def start_weather_logging():
-    sensor = WeatherSensor.get_instance()
+    sensor = WeatherStation.get_instance()
 
     try:
         sensor.set_log_in_background(True)
@@ -25,7 +25,7 @@ def start_weather_logging():
 @bp.route("/stop_weather_logging")
 @login_required
 def stop_weather_logging():
-    sensor = WeatherSensor.get_instance()
+    sensor = WeatherStation.get_instance()
 
     try:
         sensor.set_log_in_background(False)
@@ -41,7 +41,7 @@ def stop_weather_logging():
 @admin_rights_required
 def index():
     """ Default (index) route for configure blueprint. """
-    sensor = WeatherSensor.get_instance()
+    sensor = WeatherStation.get_instance()
     is_weather_logging = sensor.is_logging()
     return render_template("configure.html",
                            is_weather_logging=is_weather_logging)

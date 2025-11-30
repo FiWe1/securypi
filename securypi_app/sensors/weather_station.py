@@ -25,7 +25,7 @@ LOGGING_INTERVAL_SEC = 30
 LOG_WEATHER_IN_BACKGROUND = True
 
 
-class WeatherSensorInterface(ABC):
+class WeatherStationInterface(ABC):
     """
     Interface for WeatherSensor's public methods.
     Must Not be instanciated.
@@ -101,7 +101,7 @@ class WeatherSensorInterface(ABC):
         pass
 
 
-class WeatherSensor(WeatherSensorInterface):
+class WeatherStation(WeatherStationInterface):
     """
     Singleton class for reading temperature and humidity.
     Uses DHT22 sensor connected to specified GPIO pin.
