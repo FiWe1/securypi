@@ -36,7 +36,7 @@ class Measurement(db.Model):
             print(m)
 
     @classmethod
-    def fetch_latest(cls) -> Measurement:
+    def fetch_latest(cls) -> Measurement | None:
         stmt = (select(cls)
                 .order_by(cls.time.desc())
                 .limit(1)
