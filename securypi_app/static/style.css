@@ -120,28 +120,33 @@ body {
 }
 
 .overview__temphum {
-    grid-column: 7 / 12;
+    grid-column: 6 / 12;
     grid-row: 1;
+    align-self: center;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     font-size: 3vw;
-    margin-right: 2em;
+    margin-right: 1em;
+    margin-left: 1em;
 }
 
 .overview__temphum--temperature {
     grid-column: 1;
-    align-self: center;
-    justify-self: center;
+    grid-row: 1;
+    align-self: center;          /* vertical alignment inside the box */
+    justify-self: center;  /* horizontal alignment inside the box */
 }
 
 .overview__temphum--humidity {
     grid-column: 2;
+    grid-row: 1;
     align-self: center;
     justify-self: center;
 }
 
 .overview__temphum--pressure {
     grid-column: 3;
+    grid-row: 1;
     align-self: center;
     justify-self: center;
 }

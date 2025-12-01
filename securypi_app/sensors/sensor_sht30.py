@@ -32,7 +32,7 @@ class SensorSht30(TemperatureSensorInterface,
             print(f"Failed to read from SHT30 temperature sensor: {err}")
             return None
         
-        return round(float(temp), 2)
+        return round(float(temp), 2) if temp is not None else None
     
     def sensor_read_humidity(self) -> float | None:
         try:
@@ -41,7 +41,7 @@ class SensorSht30(TemperatureSensorInterface,
             print(f"Failed to read from SHT30 humidity sensor: {err}")
             return None
         
-        return round(float(hum), 2)
+        return round(float(hum), 2) if hum is not None else None
 
     def sensor_close(self):
         pass

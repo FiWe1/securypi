@@ -29,13 +29,27 @@ class WeatherStationInterface(ABC):
         pass
 
     @abstractmethod
-    def get_temperature(self) -> float | None:
-        """ Get temperature in Celsius. (DHT22 sensor). """
+    def get_temperature(self, repeat=5) -> float | None:
+        """
+        Get temperature in Celsius from initialized temperature sensor.
+        On fail, retry 'repeat' times.
+        """
         pass
 
     @abstractmethod
-    def get_humidity(self) -> float | None:
-        """ Get humidity in %. (DHT22 sensor). """
+    def get_humidity(self, repeat=5) -> float | None:
+        """
+        Get relative humidity in % from initialized humidity sensor.
+        On fail, retry 'repeat' times.
+        """
+        pass
+    
+    @abstractmethod
+    def get_pressure(self, repeat=5) -> float | None:
+        """
+        Get absolute pressure in hPa from initialized pressure sensor.
+        On fail, retry 'repeat' times.
+        """
         pass
 
     @abstractmethod
@@ -130,17 +144,35 @@ class WeatherStation(WeatherStationInterface):
         
         self._sensor_temperature = self._sensor_humidity
 
-    def get_temperature(self) -> float | None:
+    def get_temperature(self, repeat=5) -> float | None:
         if self._sensor_temperature is not None:
-            return self._sensor_temperature.sensor_read_temperature()
+            temp = self._sensor_temperature.sensor_read_temperature()
+            if temp is not None:
+                return temp
+            elif repeat > 0:
+                return self.get_temperature(repeat - 1)
+        
+        return None
 
-    def get_humidity(self) -> float | None:
+    def get_humidity(self, repeat=5) -> float | None:
         if self._sensor_humidity is not None:
-            return self._sensor_humidity.sensor_read_humidity()
+            hum = self._sensor_humidity.sensor_read_humidity()
+            if hum is not None:
+                return hum
+            elif repeat > 0:
+                return self.get_humidity(repeat - 1)
+        
+        return None
     
-    def get_pressure(self) -> float | None:
+    def get_pressure(self, repeat=5) -> float | None:
         if self._sensor_pressure is not None:
-            return self._sensor_pressure.sensor_read_pressure()
+            pres = self._sensor_pressure.sensor_read_pressure()
+            if pres is not None:
+                return pres
+            elif repeat > 0:
+                return self.get_humidity(repeat - 1)
+        
+        return None
 
     def measure(self, repeat=5) -> dict[str, float | None]:
         return {
@@ -187,6 +219,7 @@ class WeatherStation(WeatherStationInterface):
         """
         # The new thread needs app context in order to have access
         # to app variables, access to database
+        sleep(0.1) # avoid too many read requests at app start
         with self._app.app_context():
             while True:
                 self.measure_and_log()
