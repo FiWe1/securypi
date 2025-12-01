@@ -23,7 +23,7 @@ class MockPyavOutput():
 
     def write(self, data):
         if self.output:
-            with self.output.open("w") as f:
+            with open(file=self.output, mode="w") as f:
                 f.write("Mocking recording to a video output.")
 
 # mocking controls.draft.NoiseReductionModeEnum
