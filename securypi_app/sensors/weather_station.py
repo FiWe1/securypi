@@ -106,8 +106,11 @@ class WeatherStationInterface(ABC):
 
 class WeatherStation(WeatherStationInterface):
     """
-    Singleton class for reading temperature and humidity.
-    Uses DHT22 sensor connected to specified GPIO pin.
+    Singleton wrapper for measuring and logging:
+    - temperature
+    - humidity
+    - pressure
+    From multiple different sensors which implement default interface.
     """
     _instance = None
     _initialized = False

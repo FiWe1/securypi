@@ -145,7 +145,7 @@ class MyPicamera2Interface(ABC):
         """ Capture an image, return image data. """
 
 
-class MyPicamera2(MyPicamera2Interface, Picamera2):
+class MyPicamera2(MyPicamera2Interface):
     """
     My singleton wrapper class for Picamera2 with methods
     for streaming and taking pictures.
@@ -165,6 +165,9 @@ class MyPicamera2(MyPicamera2Interface, Picamera2):
             return
         super().__init__()
 
+        # wrapping PiCamera2 instance
+        self._picam = Picamera2()
+        
         self.configure_video_sensor()
         self.configure_video_streams()
         self.configure_runtime_controls()
@@ -187,7 +190,7 @@ class MyPicamera2(MyPicamera2Interface, Picamera2):
         Find highest resolution sensor mode
         with ability to provide requested framerate.
         """
-        all_modes = self.sensor_modes
+        all_modes = self._picam.sensor_modes
 
         fps_eligible = []
         for mode in all_modes:
@@ -211,8 +214,9 @@ class MyPicamera2(MyPicamera2Interface, Picamera2):
         resolution = MAIN_RESOLUTION
         fps = RECORDING_FRAMERATE
 
-        config = self.video_configuration
+        config = self._picam.video_configuration
 
+        self._picam.stop() # must be stopped before configuring
         best_config = self.get_best_sensor_mode(resolution, fps)
         if best_config is not None:
             size = best_config["size"]
@@ -221,7 +225,7 @@ class MyPicamera2(MyPicamera2Interface, Picamera2):
                 "output_size": size,
                 "bit_depth": bit_depth
             }
-            self.configure(config)
+            self._picam.configure(config)
             print(f"Configured video sensor resolution to "
                   f"{size} with bit depth {bit_depth} at {fps} fps.")
         else:
@@ -237,12 +241,18 @@ class MyPicamera2(MyPicamera2Interface, Picamera2):
         - main stream: high-res recording, snapshots
         - lores stream: for preview
         """
-        config = self.video_configuration
-        config.main.size = MAIN_RESOLUTION
+        # @TODO retrieve from config.json
+        main_resolution = MAIN_RESOLUTION
+        stream_resolution = STREAM_RESOLUTION
+        
+        self._picam.stop() # must be stopped before configuring
+        
+        config = self._picam.video_configuration
+        config.main.size = main_resolution
 
-        stream_res = STREAM_RESOLUTION
-        if (STREAM_RESOLUTION[0] > MAIN_RESOLUTION[0] or
-            STREAM_RESOLUTION[1] > MAIN_RESOLUTION[1]):
+        stream_res = stream_resolution
+        if (stream_resolution[0] > main_resolution[0] or
+            stream_resolution[1] > main_resolution[1]):
             stream_res = MAIN_RESOLUTION
 
         config.enable_lores()
@@ -250,7 +260,7 @@ class MyPicamera2(MyPicamera2Interface, Picamera2):
         # default stream for video encoding
         # config.encode = "main" (defaul value)
 
-        self.configure(config)
+        self._picam.configure(config)
         return self
 
     def configure_runtime_controls(self):
@@ -273,7 +283,7 @@ class MyPicamera2(MyPicamera2Interface, Picamera2):
         if noise_reduction_mode not in nr_modes.keys():
             raise ValueError(f"Unknown NR mode value {noise_reduction_mode}. "
                              f"Expected one of: {[key for key in nr_modes.keys()]}")
-        self.set_controls(
+        self._picam.set_controls(
             {"NoiseReductionMode": nr_modes[noise_reduction_mode]}
         )
         return self
@@ -286,7 +296,7 @@ class MyPicamera2(MyPicamera2Interface, Picamera2):
 
         duration_limit = int(round(1 / framerate * 1000000, 0))
 
-        self.set_controls(
+        self._picam.set_controls(
             {"FrameDurationLimits": (duration_limit, duration_limit)}
         )
 
@@ -309,11 +319,11 @@ class MyPicamera2(MyPicamera2Interface, Picamera2):
         -> encode_quality: Quality.[LOW | MEDIUM | HIGH]
         """
         self._recording_encoder = H264Encoder()
-        self.start_encoder(self._recording_encoder,
+        self._picam.start_encoder(self._recording_encoder,
                            PyavOutput(output_path),
                            name=stream,
                            quality=encode_quality)
-        self.start()
+        self._picam.start()
         return self
 
     def start_default_recording(self,
@@ -332,7 +342,7 @@ class MyPicamera2(MyPicamera2Interface, Picamera2):
 
     def stop_recording_to_file(self):
         if self._recording_encoder is not None:
-            self.stop_encoder(self._recording_encoder)
+            self._picam.stop_encoder(self._recording_encoder)
             self._recording_encoder = None
         return self
 
@@ -343,10 +353,10 @@ class MyPicamera2(MyPicamera2Interface, Picamera2):
         # won't be starting two encoders
         if self._streaming_encoder is None:
             self._streaming_encoder = JpegEncoder()
-            self.start_encoder(self._streaming_encoder,
+            self._picam.start_encoder(self._streaming_encoder,
                                FileOutput(self._streaming_output),
                                name=stream)
-            self.start()
+            self._picam.start()
 
         self._stream_timer = Timer(STREAM_TIMEOUT, self.stop_capture_stream)
         self._stream_timer.start()
@@ -358,15 +368,16 @@ class MyPicamera2(MyPicamera2Interface, Picamera2):
             self._stream_timer.cancel()  # just to be sure
             self._stream_timer = None
         if self._streaming_encoder is not None:
-            self.stop_encoder(self._streaming_encoder)
+            self._picam.stop_encoder(self._streaming_encoder)
             self._streaming_encoder = None
             print("Stopped video streaming (timer).")
         return self
 
     def capture_picture(self):
+        """ Capture still picture and return it's raw value. """
         buffer = io.BytesIO()
-        self.start()
-        self.capture_file(buffer, format="jpeg")
+        self._picam.start()
+        self._picam.capture_file(buffer, format="jpeg")
 
         # Return the byte data
         return buffer.getvalue()

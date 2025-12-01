@@ -18,22 +18,22 @@ class TestMycamClass():
         Every time yield the same MyPicamera2 instance,
         but with default configuration.
         """
-        cam = MyPicamera2.get_instance()
-        yield cam
+        mypicam = MyPicamera2.get_instance()
+        yield mypicam
 
         # try to get MyPicamera2 to default state
-        cam.stop()
-        cam.configure_video_sensor()
-        cam.configure_video_streams()
-        cam.configure_runtime_controls()
+        mypicam._picam.stop()
+        mypicam.configure_video_sensor()
+        mypicam.configure_video_streams()
+        mypicam.configure_runtime_controls()
 
-        cam._streaming_output = StreamingOutput()
-        cam._stream_timer = None
+        mypicam._streaming_output = StreamingOutput()
+        mypicam._stream_timer = None
 
-        cam._recording_encoder = None
-        cam._streaming_encoder = None
+        mypicam._recording_encoder = None
+        mypicam._streaming_encoder = None
 
-        del cam  # delete object reference
+        del mypicam  # delete object reference
 
 
     def test_singleton(self, picam):
@@ -108,7 +108,7 @@ class TestMycamClass():
     exposure_limits: (26, 220416802, 20000)
     """
 
-    modes = MyPicamera2.get_instance().sensor_modes
+    modes = MyPicamera2.get_instance()._picam.sensor_modes
 
     @pytest.mark.parametrize(
         "resolution,fps,expected",
