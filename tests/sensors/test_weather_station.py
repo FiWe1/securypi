@@ -61,8 +61,8 @@ class TestWeatherStation():
         assert isinstance(res["temperature"], float)
         assert isinstance(res["humidity"], float)
 
-    def test_measure_or_na(self, station):
-        res = station.measure_or_na()
+    def test_present_measure_or_na(self, station):
+        res = station.present_measure_or_na()
 
         assert isinstance(res["temperature"], (float, str))
         assert isinstance(res["humidity"], (float, str))

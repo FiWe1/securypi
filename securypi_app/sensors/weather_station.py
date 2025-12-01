@@ -47,7 +47,9 @@ class WeatherStationInterface(ABC):
         pass
 
     @abstractmethod
-    def measure_or_na(self, temp_unit="C") -> dict[float | str, float | str]:
+    def present_measure_or_na(self,
+                              round_digits=1,
+                              temp_unit="C") -> dict[float | str, float | str]:
         """ 
         Measure temperature and humidity, on failure format the results:
         return dict{x: "N/A", ..., z: "N/A"}.
@@ -147,7 +149,9 @@ class WeatherStation(WeatherStationInterface):
             "pressure": self.get_pressure()
         }
 
-    def measure_or_na(self, temp_unit="C") -> dict[str, float] | dict[str, str]:
+    def present_measure_or_na(self,
+                              round_digits=1,
+                              temp_unit="C") -> dict[str, float] | dict[str, str]:
         values = self.measure()
         temp = values["temperature"]
         
@@ -157,6 +161,8 @@ class WeatherStation(WeatherStationInterface):
         for key, val in values.items():
             if val == None:
                 values[key] = "N/A"
+            else:
+                values[key] = round(val, round_digits)
         
         return values
 
