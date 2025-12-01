@@ -61,7 +61,7 @@ def index():
     # temperature and humidity sensor @TODO from db)
     temp_unit = "C"  # @TODO from user settings in db
     sensor = WeatherStation.get_instance()
-    readings = sensor.measure_or_na(temp_unit=temp_unit)
+    readings = sensor.present_measure_or_na(temp_unit=temp_unit)
 
     # Determine the template and URL for the <img> tag based on the mode
     if mode == "stream":
@@ -74,4 +74,5 @@ def index():
                            img_src=img_src,
                            temperature=readings["temperature"],
                            humidity=readings["humidity"],
+                           pressure=readings["pressure"],
                            temperature_unit=temp_unit)

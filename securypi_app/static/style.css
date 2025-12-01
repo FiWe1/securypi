@@ -120,11 +120,12 @@ body {
 }
 
 .overview__temphum {
-    grid-column: 8 / 11;
+    grid-column: 7 / 12;
     grid-row: 1;
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     font-size: 3vw;
+    margin-right: 2em;
 }
 
 .overview__temphum--temperature {
@@ -135,6 +136,12 @@ body {
 
 .overview__temphum--humidity {
     grid-column: 2;
+    align-self: center;
+    justify-self: center;
+}
+
+.overview__temphum--pressure {
+    grid-column: 3;
     align-self: center;
     justify-self: center;
 }
