@@ -11,11 +11,10 @@ except ImportError as e:
     print("Failed to import temperature sensor libraries, "
           "reverting to mock class:\n", "\033[31m", e, "\033[0m")
     # Mock sensor classes for platform independent development
-    # from .mock_weather_sensor import MockDHT22, MockBoard
+    from securypi_app.sensors.mock_sensors.mock_sht30 import MockSHT31D
+    import securypi_app.sensors.mock_sensors.mock_board as board
 
-    # DHT22 = MockDHT22
-    # board = MockBoard
-    # TODO MoCK
+    SHT31D = MockSHT31D
 
 
 class SensorSht30(TemperatureSensorInterface,

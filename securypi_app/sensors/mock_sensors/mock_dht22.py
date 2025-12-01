@@ -10,9 +10,10 @@ MOCKED_HUMIDITY = 0.0
 
 
 class MockDHT22:
-    def __init__(self, pin):
-        pass
-
+    """ Mock humidity and temperature sensor. """
+    def __init__(self, pin=None):
+        self._pin = pin
+    
     @property
     def temperature(self):
         return MOCKED_TEMPERATURE
@@ -23,7 +24,3 @@ class MockDHT22:
 
     def exit(self):
         pass
-
-
-class MockBoard:
-    D4 = None  # mock board.D4
