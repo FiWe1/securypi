@@ -1,7 +1,7 @@
 import os
 import logging  # @TODO logging
 
-from flask import Flask, request, url_for, current_app
+from flask import Flask
 from .models import db
 
 
@@ -13,7 +13,7 @@ def create_app(test_config=None):
         # a default secret, should be overridden by instance config
         SECRET_KEY="very_complex_and_unpredictable_secret_key",
         # db path: instance folder
-        SQLALCHEMY_DATABASE_URI= (
+        SQLALCHEMY_DATABASE_URI=(
             "sqlite:///" + os.path.join(app.instance_path,
                                         "securypi_app.sqlite")
         )
@@ -40,7 +40,7 @@ def create_app(test_config=None):
     # logging.basicConfig(
     #     filename=log_path,
     #     level=logging.INFO,
-    #     format="%(asctime)s %(levelname)s: %(message)s 
+    #     format="%(asctime)s %(levelname)s: %(message)s
     # ...[in %(pathname)s:%(lineno)d]"
     # )
 
@@ -56,7 +56,7 @@ def create_app(test_config=None):
 
     # REGISTER BLUEPRINTS
     from .blueprints import (
-        auth, overview, temp_history, recordings,camera_control,
+        auth, overview, temp_history, recordings, camera_control,
         configure, user_settings
     )
     blueprints = [
