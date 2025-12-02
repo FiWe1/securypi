@@ -15,6 +15,9 @@ from securypi_app.sensors.sensor_qmp6988 import SensorQmp6988
 # @TODO move to centralised serialised json config
 LOGGING_INTERVAL_SEC = 30
 LOG_WEATHER_IN_BACKGROUND = True
+USE_DHT22 = False
+USE_SHT30 = True
+USE_QMP6988 = True
 
 
 class WeatherStationInterface(ABC):
@@ -142,10 +145,27 @@ class WeatherStation(WeatherStationInterface):
     
     def init_sensors(self):
         """ Set and initialize concrete sensors for measurement. """
-        self._sensor_humidity = SensorSht30()
-        self._sensor_pressure = SensorQmp6988()
+        # @TODO fetch from json config
+        use_dht22 = USE_DHT22
+        use_sht30 = USE_SHT30
+        use_qmp6988 = USE_QMP6988
         
-        self._sensor_temperature = self._sensor_humidity
+        
+        self._sensor_temperature = None
+        self._sensor_humidity = None
+        self._sensor_pressure = None
+        
+        if use_dht22:
+            self._sensor_humidity = SensorDht22()
+        elif use_sht30:
+            self._sensor_humidity = SensorSht30()
+        
+        if use_qmp6988:
+            self._sensor_pressure = SensorQmp6988()
+        
+        # Use the same sensor for temperature + humidity
+        if self._sensor_humidity:
+            self._sensor_temperature = self._sensor_humidity
 
     def get_temperature(self, repeat=5) -> float | None:
         if self._sensor_temperature is not None:
