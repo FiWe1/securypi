@@ -2,7 +2,7 @@ import pytest
 import os
 from time import sleep
 
-from securypi_app.sensors.mycam import MyPicamera2, StreamingOutput
+from securypi_app.sensors.camera.mycam import MyPicamera2, StreamingOutput
 
 
 """

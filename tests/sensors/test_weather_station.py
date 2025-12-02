@@ -3,7 +3,7 @@ from time import sleep
 
 from securypi_app import create_app
 from securypi_app.models.measurement import Measurement
-from securypi_app.sensors.weather_station import WeatherStation
+from securypi_app.sensors.measurements.weather_station import WeatherStation
 
 
 class TestWeatherStation():

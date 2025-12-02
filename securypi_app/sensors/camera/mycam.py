@@ -16,7 +16,7 @@ except ImportError as e:
     print("Failed to import picamera2 camera library, "
           "reverting to mock class:\n", "\033[31m", e, "\033[0m")
     # Mock sensor classes for platform independent development
-    from securypi_app.sensors.mock_sensors.mock_mycam import (
+    from securypi_app.sensors.camera.mock_mycam import (
         MockPicamera2, MockEncoder, MockStreamingOutput, MockPyavOutput,
         MockQuality, Controls
     )
