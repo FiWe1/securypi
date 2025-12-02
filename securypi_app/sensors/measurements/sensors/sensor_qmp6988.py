@@ -13,8 +13,10 @@ except ImportError as e:
     print("Failed to import temperature sensor libraries, "
           "reverting to mock class:\n", "\033[31m", e, "\033[0m")
     # Mock sensor classes for platform independent development
-    from securypi_app.sensors.mock_measurement_sensors.mock_qmp6988 import MockQMP as QMP
-
+    from securypi_app.sensors.measurements.mock_sensors.mock_qmp6988 import (
+        MockQMP as QMP
+    )
+    
 
 # configuration: adjust if needed
 config = {
