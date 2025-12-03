@@ -1,4 +1,4 @@
-from securypi_app.sensors.camera.motion_capturing_interface import MotionCapturingInterface
+from securypi_app.peripherals.camera.motion_capturing_interface import MotionCapturingInterface
 
 
 CAPTURE_MOTION_IN_BACKGROUND = False

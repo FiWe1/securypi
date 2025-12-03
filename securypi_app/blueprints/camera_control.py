@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 
 from securypi_app.services.auth import login_required
-from securypi_app.sensors.camera.mycam import MyPicamera2, Quality
+from securypi_app.peripherals.camera.mycam import MyPicamera2, Quality
 
 
 ### Globals ###

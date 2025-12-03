@@ -3,7 +3,7 @@ from threading import Condition, Timer
 from pathlib import Path
 
 from securypi_app.services.string_parsing import timed_filename
-from securypi_app.sensors.camera.mycam_interface import MyPicamera2Interface
+from securypi_app.peripherals.camera.mycam_interface import MyPicamera2Interface
 
 # Conditional Import for RPi picamera2 library
 try:
@@ -12,17 +12,17 @@ try:
     from picamera2.encoders import JpegEncoder, H264Encoder, Quality    # pyright: ignore[reportMissingImports]
     from picamera2.outputs import FileOutput, PyavOutput    # pyright: ignore[reportMissingImports]
     # motion capturing is dependent on picamera2
-    from securypi_app.sensors.camera.motion_capturing import MotionCapturing
+    from securypi_app.peripherals.camera.motion_capturing import MotionCapturing
     
 except ImportError as e:
     print("Failed to import picamera2 camera library, "
           "reverting to mock class:\n", "\033[31m", e, "\033[0m")
     # Mock sensor classes for platform independent development
-    from securypi_app.sensors.camera.mock_camera_modules.mock_picamera2 import (
+    from securypi_app.peripherals.camera.mock_camera_modules.mock_picamera2 import (
         MockPicamera2, MockEncoder, MockStreamingOutput, MockPyavOutput,
         MockQuality, Controls
     )
-    from securypi_app.sensors.camera.mock_camera_modules.mock_motion_capturing import (
+    from securypi_app.peripherals.camera.mock_camera_modules.mock_motion_capturing import (
         MockMotionCapturing
     )
     Picamera2 = MockPicamera2

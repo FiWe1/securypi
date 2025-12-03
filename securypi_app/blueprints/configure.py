@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
 
 from securypi_app.services.auth import login_required, admin_rights_required
-from securypi_app.sensors.measurements.weather_station import WeatherStation
+from securypi_app.peripherals.measurements.weather_station import WeatherStation
 
 
 ### Globals ###

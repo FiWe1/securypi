@@ -2,8 +2,8 @@ from flask import Response, Blueprint, render_template, request, url_for
 
 from securypi_app.services.auth import login_required
 
-from securypi_app.sensors.camera.mycam import MyPicamera2, generate_frames
-from securypi_app.sensors.measurements.weather_station import WeatherStation
+from securypi_app.peripherals.camera.mycam import MyPicamera2, generate_frames
+from securypi_app.peripherals.measurements.weather_station import WeatherStation
 
 
 ### Globals ###

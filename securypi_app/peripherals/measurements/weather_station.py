@@ -6,9 +6,9 @@ from flask import current_app
 from securypi_app.models.measurement import Measurement
 
 # sensors
-from securypi_app.sensors.measurements.sensors.sensor_dht22 import SensorDht22
-from securypi_app.sensors.measurements.sensors.sensor_sht30 import SensorSht30
-from securypi_app.sensors.measurements.sensors.sensor_qmp6988 import SensorQmp6988
+from securypi_app.peripherals.measurements.sensors.sensor_dht22 import SensorDht22
+from securypi_app.peripherals.measurements.sensors.sensor_sht30 import SensorSht30
+from securypi_app.peripherals.measurements.sensors.sensor_qmp6988 import SensorQmp6988
 
 
 
