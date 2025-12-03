@@ -7,6 +7,7 @@ class MotionCapturingInterface(ABC):
     Must Not be instanciated.
     """
 
+    @abstractmethod
     def __init__(self, mycam):
         """ Initialize concrete classes with MyPicamera2 instance. """
         pass

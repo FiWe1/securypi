@@ -1,13 +1,18 @@
 from time import sleep
 from threading import Thread, Event
 
+from securypi_app.peripherals.measurements.measurement_logger_interface import (
+    MeasurementLoggerInterface
+)
+
 
 # @TODO move to centralised serialised json config
 LOGGING_INTERVAL_SEC = 30
 LOG_WEATHER_IN_BACKGROUND = True
 
 
-class MeasurementLogger():
+class MeasurementLogger(MeasurementLoggerInterface):
+    """ Background measurement logger of WeatherStation measurements. """
     
     def __init__(self, weather_station):
         self._weather_station = weather_station
@@ -28,7 +33,7 @@ class MeasurementLogger():
         sleep(0.1) # avoid too many read requests at app start
         with self._weather_station._app.app_context():
             while True:
-                self.measure_and_log()
+                self._weather_station.measure_and_log()
                 interval = self._logging_interval
                 if self._logging_stop_event.wait(timeout=interval):
                     print("Background WeatherSensor logger exited cleanly.")

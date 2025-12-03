@@ -83,29 +83,6 @@ class WeatherStationInterface(ABC):
         """
         pass
 
-    # Background measurement logging into database.
-    @abstractmethod
-    def is_logging(self) -> bool:
-        """ Is background logger running? """
-        pass
-
-    @abstractmethod
-    def set_log_in_background(self, set: bool):
-        """ Set and start/stop background logging. """
-        pass
-
-    @abstractmethod
-    def get_logging_interval(self) -> int:
-        pass
-
-    @abstractmethod
-    def set_logging_interval(self, seconds: int):
-        """
-        Update logging interval.
-        If logging is running, restart and log in this interval.
-        """
-        pass
-
 
 class WeatherStation(WeatherStationInterface):
     """
