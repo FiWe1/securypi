@@ -2,7 +2,7 @@ from flask import Response, Blueprint, render_template, request, url_for
 
 from securypi_app.services.auth import login_required
 
-from securypi_app.peripherals.camera.mycam import MyPicamera2, generate_frames
+from securypi_app.peripherals.camera.mycam import MyPicamera2
 from securypi_app.peripherals.measurements.weather_station import WeatherStation
 
 
@@ -19,9 +19,9 @@ def video_feed():
     Calls mycam, a picamera2 wrapper class contained in mycam.py
     """
     camera = MyPicamera2.get_instance()
-    output = camera.start_capture_stream()
+    streaming_output = camera.streaming.start_capture_stream()
 
-    return Response(generate_frames(output),
+    return Response(streaming_output.generate_frames(),
                     mimetype="multipart/x-mixed-replace; boundary=frame")
 
 
@@ -43,7 +43,7 @@ def picture_feed():
 @login_required
 def stop_video_feed():
     camera = MyPicamera2.get_instance()
-    camera.stop_capture_stream()
+    camera.streaming.stop_capture_stream()
     return ("Video feed stopped", 200)
 
 

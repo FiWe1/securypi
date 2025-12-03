@@ -2,7 +2,8 @@ import pytest
 import os
 from time import sleep
 
-from securypi_app.peripherals.camera.mycam import MyPicamera2, StreamingOutput
+from securypi_app.peripherals.camera.mycam import MyPicamera2
+from securypi_app.peripherals.camera.streaming import StreamingOutput
 
 
 """
@@ -27,8 +28,8 @@ class TestMycamClass():
         mypicam.configure_video_streams()
         mypicam.configure_runtime_controls()
 
-        mypicam._streaming_output = StreamingOutput()
-        mypicam._stream_timer = None
+        mypicam.streaming._streaming_output = StreamingOutput()
+        mypicam.streaming._stream_timer = None
 
         mypicam._recording_encoder = None
         mypicam._streaming_encoder = None
@@ -55,16 +56,16 @@ class TestMycamClass():
         assert picam.capture_picture() is not None
 
     def test_stream(self, picam):
-        output = picam._streaming_output
+        output = picam.streaming._streaming_output
         assert isinstance(output, StreamingOutput)
 
-        picam.start_capture_stream()
+        picam.streaming.start_capture_stream()
         sleep(1)
-        assert picam.is_streaming()
+        assert picam.streaming.is_streaming()
         assert output.frame is not None
 
-        picam.stop_capture_stream()
-        assert picam._stream_timer is None
+        picam.streaming.stop_capture_stream()
+        assert picam.streaming._stream_timer is None
         assert picam._streaming_encoder is None
 
     def test_default_recording(self, picam):

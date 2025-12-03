@@ -20,9 +20,11 @@ FRAME_CHANGE_RATIO_THRESHOLD = 0.001
 
 class MotionCapturing(MotionCapturingInterface):
     """
-    Background motion detection and capturing using MyPicamera2 instance.
+    Extension class of MyPicamera2.
+    Background motion detection and capturing.
     """
     def __init__(self, mycam):
+        """ Initialize with MyPicamera2 instance. """
         self._mycam = mycam
 
         # background motion detector
@@ -116,9 +118,6 @@ class MotionCapturing(MotionCapturingInterface):
                 self._capturing_thread.join()
 
             self._capturing_thread = None
-        else:
-            print("Can't stop background MotionCapturing, "
-                  "it is not running.")
 
     def loop_motion_capturing(self, debug=False):
         """

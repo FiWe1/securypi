@@ -1,34 +1,31 @@
 import io
-from threading import Condition, Timer
 from pathlib import Path
 
 from securypi_app.services.string_parsing import timed_filename
 from securypi_app.peripherals.camera.mycam_interface import MyPicamera2Interface
+from securypi_app.peripherals.camera.streaming import Streaming
 
 # Conditional Import for RPi picamera2 library
 try:
     from picamera2 import Picamera2    # pyright: ignore[reportMissingImports]
-    from libcamera import controls    # pyright: ignore[reportAttributeAccessIssue, reportMissingImports]
-    from picamera2.encoders import JpegEncoder, H264Encoder, Quality    # pyright: ignore[reportMissingImports]
-    from picamera2.outputs import FileOutput, PyavOutput    # pyright: ignore[reportMissingImports]
-    # motion capturing is dependent on picamera2
-    from securypi_app.peripherals.camera.motion_capturing import MotionCapturing
-    
+    from libcamera import controls # pyright: ignore[reportMissingImports]
+    from picamera2.encoders import H264Encoder, Quality # pyright: ignore[reportMissingImports]
+    from picamera2.outputs import PyavOutput # pyright: ignore[reportMissingImports]
+    from securypi_app.peripherals.camera.motion_capturing import MotionCapturing # motion capturing is dependent on picamera2
+
 except ImportError as e:
     print("Failed to import picamera2 camera library, "
           "reverting to mock class:\n", "\033[31m", e, "\033[0m")
     # Mock sensor classes for platform independent development
     from securypi_app.peripherals.camera.mock_camera_modules.mock_picamera2 import (
-        MockPicamera2, MockEncoder, MockStreamingOutput, MockPyavOutput,
+        MockPicamera2, MockEncoder, MockPyavOutput,
         MockQuality, Controls
     )
     from securypi_app.peripherals.camera.mock_camera_modules.mock_motion_capturing import (
         MockMotionCapturing
     )
     Picamera2 = MockPicamera2
-    JpegEncoder = MockEncoder
     H264Encoder = MockEncoder
-    FileOutput = MockStreamingOutput
     PyavOutput = MockPyavOutput
     Quality = MockQuality
     controls = Controls
@@ -40,38 +37,6 @@ STREAM_TIMEOUT = 5 * 60  # 5 minutes
 RECORDING_FRAMERATE = 25
 MAIN_RESOLUTION = (1920, 1080)
 STREAM_RESOLUTION = (800, 450)
-
-
-class StreamingOutput(io.BufferedIOBase):
-    """
-    Handles streaming of camera frames to a HTTP response.
-    Uses a Condition to synchronize access to the latest frame.
-    """
-
-    def __init__(self):
-        self.frame = None
-        self.condition = Condition()
-
-    def write(self, buf):
-        with self.condition:
-            self.frame = buf
-            self.condition.notify_all()
-
-
-def generate_frames(output):
-    """
-    Generator function that yields camera frames in byte format.
-    Wailts for a new frame from the camera and
-    yields it as part of a multipart HTTP response.
-    """
-    while True:
-        with output.condition:
-            output.condition.wait()
-            frame = output.frame
-        yield (b"--frame\r\n"
-               b"Content-Type: image/jpeg\r\n"
-               b"Content-Length: " + f"{len(frame)}".encode() + b"\r\n\r\n" +
-               frame + b"\r\n")
 
 
 class MyPicamera2(MyPicamera2Interface):
@@ -96,20 +61,16 @@ class MyPicamera2(MyPicamera2Interface):
 
         # wrapping PiCamera2 instance
         self._picam = Picamera2()
-        
+
         self.configure_video_sensor()
         self.configure_video_streams()
         self.configure_runtime_controls()
 
-        # streaming
-        self._streaming_output = StreamingOutput()
-        self._stream_timer = None
-
         # encoders
         self._recording_encoder = None
-        self._streaming_encoder = None
-        
-        # motion detector
+
+        # extensions
+        self.streaming = Streaming(self)
         self.motion_capturing = MotionCapturing(self)
 
         # Really only once.
@@ -150,15 +111,15 @@ class MyPicamera2(MyPicamera2Interface):
 
         config = self._picam.video_configuration
 
-        self._picam.stop() # must be stopped before configuring
+        self._picam.stop()  # must be stopped before configuring
         best_config = self.get_best_sensor_mode(resolution, fps)
         if best_config is not None:
             size = best_config["size"]
             bit_depth = best_config["bit_depth"]
-            
+
             config.sensor.output_size = size
             config.sensor.bit_depth = bit_depth
-            
+
             self._picam.configure(config)
             print(f"Configured video sensor resolution to "
                   f"{size} with bit depth {bit_depth} at {fps} fps.")
@@ -178,15 +139,15 @@ class MyPicamera2(MyPicamera2Interface):
         # @TODO retrieve from config.json
         main_resolution = MAIN_RESOLUTION
         stream_resolution = STREAM_RESOLUTION
-        
-        self._picam.stop() # must be stopped before configuring
-        
+
+        self._picam.stop()  # must be stopped before configuring
+
         config = self._picam.video_configuration
         config.main.size = main_resolution
 
         stream_res = stream_resolution
         if (stream_resolution[0] > main_resolution[0] or
-            stream_resolution[1] > main_resolution[1]):
+                stream_resolution[1] > main_resolution[1]):
             stream_res = MAIN_RESOLUTION
 
         config.enable_lores()
@@ -196,13 +157,13 @@ class MyPicamera2(MyPicamera2Interface):
 
         self._picam.configure(config)
         return self
-    
+
     def get_current_resolution(self, target="sensor") -> tuple[int, int]:
         if target == "main":
             return self._picam.video_configuration.main.size
         elif target == "lores":
             return self._picam.video_configuration.lores.size
-        
+
         return self._picam.video_configuration.sensor.output_size
 
     def configure_runtime_controls(self):
@@ -237,21 +198,18 @@ class MyPicamera2(MyPicamera2Interface):
     def is_recording(self) -> bool:
         return self._recording_encoder is not None
 
-    def is_streaming(self) -> bool:
-        return self._streaming_encoder is not None
-
     def start_recording_to_file(self,
                                 output_path: str,
                                 stream: str = "main",
                                 encode_quality=Quality.MEDIUM):
         if self._recording_encoder is not None:
             raise RuntimeError("Recording already in progress.")
-        
+
         self._recording_encoder = H264Encoder()
         self._picam.start_encoder(self._recording_encoder,
-                           PyavOutput(output_path),
-                           name=stream,
-                           quality=encode_quality)
+                                  PyavOutput(output_path),
+                                  name=stream,
+                                  quality=encode_quality)
         self._picam.start()
         return self
 
@@ -273,33 +231,6 @@ class MyPicamera2(MyPicamera2Interface):
         if self._recording_encoder is not None:
             self._picam.stop_encoder(self._recording_encoder)
             self._recording_encoder = None
-        return self
-
-    def start_capture_stream(self, stream: str = "lores") -> StreamingOutput:
-        # cancel stream timeout if set - avoid timing out prematurely
-        if self._stream_timer is not None:
-            self._stream_timer.cancel()
-        # won't be starting two encoders
-        if self._streaming_encoder is None:
-            self._streaming_encoder = JpegEncoder()
-            self._picam.start_encoder(self._streaming_encoder,
-                               FileOutput(self._streaming_output),
-                               name=stream)
-            self._picam.start()
-
-        self._stream_timer = Timer(STREAM_TIMEOUT, self.stop_capture_stream)
-        self._stream_timer.start()
-
-        return self._streaming_output
-
-    def stop_capture_stream(self):
-        if self._stream_timer is not None:
-            self._stream_timer.cancel()
-            self._stream_timer = None
-        if self._streaming_encoder is not None:
-            self._picam.stop_encoder(self._streaming_encoder)
-            self._streaming_encoder = None
-            print("Stopped video streaming (timer).")
         return self
 
     def capture_picture(self):

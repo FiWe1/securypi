@@ -44,10 +44,6 @@ class MyPicamera2Interface(ABC):
         pass
 
     @abstractmethod
-    def is_streaming(self) -> bool:
-        pass
-
-    @abstractmethod
     def start_recording_to_file(self,
                                 output_path: str,
                                 stream: str,
@@ -74,16 +70,6 @@ class MyPicamera2Interface(ABC):
     @abstractmethod
     def stop_recording_to_file(self):
         """ If recording, stop recording to file. """
-        pass
-
-    @abstractmethod
-    def start_capture_stream(self, stream: str = "lores"):
-        """ Start live streaming mjpeg to the returned StreamingOutput. """
-        pass
-
-    @abstractmethod
-    def stop_capture_stream(self):
-        """ If running, stop live streaming mjpeg. Cancel timer if running. """
         pass
 
     @abstractmethod
