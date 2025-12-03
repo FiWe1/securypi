@@ -6,7 +6,9 @@ import numpy as np
 from scipy.ndimage import gaussian_filter
 
 from securypi_app.services.string_parsing import timed_filename
-from motion_capturing_interface import MotionCapturingInterface
+from securypi_app.sensors.camera.motion_capturing_interface import (
+    MotionCapturingInterface
+)
 
 
 CAPTURE_MOTION_IN_BACKGROUND = False
