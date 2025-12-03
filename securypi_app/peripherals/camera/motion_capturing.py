@@ -2,8 +2,8 @@ import time
 from threading import Thread, Event
 from pathlib import Path
 
-import numpy as np
-from scipy.ndimage import gaussian_filter
+import numpy as np   # pyright: ignore[reportMissingImports]
+from scipy.ndimage import gaussian_filter   # pyright: ignore[reportMissingImports]
 
 from securypi_app.services.string_parsing import timed_filename
 from securypi_app.peripherals.camera.motion_capturing_interface import (
@@ -23,7 +23,6 @@ class MotionCapturing(MotionCapturingInterface):
     Background motion detection and capturing using MyPicamera2 instance.
     """
     def __init__(self, mycam):
-        super().__init__()
         self._mycam = mycam
 
         # background motion detector

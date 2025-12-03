@@ -6,7 +6,11 @@ class MotionCapturingInterface(ABC):
     Interface for MotionCapturing's public methods.
     Must Not be instanciated.
     """
-    
+
+    def __init__(self, mycam):
+        """ Initialize concrete classes with MyPicamera2 instance. """
+        pass
+
     @abstractmethod
     def is_motion_capturing(self) -> bool:
         """ Is motion capturing running in background?. """

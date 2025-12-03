@@ -15,7 +15,6 @@ class MockMotionCapturing(MotionCapturingInterface):
     """
 
     def __init__(self, mycam):
-        super().__init__()
         self._mycam = mycam
         self._is_motion_capturing = False
 
