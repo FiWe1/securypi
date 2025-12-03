@@ -40,6 +40,13 @@ class TestMycamClass():
         """ Try to break singleton """
         obj2 = MyPicamera2()
         assert picam is obj2
+    
+    @pytest.mark.parametrize(
+        "target", ["main", "lores", "sensor"]
+    )
+    def test_current_resolution(self, picam, target):
+        assert isinstance(picam.get_current_resolution(target),
+                          tuple)
 
     def test_instance_type(self, picam):
         assert isinstance(picam, MyPicamera2)

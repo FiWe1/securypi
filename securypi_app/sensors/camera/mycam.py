@@ -3,6 +3,7 @@ from threading import Condition, Timer
 from pathlib import Path
 from abc import ABC, abstractmethod
 
+from securypi_app.sensors.camera.motion_capturing import MotionCapturing
 from securypi_app.services.string_parsing import timed_filename
 
 # Conditional Import for RPi picamera2 library
@@ -78,6 +79,15 @@ class MyPicamera2Interface(ABC):
     def get_instance(cls):
         """ Singleton access method. """
         pass
+    
+    @abstractmethod
+    def get_current_resolution(self, target="sensor") -> tuple[int, int]:
+        """
+        Get current configured resolution for:
+        'target' = "sensor" -> sensor resolution
+        'target' = "main" -> main encoder resolution
+        'target' = "lores" -> lores encoder resolution
+        """
 
     @abstractmethod
     def set_noise_reduction(self, noise_reduction_mode="Fast"):
@@ -98,11 +108,11 @@ class MyPicamera2Interface(ABC):
         pass
 
     @abstractmethod
-    def is_recording(self):
+    def is_recording(self) -> bool:
         pass
 
     @abstractmethod
-    def is_streaming(self):
+    def is_streaming(self) -> bool:
         pass
 
     @abstractmethod
@@ -172,11 +182,16 @@ class MyPicamera2(MyPicamera2Interface):
         self.configure_video_streams()
         self.configure_runtime_controls()
 
+        # streaming
         self._streaming_output = StreamingOutput()
         self._stream_timer = None
 
+        # encoders
         self._recording_encoder = None
         self._streaming_encoder = None
+        
+        # motion detector
+        self.motion_capturing = MotionCapturing(self)
 
         # Really only once.
         self._initialized = True
@@ -221,6 +236,7 @@ class MyPicamera2(MyPicamera2Interface):
         if best_config is not None:
             size = best_config["size"]
             bit_depth = best_config["bit_depth"]
+            
             config.sensor = {
                 "output_size": size,
                 "bit_depth": bit_depth
@@ -262,6 +278,14 @@ class MyPicamera2(MyPicamera2Interface):
 
         self._picam.configure(config)
         return self
+    
+    def get_current_resolution(self, target="sensor") -> tuple[int, int]:
+        if target == "main":
+            return self._picam.video_configuration.main.size
+        elif target == "lores":
+            return self._picam.video_configuration.lores.size
+        
+        return self._picam.video_configuration.sensor.output_size
 
     def configure_runtime_controls(self):
         self.set_noise_reduction()
@@ -302,10 +326,10 @@ class MyPicamera2(MyPicamera2Interface):
 
         return self
 
-    def is_recording(self):
+    def is_recording(self) -> bool:
         return self._recording_encoder is not None
 
-    def is_streaming(self):
+    def is_streaming(self) -> bool:
         return self._streaming_encoder is not None
 
     def start_recording_to_file(self,
@@ -313,11 +337,14 @@ class MyPicamera2(MyPicamera2Interface):
                                 stream: str = "main",
                                 encode_quality=Quality.MEDIUM):
         """
-        Start high-res video recording to file.
+        Start high-res video recording to file using H264 encoder.
         -> output_path
         -> stream: which stream to record from ("main" or "lores")
         -> encode_quality: Quality.[LOW | MEDIUM | HIGH]
         """
+        if self._recording_encoder is not None:
+            raise RuntimeError("Recording already in progress.")
+        
         self._recording_encoder = H264Encoder()
         self._picam.start_encoder(self._recording_encoder,
                            PyavOutput(output_path),

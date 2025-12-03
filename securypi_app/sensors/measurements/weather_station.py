@@ -1,5 +1,5 @@
-from threading import Thread, Event
 from time import sleep
+from threading import Thread, Event
 from abc import ABC, abstractmethod
 
 from flask import current_app
@@ -133,6 +133,7 @@ class WeatherStation(WeatherStationInterface):
         self.init_sensors()
 
         # background logging
+        self._log_in_background = False
         self._logging_thread = None
         self._logging_stop_event = Event()
         self.apply_logging_config()
@@ -257,10 +258,11 @@ class WeatherStation(WeatherStationInterface):
     def apply_logging_config(self):
         """ Load and apply background logging configuration. """
         # @TODO: from json
-        self._log_in_background = LOG_WEATHER_IN_BACKGROUND
-        self._logging_interval = LOGGING_INTERVAL_SEC
-        if self._log_in_background:
-            self.start_logging()
+        log = LOG_WEATHER_IN_BACKGROUND
+        log_sec = LOGGING_INTERVAL_SEC
+        
+        self.set_logging_interval(log_sec)
+        self.set_log_in_background(log)
 
     def set_log_in_background(self, set: bool):
         self._log_in_background = set
@@ -276,6 +278,7 @@ class WeatherStation(WeatherStationInterface):
     def set_logging_interval(self, seconds: int):
         self._logging_interval = seconds
         # @TODO: update json
+        
         if self.is_logging():
             self.start_logging()  # restarts the running logging
 

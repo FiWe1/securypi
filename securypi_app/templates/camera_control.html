@@ -14,5 +14,18 @@
       {% endif %}
     </span>
   </div>
+  
+  <div>
+    <h2>Motion Capturing</h2>
+    <span>
+      {% if is_motion_capturing %}
+      <span>Detecting and capturing motion as we speak...  ...</span>
+      <a href={{ url_for('camera_control.stop_motion_capturing') }}>Stop it now</a>
+      {% else %}
+      <span>Currently not capturing motion.</span>
+      <a href={{ url_for('camera_control.start_motion_capturing') }}>I want to detect and capture motion</a>
+      {% endif %}
+    </span>
+  </div>
 </div>
 {% endblock %}

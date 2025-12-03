@@ -20,7 +20,7 @@ def start_recording():
         )
     except Exception as e:
         print(f"Error starting recording: {e}")
-        flash("Error starting recording.")
+        flash(f"Error starting recording: {e}")
 
     return redirect(url_for("camera_control.index"))
 
@@ -38,12 +38,41 @@ def stop_recording():
 
     return redirect(url_for("camera_control.index"))
 
+@bp.route("/start_motion_capturing")
+@login_required
+def start_motion_capturing():
+    camera = MyPicamera2.get_instance()
+
+    try:
+        camera.motion_capturing.set_motion_capturing(True)
+    except Exception as e:
+        print(f"Error starting motion capturing: {e}")
+        flash(f"Error starting motion capturing: {e}")
+
+    return redirect(url_for("camera_control.index"))
+
+
+@bp.route("/stop_motion_capturing")
+@login_required
+def stop_motion_capturing():
+    camera = MyPicamera2.get_instance()
+
+    try:
+        camera.motion_capturing.set_motion_capturing(False)
+    except Exception as e:
+        print(f"Error stopping motion capturing: {e}")
+        flash("Error stopping motion capturing.")
+
+    return redirect(url_for("camera_control.index"))
+
 
 @bp.route("/")
 @login_required
 def index():
     camera = MyPicamera2.get_instance()
     is_recording = camera.is_recording()
+    is_motion_capturing = camera.motion_capturing.is_motion_capturing()
     """ Default (inde) route for camera_control blueprint."""
     return render_template("camera_control.html",
-                           is_recording=is_recording)
+                           is_recording=is_recording,
+                           is_motion_capturing=is_motion_capturing)
