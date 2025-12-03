@@ -1,10 +1,9 @@
 import io
 from threading import Condition, Timer
 from pathlib import Path
-from abc import ABC, abstractmethod
 
-from securypi_app.sensors.camera.motion_capturing import MotionCapturing
 from securypi_app.services.string_parsing import timed_filename
+from securypi_app.sensors.camera.mycam_interface import MyPicamera2Interface
 
 # Conditional Import for RPi picamera2 library
 try:
@@ -12,14 +11,19 @@ try:
     from libcamera import controls    # pyright: ignore[reportAttributeAccessIssue, reportMissingImports]
     from picamera2.encoders import JpegEncoder, H264Encoder, Quality    # pyright: ignore[reportMissingImports]
     from picamera2.outputs import FileOutput, PyavOutput    # pyright: ignore[reportMissingImports]
+    # motion capturing is dependent on picamera2
+    from securypi_app.sensors.camera.motion_capturing import MotionCapturing
     
 except ImportError as e:
     print("Failed to import picamera2 camera library, "
           "reverting to mock class:\n", "\033[31m", e, "\033[0m")
     # Mock sensor classes for platform independent development
-    from securypi_app.sensors.camera.mock_mycam import (
+    from securypi_app.sensors.camera.mock_camera_modules.mock_picamera2 import (
         MockPicamera2, MockEncoder, MockStreamingOutput, MockPyavOutput,
         MockQuality, Controls
+    )
+    from securypi_app.sensors.camera.mock_camera_modules.mock_motion_capturing import (
+        MockMotionCapturing
     )
     Picamera2 = MockPicamera2
     JpegEncoder = MockEncoder
@@ -28,6 +32,7 @@ except ImportError as e:
     PyavOutput = MockPyavOutput
     Quality = MockQuality
     controls = Controls
+    MotionCapturing = MockMotionCapturing
 
 
 # @TODO move to global config
@@ -67,92 +72,6 @@ def generate_frames(output):
                b"Content-Type: image/jpeg\r\n"
                b"Content-Length: " + f"{len(frame)}".encode() + b"\r\n\r\n" +
                frame + b"\r\n")
-
-
-class MyPicamera2Interface(ABC):
-    """
-    Interface for MyPicamera2's public methods.
-    Must Not be instanciated.
-    """
-    @classmethod
-    @abstractmethod
-    def get_instance(cls):
-        """ Singleton access method. """
-        pass
-    
-    @abstractmethod
-    def get_current_resolution(self, target="sensor") -> tuple[int, int]:
-        """
-        Get current configured resolution for:
-        'target' = "sensor" -> sensor resolution
-        'target' = "main" -> main encoder resolution
-        'target' = "lores" -> lores encoder resolution
-        """
-
-    @abstractmethod
-    def set_noise_reduction(self, noise_reduction_mode="Fast"):
-        """
-        Noise Reduction Modes:
-        {
-            'Off': <NoiseReductionModeEnum.Off: 0>,
-            'Fast': <NoiseReductionModeEnum.Fast: 1>,
-            'HighQuality': <NoiseReductionModeEnum.HighQuality: 2>,
-            'Minimal': <NoiseReductionModeEnum.Minimal: 3>,
-            'ZSL': <NoiseReductionModeEnum.ZSL: 4>
-        }
-        """
-        pass
-    
-    @abstractmethod
-    def set_framerate(self, framerate=None):
-        pass
-
-    @abstractmethod
-    def is_recording(self) -> bool:
-        pass
-
-    @abstractmethod
-    def is_streaming(self) -> bool:
-        pass
-
-    @abstractmethod
-    def start_recording_to_file(self,
-                                output_path: str,
-                                stream: str = "main",
-                                encode_quality=Quality.MEDIUM):
-        """
-        Start high-res video recording to file.
-        -> output_path
-        -> stream: which stream to record from ("main" or "lores")
-        -> encode_quality: Quality.[LOW | MEDIUM | HIGH]
-        """
-        pass
-    @abstractmethod
-    def start_default_recording(self,
-                                stream="main",
-                                encode_quality=Quality.LOW) -> Path:
-        """
-        Start recording to /captures/recordings
-        with returned default filename (current datetime).
-        """
-        pass
-
-    @abstractmethod
-    def stop_recording_to_file(self):
-        pass
-
-    @abstractmethod
-    def start_capture_stream(self, stream: str = "lores") -> StreamingOutput:
-        """ Start live streaming mjpeg to the returned StreamingOutput. """
-        pass
-
-    @abstractmethod
-    def stop_capture_stream(self):
-        pass
-
-    @abstractmethod
-    def capture_picture(self):
-        """ Capture an image, return image data. """
 
 
 class MyPicamera2(MyPicamera2Interface):
@@ -237,10 +156,9 @@ class MyPicamera2(MyPicamera2Interface):
             size = best_config["size"]
             bit_depth = best_config["bit_depth"]
             
-            config.sensor = {
-                "output_size": size,
-                "bit_depth": bit_depth
-            }
+            config.sensor.output_size = size
+            config.sensor.bit_depth = bit_depth
+            
             self._picam.configure(config)
             print(f"Configured video sensor resolution to "
                   f"{size} with bit depth {bit_depth} at {fps} fps.")
@@ -293,16 +211,6 @@ class MyPicamera2(MyPicamera2Interface):
         return self
 
     def set_noise_reduction(self, noise_reduction_mode="Fast"):
-        """
-        Noise Reduction Modes:
-        {
-            'Off': <NoiseReductionModeEnum.Off: 0>,
-            'Fast': <NoiseReductionModeEnum.Fast: 1>,
-            'HighQuality': <NoiseReductionModeEnum.HighQuality: 2>,
-            'Minimal': <NoiseReductionModeEnum.Minimal: 3>,
-            'ZSL': <NoiseReductionModeEnum.ZSL: 4>
-        }
-        """
         nr_modes = controls.draft.NoiseReductionModeEnum.__members__
         if noise_reduction_mode not in nr_modes.keys():
             raise ValueError(f"Unknown NR mode value {noise_reduction_mode}. "
@@ -336,12 +244,6 @@ class MyPicamera2(MyPicamera2Interface):
                                 output_path: str,
                                 stream: str = "main",
                                 encode_quality=Quality.MEDIUM):
-        """
-        Start high-res video recording to file using H264 encoder.
-        -> output_path
-        -> stream: which stream to record from ("main" or "lores")
-        -> encode_quality: Quality.[LOW | MEDIUM | HIGH]
-        """
         if self._recording_encoder is not None:
             raise RuntimeError("Recording already in progress.")
         
@@ -392,7 +294,7 @@ class MyPicamera2(MyPicamera2Interface):
 
     def stop_capture_stream(self):
         if self._stream_timer is not None:
-            self._stream_timer.cancel()  # just to be sure
+            self._stream_timer.cancel()
             self._stream_timer = None
         if self._streaming_encoder is not None:
             self._picam.stop_encoder(self._streaming_encoder)

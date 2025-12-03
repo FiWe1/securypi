@@ -68,12 +68,21 @@ class MockStreamConfig:
         self.size = size
 
 
+class MockSensorConfig:
+    """ Mocking object oriented camera configuration. """
+
+    def __init__(self, size=None):
+        self.output_size = size
+        self.bit_depth = 10
+
+
 class MockVideoConfiguration:
     """ Mocking object oriented camera configuration. """
 
     def __init__(self):
-        self.main = MockStreamConfig()
+        self.main = MockStreamConfig((1920, 1080))
         self.lores = None
+        self.sensor = MockSensorConfig((2304, 1296))
 
     def enable_lores(self):
         if self.lores is None:
@@ -81,12 +90,10 @@ class MockVideoConfiguration:
 
 
 class MockPicamera2:
-
     """
     Mocking Picamera2 library for the purpouses of
     working with mycam module (MyPicamera2).
     """
-
     _mock_encoder_thread = None
     _mock_encoder_stop_event = Event()
 
@@ -122,14 +129,6 @@ class MockPicamera2:
         self.started = False
         self.video_configuration = MockVideoConfiguration()
         self.new_frame_interval_seconds = 2  # new fake frame every n seconds
-
-    def create_video_configuration(self, **kwargs):
-        print("[MockPicamera2] Creating video config:", kwargs)
-        return kwargs
-
-    def create_still_configuration(self, **kwargs):
-        print("[MockPicamera2] Creating still config:", kwargs)
-        return kwargs
 
     def configure(self, config):
         print("[MockPicamera2] Configured with:", config)
