@@ -5,26 +5,33 @@
     <h1>{% block title %}Recordings{% endblock %}</h1>
     <span>placeholder recordings page</span>
   </div>
-  <div>
-    <h2>Motion Captures</h2>
-    <ul>
-      {% for entry in motion_captures %}
-      <li>
-        {# <span>{{ entry }}</span> #}
-        <a href="{{ url_for('recordings.download_motion_capture', filename=entry) }}">{{ entry }}</a>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
-  <div>
-    <h2>Recordings</h2>
-    <ul>
-      {% for entry in recordings %}
-      <li>
-        <a href="{{ url_for('recordings.download_recording', filename=entry) }}">{{ entry }}</a>
-      </li>
-      {% endfor %}
-    </ul>
-  </div>
+  
+  <form method="post">
+    <div>
+      <h2>Motion Captures</h2>
+        {% for entry in motion_captures %}
+        {# @TODO change to span with managed layout #}
+        <div>
+          <input type="checkbox" name="{{ entry }}" value="no">
+          {# <span>{{ entry }}</span> #}
+          <a href="{{ url_for('recordings.download_motion_capture', filename=entry) }}">{{ entry }}</a>
+        </div>
+        {% endfor %}
+    </div>
+    <div>
+      <h2>Recordings</h2>
+        {% for entry in recordings %}
+        {# @TODO change to span with managed layout #}
+        <div>
+          <input type="checkbox" name="{{ entry }}" value="no">
+          <a href="{{ url_for('recordings.download_recording', filename=entry) }}">{{ entry }}</a>
+        </div>
+        {% endfor %}
+    </div>
+    <button type="submit" name="action" value="download_selected">Download selected</button>
+    {% if g.user["is_admin"] == True %}
+    <button type="submit" name="action" value="delete_selected">Delete selected</button>
+    {% endif %}
+  </form>
 </div>
 {% endblock %}
