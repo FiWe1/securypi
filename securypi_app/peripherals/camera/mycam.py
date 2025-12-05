@@ -2,6 +2,7 @@ import io
 from pathlib import Path
 
 from securypi_app.services.string_parsing import timed_filename
+from securypi_app.services.captures import recordings_path
 from securypi_app.peripherals.camera.mycam_interface import MyPicamera2Interface
 from securypi_app.peripherals.camera.streaming import Streaming
 
@@ -32,7 +33,7 @@ except ImportError as e:
     MotionCapturing = MockMotionCapturing
 
 
-# @TODO move to global config
+# @TODO move to global json config
 STREAM_TIMEOUT = 5 * 60  # 5 minutes
 RECORDING_FRAMERATE = 25
 MAIN_RESOLUTION = (1920, 1080)
@@ -217,11 +218,9 @@ class MyPicamera2(MyPicamera2Interface):
                                 stream="main",
                                 encode_quality=Quality.LOW) -> Path:
         filename = timed_filename(".mp4")
-        path_str = "captures/recordings/"
-
-        path = Path(path_str)
-        path.mkdir(parents=True, exist_ok=True)
-        full_path = path / filename
+        
+        folder_path = recordings_path()
+        full_path = folder_path / filename
 
         self.start_recording_to_file(str(full_path), stream, encode_quality)
 

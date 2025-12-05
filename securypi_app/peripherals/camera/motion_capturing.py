@@ -6,11 +6,13 @@ import numpy as np   # pyright: ignore[reportMissingImports]
 from scipy.ndimage import gaussian_filter   # pyright: ignore[reportMissingImports]
 
 from securypi_app.services.string_parsing import timed_filename
+from securypi_app.services.captures import motion_captures_path
 from securypi_app.peripherals.camera.motion_capturing_interface import (
     MotionCapturingInterface
 )
 
 
+# @TODO move to global json config
 CAPTURE_MOTION_IN_BACKGROUND = False
 MOTION_DETECTION_FRAMERATE = 10
 MIN_MOTION_CAPTURE_LENGTH_SEC = 2
@@ -131,8 +133,7 @@ class MotionCapturing(MotionCapturingInterface):
         """
         w, h = self._mycam.get_current_resolution(target="lores")
 
-        folderpath = Path("captures/motion_captures")
-        folderpath.mkdir(parents=True, exist_ok=True)
+        folderpath = motion_captures_path()
         detection_timeout = 1 / self._detection_rate
 
         last_detected: time = 0
