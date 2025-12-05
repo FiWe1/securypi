@@ -18,10 +18,12 @@
 
 ## 2. Run the app:
 
-    .venv/bin/python -m flask --app securypi_app run -h 0.0.0.0 --debugger"
+    .venv/bin/python -m flask --app securypi_app run -h localhost -p 5555 --debugger
 
-    # change "-h [address]" to 0.0.0.0 for all networks - unsafe!
-    # use VPN ip
+- now you can access the app at http://localhost:5555
+
+- change "-h [address]" to 0.0.0.0 for all networks - unsafe!
+- it is better to use VPN tunneling ip
 
 
 
