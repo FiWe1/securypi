@@ -1,7 +1,30 @@
 {% extends 'base.html' %}
 {% block body %}
 <div>
-  <h1>{% block title %}Recordings{% endblock %}</h1>
-  <span>placeholder recordings page</span>
+  <div>
+    <h1>{% block title %}Recordings{% endblock %}</h1>
+    <span>placeholder recordings page</span>
+  </div>
+  <div>
+    <h2>Motion Captures</h2>
+    <ul>
+      {% for entry in motion_captures %}
+      <li>
+        {# <span>{{ entry }}</span> #}
+        <a href="{{ url_for('recordings.download_motion_capture', filename=entry) }}">{{ entry }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div>
+    <h2>Recordings</h2>
+    <ul>
+      {% for entry in recordings %}
+      <li>
+        <a href="{{ url_for('recordings.download_recording', filename=entry) }}">{{ entry }}</a>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
 </div>
 {% endblock %}
