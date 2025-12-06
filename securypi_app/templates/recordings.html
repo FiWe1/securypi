@@ -9,10 +9,14 @@
   <form method="post">
     <div>
       <h2>Motion Captures</h2>
+        <span>
+          <input type="checkbox" id="check_all_motion_captures" name="check_all_motion_captures" value="no">
+          check all Motion Captures
+        </span>
         {% for entry in motion_captures %}
         {# @TODO change to span with managed layout #}
         <div>
-          <input type="checkbox" name="{{ entry }}" value="no">
+          <input type="checkbox" class="motion_capture" name="{{ entry }}" value="no">
           {# <span>{{ entry }}</span> #}
           <a href="{{ url_for('recordings.download_motion_capture', filename=entry) }}">{{ entry }}</a>
         </div>
@@ -20,18 +24,41 @@
     </div>
     <div>
       <h2>Recordings</h2>
+        <span>
+          <input type="checkbox" id="check_all_recordings" name="check_all_recordings" value="no">
+          check all Recordings
+        </span>
         {% for entry in recordings %}
         {# @TODO change to span with managed layout #}
         <div>
-          <input type="checkbox" name="{{ entry }}" value="no">
+          <input type="checkbox" class="recording" name="{{ entry }}" value="no">
           <a href="{{ url_for('recordings.download_recording', filename=entry) }}">{{ entry }}</a>
         </div>
         {% endfor %}
     </div>
+
     <button type="submit" name="action" value="download_selected">Download selected</button>
     {% if g.user["is_admin"] == True %}
     <button type="submit" name="action" value="delete_selected">[UNSAFE!] Delete selected</button>
     {% endif %}
   </form>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  function attachCheckAll(parentSelector, childSelector) {
+    const parent = document.querySelector(parentSelector);
+    const children = document.querySelectorAll(childSelector);
+
+    // on parents change:
+    parent.addEventListener("change", () => {
+      // set all children's checkboxes to parent's value
+      children.forEach((cb) => cb.checked = parent.checked);
+    });
+  }
+
+  attachCheckAll("#check_all_motion_captures", ".motion_capture");
+  attachCheckAll("#check_all_recordings", ".recording");
+});
+</script>
 {% endblock %}

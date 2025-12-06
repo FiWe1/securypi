@@ -37,7 +37,7 @@ def download_recording(filename):
 
 
 def handle_batch_form_action(form):
-    action = form.get('action')
+    action = form.get("action")
 
     motion_captures = list_motion_captures()
     recordings = list_recordings()
