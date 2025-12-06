@@ -13,14 +13,20 @@ bp = Blueprint("camera_control", __name__, url_prefix="/camera_control")
 def start_recording():
     camera = MyPicamera2.get_instance()
 
-    try:
-        camera.start_default_recording(
-            stream="main",
-            encode_quality=Quality.LOW
-        )
-    except Exception as e:
-        print(f"Error starting recording: {e}")
-        flash(f"Error starting recording: {e}")
+    if camera.motion_capturing.is_motion_capturing():
+        print("Can't start a recording wile "
+              "background motion capturing is running.")
+        flash("Can't start a recording wile "
+              "background motion capturing is running.")
+    else:
+        try:
+            camera.start_default_recording(
+                stream="main",
+                encode_quality=Quality.LOW
+            )
+        except Exception as e:
+            print(f"Error starting recording: {e}")
+            flash(f"Error starting recording: {e}")
 
     return redirect(url_for("camera_control.index"))
 
