@@ -46,7 +46,9 @@
 
 <script>
 document.addEventListener("DOMContentLoaded", () => {
+
   function attachCheckAll(parentSelector, childSelector) {
+    // every child selector is set to parent's value
     const parent = document.querySelector(parentSelector);
     const children = document.querySelectorAll(childSelector);
 
@@ -59,6 +61,39 @@ document.addEventListener("DOMContentLoaded", () => {
 
   attachCheckAll("#check_all_motion_captures", ".motion_capture");
   attachCheckAll("#check_all_recordings", ".recording");
+
+
+  // Generic shift-select handler
+  function attachShiftSelect(selector) {
+    // attach event listener to selected checkboxes:
+    // click, shift+click set's the value to the whole range of boxes
+    const checkboxes = document.querySelectorAll(selector)
+    let lastIndex = null;
+
+    checkboxes.forEach((cb, index) => {
+      cb.addEventListener("click", (event) => {
+        // normal click: update anchor
+        if (!event.shiftKey) {
+          lastIndex = index;
+          return;
+        }
+
+        // shift+click: apply range
+        if (lastIndex !== null) {
+          const first = Math.min(lastIndex, index);
+          const last = Math.max(lastIndex, index);
+          const value = cb.checked;
+
+          for (let i = first; i <= last; i++) {
+            checkboxes[i].checked = value;
+          }
+        }
+      });
+    });
+  }
+
+  attachShiftSelect(".motion_capture");
+  attachShiftSelect(".recording");
 });
 </script>
 {% endblock %}
