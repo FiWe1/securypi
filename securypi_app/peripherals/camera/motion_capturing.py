@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 from threading import Thread, Event
 from pathlib import Path
 
@@ -161,7 +162,9 @@ class MotionCapturing(MotionCapturingInterface):
                         self._mycam.start_recording_to_file(filename)
                         recording_start_time = time.time()
 
-                        print("New Motion", round(ratio * 100, 2))
+                        print(datetime.now().strftime("%Y-%m-%d_%H-%M"),
+                              f"New motion: {round(ratio * 100, 2)}% "
+                              f"frame change ratio")
                     last_detected = time.time()
                 else:
                     # Stop recording if no motion detected for
