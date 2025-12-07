@@ -219,6 +219,38 @@ body {
 
 
 /*
+***                            ***
+      ***  Temperature   ***
+***                            ***
+*/
+
+.temperature {
+  grid-row: 2;  /* site content - below flash messages */
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  grid-template-rows: auto 1fr;
+
+  margin: 1em;
+}
+
+.temperature__title {
+  grid-column: 1 / 5;
+  grid-row: 1;
+
+  margin-bottom: 1em;
+}
+
+.temperature__content_todo {
+  grid-column: 1 / 12;
+  grid-row: 2;
+
+  margin-left: 1em
+}
+
+
+
+
+/*
 ***                              ***
       ***  Camera control   ***
 ***                              ***
@@ -236,45 +268,21 @@ body {
 .camera_control__title {
   grid-column: 1 / 5;
   grid-row: 1;
+
+  margin-bottom: 1em;
 }
 
 .camera_control__background_tasks {
   grid-column: 1 / 5;
   grid-row: 2;
 
-  margin-top: 1em;
+  margin-left: 1em;
 }
 
 .camera_control__recording {
   margin-bottom: 2em;
 }
 
-
-
-/*
-***                            ***
-      ***  Configure   ***
-***                            ***
-*/
-
-.configure {
-  grid-row: 2;  /* site content - below flash messages */
-  display: grid;
-  grid-template-columns: repeat(11, 1fr);
-  grid-template-rows: auto 1fr;
-
-  margin: 1em;
-}
-
-.configure__title {
-  grid-column: 1 / 5;
-  grid-row: 1;
-}
-
-.configure__weather_logging {
-  grid-column: 1 / 12;
-  grid-row: 2;
-}
 
 
 /*
@@ -304,6 +312,8 @@ body {
 .recordings__motion_captures {
   grid-column: 1 / 6;
   grid-row: 2;
+
+  margin-left: 1em;
 }
 
 .recordings__recordings {
@@ -320,10 +330,43 @@ body {
 
 .recordings__buttons--download {
   background-color: green;
+
+  margin-left: 1em;
 }
 
 .recordings__buttons--delete {
   background-color: red;
+}
+
+
+
+/*
+***                            ***
+      ***  Configure   ***
+***                            ***
+*/
+
+.configure {
+  grid-row: 2;  /* site content - below flash messages */
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  grid-template-rows: auto 1fr;
+
+  margin: 1em;
+}
+
+.configure__title {
+  grid-column: 1 / 5;
+  grid-row: 1;
+
+  margin-bottom: 1em;
+}
+
+.configure__weather_logging {
+  grid-column: 1 / 12;
+  grid-row: 2;
+
+  margin-left: 1em;
 }
 
 
@@ -345,14 +388,16 @@ body {
 
 .user_settings__title {
   grid-column: 1 / 5;
-  grid-row: 2;
+  grid-row: 1;
+
+  margin-bottom: 1em;
 }
 
 .user_settings__user_type {
   grid-column: 1 / 5;
-  grid-row: 3;
+  grid-row: 2;
 
-  margin: 2rem;
+  margin-left: 1em;
 }
 
 
