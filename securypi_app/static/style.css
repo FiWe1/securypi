@@ -238,7 +238,7 @@ body {
 }
 
 .temperature__title {
-  grid-column: 1 / 5;
+  grid-column: 1 / 12;
   grid-row: 1;
 
   margin-bottom: 1em;
@@ -270,14 +270,14 @@ body {
 }
 
 .camera_control__title {
-  grid-column: 1 / 5;
+  grid-column: 1 / 12;
   grid-row: 1;
 
   margin-bottom: 1em;
 }
 
 .camera_control__background_tasks {
-  grid-column: 1 / 5;
+  grid-column: 1 / 12;
   grid-row: 2;
 
   margin-left: 1em;
@@ -305,7 +305,7 @@ body {
 }
 
 .recordings__title {
-  grid-column: 1 / 5;
+  grid-column: 1 / 12;
   grid-row: 1;
 }
 
@@ -364,7 +364,7 @@ body {
 }
 
 .configure__title {
-  grid-column: 1 / 5;
+  grid-column: 1 / 12;
   grid-row: 1;
 
   margin-bottom: 1em;
@@ -395,14 +395,14 @@ body {
 }
 
 .user_settings__title {
-  grid-column: 1 / 5;
+  grid-column: 1 / 12;
   grid-row: 1;
 
   margin-bottom: 1em;
 }
 
 .user_settings__user_type {
-  grid-column: 1 / 5;
+  grid-column: 1 / 12;
   grid-row: 2;
 
   margin-left: 1em;
