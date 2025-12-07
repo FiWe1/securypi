@@ -78,14 +78,16 @@ body {
 	flex-direction: column;
 	row-gap: 8px;
   margin-top: auto; /* pushes this section to the bottom */
-  margin-bottom: 1rem;
+  margin-bottom: 0.9em;
 }
 
 
 .navbar a {
   color: var(--nav-link-color);
   text-decoration: none;
-  padding: 1em;
+  margin: 1em;
+
+  margin-left: 1.3em;
 }
 
 .navbar a:hover {
