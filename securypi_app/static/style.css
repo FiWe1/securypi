@@ -311,15 +311,19 @@ body {
   display: contents; /* positioning its children */
 }
 
-.recordings__motion_captures {
+.recordings__list {
+  display: contents; /* positioning its children */
+}
+
+.recordings__list--motion_captures {
   grid-column: 1 / 6;
   grid-row: 2;
 
   margin-left: 1em;
 }
 
-.recordings__recordings {
-  grid-column: 5 / 12;
+.recordings__list--recordings {
+  grid-column: 6 / 12;
   grid-row: 2;
 }
 
@@ -400,6 +404,31 @@ body {
   grid-row: 2;
 
   margin-left: 1em;
+}
+
+
+@media (max-width: 647px) {
+  .recordings__title {
+    grid-column: 1 / 5;
+    grid-row: 1;
+  }
+
+  /* recordings above motion captures spanning full width */
+  .recordings__list {
+    grid-column: 1 / 12;
+    grid-row: 2;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  .recordings__list--motion_captures {
+    margin-left: 1em;
+  }
+
+  .recordings__list--recordings {
+    margin-left: 1em;
+  }
 }
 
 

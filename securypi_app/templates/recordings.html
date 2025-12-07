@@ -4,34 +4,36 @@
   <h1 class="recordings__title">{% block title %}Recordings{% endblock %}</h1>
   
   <form class="recordings__form" method="post">
-    <div class="recordings__motion_captures">
-      <h2>Motion Captures</h2>
-        <span>
-          <input type="checkbox" id="check_all_motion_captures" name="check_all_motion_captures" value="no">
-          check all Motion Captures
-        </span>
-        {% for entry in motion_captures %}
-        {# @TODO change to span with managed layout #}
-        <div>
-          <input type="checkbox" class="motion_capture" name="{{ entry }}" value="no">
-          {# <span>{{ entry }}</span> #}
-          <a href="{{ url_for('recordings.download_motion_capture', filename=entry) }}">{{ entry }}</a>
-        </div>
-        {% endfor %}
-    </div>
-    <div class="recordings__recordings">
-      <h2>Recordings</h2>
-        <span>
-          <input type="checkbox" id="check_all_recordings" name="check_all_recordings" value="no">
-          check all Recordings
-        </span>
-        {% for entry in recordings %}
-        {# @TODO change to span with managed layout #}
-        <div>
-          <input type="checkbox" class="recording" name="{{ entry }}" value="no">
-          <a href="{{ url_for('recordings.download_recording', filename=entry) }}">{{ entry }}</a>
-        </div>
-        {% endfor %}
+    <div class="recordings__list">
+      <div class="recordings__list--motion_captures">
+        <h2>Motion Captures</h2>
+          <span>
+            <input type="checkbox" id="check_all_motion_captures" name="check_all_motion_captures" value="no">
+            check all Motion Captures
+          </span>
+          {% for entry in motion_captures %}
+          {# @TODO change to span with managed layout #}
+          <div>
+            <input type="checkbox" class="motion_capture" name="{{ entry }}" value="no">
+            {# <span>{{ entry }}</span> #}
+            <a href="{{ url_for('recordings.download_motion_capture', filename=entry) }}">{{ entry }}</a>
+          </div>
+          {% endfor %}
+      </div>
+      <div class="recordings__list--recordings">
+        <h2>Recordings</h2>
+          <span>
+            <input type="checkbox" id="check_all_recordings" name="check_all_recordings" value="no">
+            check all Recordings
+          </span>
+          {% for entry in recordings %}
+          {# @TODO change to span with managed layout #}
+          <div>
+            <input type="checkbox" class="recording" name="{{ entry }}" value="no">
+            <a href="{{ url_for('recordings.download_recording', filename=entry) }}">{{ entry }}</a>
+          </div>
+          {% endfor %}
+      </div>
     </div>
     
     <div class="recordings__buttons">
