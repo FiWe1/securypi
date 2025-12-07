@@ -10,12 +10,14 @@
 {% if g.user is not none %}
   {% include "includes/navbar.html" %}
 {% endif %}
-{% block body_flash %}{% endblock %}
-{% for message in get_flashed_messages() %}
-<div class="flash">{{ message }}</div>
-{% endfor %}
-  
 
-{% block body %}{% endblock %}
+<div class="site_content">
+  {% for message in get_flashed_messages() %}
+  <div class="flash">{{ message }}</div>
+  {% endfor %}
+    
+
+  {% block body %}{% endblock %}
+</div>
 </body>
 </html>

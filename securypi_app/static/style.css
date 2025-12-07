@@ -26,10 +26,25 @@ body {
   color: var(--text-color);
 }
 
+/* the main body grid for laying out navigation and the rest of the site */
 .grid {
   display: grid;
   grid-template-columns: 1fr 11fr;
-  /* the main body grid for laying out navigation and the rest of the content */
+}
+
+.site_content {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  /* 
+  - flash messages
+  - the rest of the content in second row
+  */
+}
+
+
+.flash {
+  grid-column: 1;
+  grid-row: 1;
 }
 
 
@@ -105,6 +120,7 @@ body {
 */
 
 .overview {
+  grid-row: 2; /* site content - below flash messages */
   display: grid;
   grid-template-columns: repeat(11, 1fr);
   grid-template-rows: 1fr 1fr;
@@ -120,35 +136,35 @@ body {
 }
 
 .overview__temphum {
-    grid-column: 6 / 12;
-    grid-row: 1;
-    align-self: center;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    font-size: 3vw;
-    margin-right: 1em;
-    margin-left: 1em;
+  grid-column: 6 / 12;
+  grid-row: 1;
+  align-self: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  font-size: 3vw;
+  margin-right: 1em;
+  margin-left: 1em;
 }
 
 .overview__temphum--temperature {
-    grid-column: 1;
-    grid-row: 1;
-    align-self: center;          /* vertical alignment inside the box */
-    justify-self: center;  /* horizontal alignment inside the box */
+  grid-column: 1;
+  grid-row: 1;
+  align-self: center;          /* vertical alignment inside the box */
+  justify-self: center;  /* horizontal alignment inside the box */
 }
 
 .overview__temphum--humidity {
-    grid-column: 2;
-    grid-row: 1;
-    align-self: center;
-    justify-self: center;
+  grid-column: 2;
+  grid-row: 1;
+  align-self: center;
+  justify-self: center;
 }
 
 .overview__temphum--pressure {
-    grid-column: 3;
-    grid-row: 1;
-    align-self: center;
-    justify-self: center;
+  grid-column: 3;
+  grid-row: 1;
+  align-self: center;
+  justify-self: center;
 }
 
 .overview__camera_feed {
@@ -203,26 +219,140 @@ body {
 
 
 /*
+***                              ***
+      ***  Camera control   ***
+***                              ***
+*/
+
+.camera_control {
+  grid-row: 2;  /* site content - below flash messages */
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  grid-template-rows: auto 1fr;
+  
+  margin: 1em;
+}
+
+.camera_control__title {
+  grid-column: 1 / 5;
+  grid-row: 1;
+}
+
+.camera_control__background_tasks {
+  grid-column: 1 / 5;
+  grid-row: 2;
+
+  margin-top: 1em;
+}
+
+.camera_control__recording {
+  margin-bottom: 2em;
+}
+
+
+
+/*
+***                            ***
+      ***  Configure   ***
+***                            ***
+*/
+
+.configure {
+  grid-row: 2;  /* site content - below flash messages */
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  grid-template-rows: auto 1fr;
+
+  margin: 1em;
+}
+
+.configure__title {
+  grid-column: 1 / 5;
+  grid-row: 1;
+}
+
+.configure__weather_logging {
+  grid-column: 1 / 12;
+  grid-row: 2;
+}
+
+
+/*
+***                           ***
+      ***  Recordings   ***
+***                           ***
+*/
+
+.recordings {
+  grid-row: 2;  /* site content - below flash messages */
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  grid-template-rows: auto 1fr auto;
+
+  margin: 1em;
+}
+
+.recordings__title {
+  grid-column: 1 / 5;
+  grid-row: 1;
+}
+
+.recordings__form {
+  display: contents; /* positioning its children */
+}
+
+.recordings__motion_captures {
+  grid-column: 1 / 6;
+  grid-row: 2;
+}
+
+.recordings__recordings {
+  grid-column: 5 / 12;
+  grid-row: 2;
+}
+
+.recordings__buttons {
+  grid-column: 1 / 12;
+  grid-row: 3;
+  display: flex;
+  justify-content: space-between;
+}
+
+.recordings__buttons--download {
+  background-color: green;
+}
+
+.recordings__buttons--delete {
+  background-color: red;
+}
+
+
+
+/*
 ***                               ***
       ***  User settings   ***
 ***                               ***
 */
 
-/* 
-.user_settings { @TODO fix above)
-    grid-template-rows: 1fr 3fr;
-} */
+.user_settings {
+  grid-row: 2;  /* site content - below flash messages */
+  display: grid;
+  grid-template-columns: repeat(11, 1fr);
+  grid-template-rows: auto 1fr;
+
+  margin: 1em;
+}
 
 .user_settings__title {
-    grid-column: 3 / 7;
-    grid-row: 1;
+  grid-column: 1 / 5;
+  grid-row: 2;
 }
 
 .user_settings__user_type {
-    grid-column: 2 / 5;
-    grid-row: 2;
+  grid-column: 1 / 5;
+  grid-row: 3;
 
-    margin: 5rem;
+  margin: 2rem;
 }
 
 
