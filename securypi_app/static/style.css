@@ -10,13 +10,19 @@
 }
 /* @TODO add root variables for colors ...) */
 
+/* debug: */
+/* * { outline: 1px solid red; } */
+
 
 html, body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  height: 100dvh;
+  height: 100%;
   width: 100%;
+
+  /* debug: */
+  /* overflow-x: hidden; */
 }
 /* @TODO change html font!) */
 
@@ -32,13 +38,15 @@ body {
   grid-template-columns: 1fr 11fr;
 }
 
+
+/* 
+- flash messages
+- the rest of the content in second row
+*/
 .site_content {
+  grid-column: 2;
   display: grid;
   grid-template-rows: auto 1fr;
-  /* 
-  - flash messages
-  - the rest of the content in second row
-  */
 }
 
 
@@ -60,7 +68,7 @@ body {
 .navbar {
   display: flex;
   flex-direction: column;
-  height: 100dvh;
+  height: 100%;
   box-sizing: border-box;
 
   background-color: var(--background-nav);
@@ -108,12 +116,11 @@ body {
 ***                                 ***
 */
 
-/* @TODO Login layout)
 .login {
-  grid-column: 2 / 3;
-  display: grid;
-  grid-template-rows: auto;
-} */
+  grid-row: 2; /* site content - below flash messages */
+  width: 10em;
+  height: 6em;
+}
 
 
 
@@ -127,8 +134,7 @@ body {
   grid-row: 2; /* site content - below flash messages */
   display: grid;
   grid-template-columns: repeat(11, 1fr);
-  grid-template-rows: 1fr 1fr;
-  height: 100dvh;
+  grid-template-rows: auto min-content;
 }
 
 .overview__title {
@@ -144,31 +150,18 @@ body {
   grid-row: 1;
   align-self: center;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: auto;
   font-size: 3vw;
-  margin-right: 1em;
-  margin-left: 1em;
+  margin: 1em;
 }
 
-.overview__temphum--temperature {
-  grid-column: 1;
-  grid-row: 1;
+.overview__temphum--temperature,
+.overview__temphum--humidity,
+.overview__temphum--pressure {
   align-self: center;          /* vertical alignment inside the box */
   justify-self: center;  /* horizontal alignment inside the box */
-}
-
-.overview__temphum--humidity {
-  grid-column: 2;
-  grid-row: 1;
-  align-self: center;
-  justify-self: center;
-}
-
-.overview__temphum--pressure {
-  grid-column: 3;
-  grid-row: 1;
-  align-self: center;
-  justify-self: center;
+  margin: 1rem 0;
 }
 
 .overview__camera_feed {
@@ -179,7 +172,7 @@ body {
 
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto;
+  grid-template-rows: auto 1fr auto;
   margin-bottom: 1em;
 }
 
@@ -195,9 +188,9 @@ body {
   width: 70vw;
   max-width: 70vw;
   height: auto;
-  max-height: 65dvh;
+  max-height: 65vh;
   object-fit: contain;
-
+  margin: 0.5em 0em;
 }
 
 .overview__camera_feed--switch {
@@ -409,6 +402,7 @@ body {
 }
 
 
+
 @media (max-width: 647px) {
   .recordings__title {
     grid-column: 1 / 5;
@@ -431,47 +425,67 @@ body {
   .recordings__list--recordings {
     margin-left: 1em;
   }
-}
 
 
-/* @TODO responsive layout) */
-/* 
-@media (max-width: 959px) {
   .grid {
     display: grid;
-    grid-template-columns: 1fr;
-    grid-template-rows: auto 11fr;
+    grid-template-columns: auto;
+    grid-template-rows: auto 1fr;
+  }
+
+  .site_content {
+    grid-column: 1;
+    grid-row: 2;
   }
 
   .navbar {
     display: flex;
-    flex-direction: row;
-    width: 100vw;
-    height: auto;
-    background-color: #1B1A55;
-    padding: 0.5rem;
+    flex-direction: column;
+    width: 100%;
+    height: auto; /* override */
+    box-sizing: border-box;
+
+    font-size: 3.3vw;
   }
 
-  .navbar__main {
-    display: flex;
-    flex-direction: row;
-    margin-top: auto;
-  }
-
+  .navbar__main,
   .navbar__bottom {
-    display: flex;
     flex-direction: row;
-
-    margin-left: auto;
-    margin-bottom: auto;
   }
 
-.overview {
-  display: grid;
-  grid-template-columns: repeat(11, 1fr);
-  grid-template-rows: 1fr 1fr;
-  width: 100vw;
-	height: auto;
+  .navbar a {
+    color: var(--nav-link-color);
+    text-decoration: none;
+  }
+
+  .overview__temphum {
+    grid-column: 6 / 12;
+    grid-row: 1;
+    align-self: center;
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: repeat(3, 1fr);
+
+    font-size: 6vw;
+  }
+
+  .overview__temphum--temperature,
+  .overview__temphum--humidity,
+  .overview__temphum--pressure {
+    margin: 0.2rem;
+  }
+
+  .overview__camera_feed {
+    grid-column: 1 / 12;
+    grid-template-rows: auto 2fr auto 1fr; /* push camera feed up */
+  }
+
+  #overview__camera_feed {
+    width: 95vw;
+    max-width: 95vw;
+    height: auto;
+    max-height: auto;
+    object-fit: contain;
+  }
+
 }
-}
-*/
