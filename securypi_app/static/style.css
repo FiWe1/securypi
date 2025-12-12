@@ -505,8 +505,12 @@ body {
   /*
    * OVERVIEW
   */
+  .overview__title {
+    margin-left: 2em;
+  }
+
   .overview__temphum {
-    grid-column: 6 / 12;
+    grid-column: 7 / 12;
     grid-row: 1;
     align-self: center;
     display: grid;
@@ -519,6 +523,8 @@ body {
   .overview__temphum--temperature,
   .overview__temphum--humidity,
   .overview__temphum--pressure {
+    align-self: left;          /* vertical alignment inside the box */
+    justify-self: left;  /* horizontal alignment inside the box */
     margin: 0.2rem;
   }
 
