@@ -2,13 +2,18 @@
   --title-color: white;
   --text-color: white;
   --nav-link-color: rgb(251, 255, 222);
-  --nav-link-color-active: rgb(211, 0, 0);
+  --nav-link-color-active: rgb(242, 255, 0);
   --background-primary: #0a1421;
-  --background-nav: #1B1A55;
+  --background-secondary: #142556;
+  --flash-warning-color: rgb(223, 145, 0);
 
   --overview__camera_feed-switch-color: #ff3a3a;
+
+  --grid-content-span-column: 2 / -1; /* first column is navbar */
+  --grid-content-span-row: 2; /* below flash messages */
+
+  --nav-link-size: 1.1rem;
 }
-/* @TODO add root variables for colors ...) */
 
 /* debug: */
 /* * { outline: 1px solid red; } */
@@ -18,8 +23,8 @@ html, body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  height: 100%;
-  width: 100%;
+  height: 100dvh;
+  width: 100dvw;
 
   /* debug: */
   /* overflow-x: hidden; */
@@ -35,26 +40,24 @@ body {
 /* the main body grid for laying out navigation and the rest of the site */
 .grid {
   display: grid;
-  grid-template-columns: 1fr 11fr;
-}
-
-
-/* 
-- flash messages
-- the rest of the content in second row
-*/
-.site_content {
-  grid-column: 2;
-  display: grid;
+  grid-template-columns: repeat(12, 1fr);
   grid-template-rows: auto 1fr;
 }
 
 
 .flash {
-  grid-column: 1;
-  grid-row: 1;
+  grid-column: 1 / -1;
+  grid-row: 1; /* at the top */
 
-  margin: 1em;
+  display: flex;
+  justify-content: center;  /* horizontal center */
+  align-items: center;      /* vertical center */
+
+  padding: 0.8em; /* padding with special background */
+
+  background-color: var(--flash-warning-color);
+  font-size: 1.2em;
+  font-weight: bold;
 }
 
 
@@ -66,12 +69,17 @@ body {
 */
 
 .navbar {
+  grid-column: 1;
+  grid-row: 2;
+
   display: flex;
   flex-direction: column;
   height: 100%;
   box-sizing: border-box;
 
-  background-color: var(--background-nav);
+  background-color: var(--background-secondary);
+
+  font-size: var(--nav-link-size);
 }
 
 .navbar__main {
@@ -117,11 +125,48 @@ body {
 */
 
 .login {
-  grid-row: 2; /* site content - below flash messages */
-  width: 10em;
-  height: 6em;
+  grid-column: 1 / -1; /* full width */
+  grid-row: var(--grid-content-span-row);
+  
+  /* Fill available space */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 13rem;
 }
 
+.login__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+
+  background: var(--background-secondary);
+  padding: 2rem;
+  border-radius: 10px;
+  width: 260px;
+
+  /* box-shadow: 0 0 20px rgba(52, 52, 52, 0.4); */
+}
+
+/* Inputs */
+.login__form input {
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: none;
+  font-size: 1rem;
+}
+
+#login__form--submit {
+  margin-top: 0.5rem;
+  cursor: pointer;
+  background: var(--nav-link-color);
+  color: black;
+  font-weight: bold;
+}
+
+.login__form input[type="submit"]:hover {
+  opacity: 0.85;
+}
 
 
 /*
@@ -131,7 +176,8 @@ body {
 */
 
 .overview {
-  grid-row: 2; /* site content - below flash messages */
+  grid-column: var(--grid-content-span-column);
+  grid-row: var(--grid-content-span-row);
   display: grid;
   grid-template-columns: repeat(11, 1fr);
   grid-template-rows: auto min-content;
@@ -222,7 +268,9 @@ body {
 */
 
 .temperature {
-  grid-row: 2;  /* site content - below flash messages */
+  grid-column: var(--grid-content-span-column);
+  grid-row: var(--grid-content-span-row);
+
   display: grid;
   grid-template-columns: repeat(11, 1fr);
   grid-template-rows: auto 1fr;
@@ -254,7 +302,9 @@ body {
 */
 
 .camera_control {
-  grid-row: 2;  /* site content - below flash messages */
+  grid-column: var(--grid-content-span-column);
+  grid-row: var(--grid-content-span-row);
+
   display: grid;
   grid-template-columns: repeat(11, 1fr);
   grid-template-rows: auto 1fr;
@@ -289,12 +339,15 @@ body {
 */
 
 .recordings {
-  grid-row: 2;  /* site content - below flash messages */
+  grid-column: var(--grid-content-span-column);
+  grid-row: var(--grid-content-span-row);
+
   display: grid;
   grid-template-columns: repeat(11, 1fr);
   grid-template-rows: auto 1fr auto;
 
   margin: 1em;
+  overflow-y: auto; /* overflow this section, keep navigation fixed */
 }
 
 .recordings__title {
@@ -348,7 +401,9 @@ body {
 */
 
 .configure {
-  grid-row: 2;  /* site content - below flash messages */
+  grid-column: var(--grid-content-span-column);
+  grid-row: var(--grid-content-span-row);
+
   display: grid;
   grid-template-columns: repeat(11, 1fr);
   grid-template-rows: auto 1fr;
@@ -379,7 +434,9 @@ body {
 */
 
 .user_settings {
-  grid-row: 2;  /* site content - below flash messages */
+  grid-column: var(--grid-content-span-column);
+  grid-row: var(--grid-content-span-row);
+
   display: grid;
   grid-template-columns: repeat(11, 1fr);
   grid-template-rows: auto 1fr;
@@ -404,41 +461,28 @@ body {
 
 
 @media (max-width: 647px) {
-  .recordings__title {
-    grid-column: 1 / 5;
-    grid-row: 1;
+
+  :root {
+    --grid-content-span-column: 1 / -1; /* now site conent spans full width */
+    --grid-content-span-row: 3; /* navigation moved to the top */
   }
 
-  /* recordings above motion captures spanning full width */
-  .recordings__list {
-    grid-column: 1 / 12;
-    grid-row: 2;
-
-    display: flex;
-    flex-direction: column;
-  }
-
-  .recordings__list--motion_captures {
-    margin-left: 1em;
-  }
-
-  .recordings__list--recordings {
-    margin-left: 1em;
-  }
-
-
+  /* add new row at the top for navbar */
   .grid {
-    display: grid;
-    grid-template-columns: auto;
-    grid-template-rows: auto 1fr;
+    grid-template-rows: auto auto 1fr;
+  }
+  
+  .flash {
+    grid-row: 2; /* now appearing below navbar */
   }
 
-  .site_content {
-    grid-column: 1;
-    grid-row: 2;
-  }
-
+  /*
+   * NAVBAR
+  */
   .navbar {
+    grid-column: 1 / -1;
+    grid-row: 1;
+
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -458,6 +502,9 @@ body {
     text-decoration: none;
   }
 
+  /*
+   * OVERVIEW
+  */
   .overview__temphum {
     grid-column: 6 / 12;
     grid-row: 1;
@@ -487,5 +534,31 @@ body {
     max-height: auto;
     object-fit: contain;
   }
+
+  /*
+   * RECORDINGS
+  */
+  .recordings__title {
+    grid-column: 1 / 5;
+    grid-row: 1;
+  }
+
+  /* recordings above motion captures spanning full width */
+  .recordings__list {
+    grid-column: 1 / 12;
+    grid-row: 2;
+
+    display: flex;
+    flex-direction: column;
+  }
+
+  .recordings__list--motion_captures {
+    margin-left: 1em;
+  }
+
+  .recordings__list--recordings {
+    margin-left: 1em;
+  }
+
 
 }
