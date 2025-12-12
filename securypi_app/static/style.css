@@ -505,9 +505,6 @@ body {
   /*
    * OVERVIEW
   */
-  .overview__title {
-    margin-left: 2em;
-  }
 
   .overview__temphum {
     grid-column: 7 / 12;
