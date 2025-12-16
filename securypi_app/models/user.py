@@ -77,8 +77,12 @@ class User(db.Model):
             db.session.commit()
         except Exception as e:
             db.session.rollback()
-            print(e)
-            return False, f"Failed to register {username}: {e}"
+            message = (
+                f"Failed to register user with username: '{username}',\n"
+                "it is already taken."
+            )
+            print(message)
+            return False, message
 
         user_type = "admin" if is_admin else "standard user"
         return True, f"Successfully registered {username} as {user_type}."
