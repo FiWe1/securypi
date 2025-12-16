@@ -1,3 +1,5 @@
+from time import sleep
+
 from flask import (
     Blueprint, flash, redirect, render_template, url_for, session, g, request
 )
@@ -59,6 +61,7 @@ def login():
             return redirect(url_for("index"))
 
         flash(error)
+        sleep(1.5) # restrict brute force
     return render_template("auth/login.html")
 
 
