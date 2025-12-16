@@ -180,7 +180,7 @@ body {
   grid-row: var(--grid-content-span-row);
   display: grid;
   grid-template-columns: repeat(11, 1fr);
-  grid-template-rows: auto min-content;
+  grid-template-rows: auto auto;
 }
 
 .overview__title {
