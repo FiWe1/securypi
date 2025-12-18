@@ -81,7 +81,7 @@ class User(db.Model):
                 f"Failed to register user with username: '{username}',\n"
                 "it is already taken."
             )
-            print(message)
+            # print(message) # debug
             return False, message
 
         user_type = "admin" if is_admin else "standard user"

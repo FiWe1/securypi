@@ -4,7 +4,8 @@ from flask import current_app
 from . import db, measurement, user
 from .user import User
 from securypi_app.services.string_parsing import (
-    validate_str_username, validate_str_password
+    validate_str_username, validate_str_password,
+    generate_random_password_formatted, generate_random_password
 )
 
 
@@ -13,8 +14,30 @@ def init_db():
         db.create_all()
 
 
-def register_cli_commands(app):
+def read_password_loop() -> str:
+    """
+    Helper password input loop.
+    Returns password in valid length,
+    or random password if user gives up.
+    """
+    while True:
+        password_input = input(
+            "enter admin password (default if empty ''): "
+        )
+        if (password_input == ""):
+            return generate_random_password_formatted() # less secure, easier
+            # return generate_random_password(12)
 
+        error = validate_str_password(password_input)
+        if error is None:
+            return password_input
+        
+        else:
+            print(f"{error}, try again!")
+
+
+def register_cli_commands(app):
+    
     @app.cli.command("init-db")
     def init_db_command():
         """
@@ -26,12 +49,22 @@ def register_cli_commands(app):
         Use: flask --app securypi_app init-db
         """
         init_db()
-        User.register(username="admin",
-                      password="admin4321",
-                      is_admin=True)
 
-        click.echo("Initialized the database.\n"
-                   "Default user named: \'admin\' with password: \'admin4321\'")
+        register_message = ""
+        register_question = input(
+            "Do you want to register administrator account? (yes) "
+        )
+        if register_question in ["y", "yes", "ano"]:
+            password = read_password_loop()
+            
+            result, msg = User.register(username="admin",
+                                        password=password,
+                                        is_admin=True)
+            register_message = (
+                f"\nRegistered admin user.\nlogin: admin\npassword: {password}"
+            ) if result else "\n" + msg
+
+        click.echo(f"Initialized the database.{register_message}")
 
     @app.cli.command("register-user")
     @click.argument("username")
