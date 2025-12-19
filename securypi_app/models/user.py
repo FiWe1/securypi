@@ -7,6 +7,10 @@ from werkzeug.security import generate_password_hash
 from . import db
 
 
+# @TODO check hash method: soft
+HASH_METHOD = "pbkdf2:sha256"
+
+
 class User(db.Model):
     __tablename__ = "user"
 
@@ -25,6 +29,8 @@ class User(db.Model):
     email: Mapped[str | None] = mapped_column(
         String, nullable=True
     )
+    
+    _hash_method = HASH_METHOD
 
     def __repr__(self) -> str:
         return (
@@ -57,14 +63,13 @@ class User(db.Model):
     def register(cls,
                  username,
                  password,
-                 is_admin=False,
-                 hash_method="pbkdf2:sha256") -> tuple[bool, str]:
-        """ @TODO check hash method: soft
+                 is_admin=False) -> tuple[bool, str]:
+        """
         Registers a new user. 
         -> (True, "succes message")
         -> (False, "error message")
         """
-        hashed = generate_password_hash(password, method=hash_method)
+        hashed = generate_password_hash(password, method=cls._hash_method)
 
         new_user = cls(
             username=username,
@@ -86,3 +91,25 @@ class User(db.Model):
 
         user_type = "admin" if is_admin else "standard user"
         return True, f"Successfully registered {username} as {user_type}."
+    
+    def change_password(self,
+                        new_password: str) -> tuple[bool, str]:
+        """
+        Changes the password for an existing user.
+        -> (True, "success message")
+        -> (False, "error message")
+        """
+        
+        # hash new password
+        self.hashed_password = generate_password_hash(
+            new_password,
+            method=self._hash_method
+        )
+        
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            return False, "Failed to update password due to a database error."
+
+        return True, f"Password successfully updated for user '{self.username}'."

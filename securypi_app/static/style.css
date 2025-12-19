@@ -135,7 +135,7 @@ body {
   margin-bottom: 13rem;
 }
 
-.login__form {
+.auth__form {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
@@ -149,14 +149,14 @@ body {
 }
 
 /* Inputs */
-.login__form input {
+.auth__form input {
   padding: 0.5rem;
   border-radius: 5px;
   border: none;
   font-size: 1rem;
 }
 
-#login__form--submit {
+.auth__form--submit {
   margin-top: 0.5rem;
   cursor: pointer;
   background: var(--nav-link-color);
@@ -164,7 +164,7 @@ body {
   font-weight: bold;
 }
 
-.login__form input[type="submit"]:hover {
+.auth__form input[type="submit"]:hover {
   opacity: 0.85;
 }
 
@@ -439,7 +439,7 @@ body {
 
   display: grid;
   grid-template-columns: repeat(11, 1fr);
-  grid-template-rows: auto 1fr;
+  grid-template-rows: repeat(3, min-content);
 
   margin: 1em;
 }
@@ -458,6 +458,13 @@ body {
   margin-left: 1em;
 }
 
+.user_settings__change_password {
+  margin-top: 1em;
+}
+
+.user_settings__change_password .auth__form {
+  background-color: rgb(54, 2, 103);
+}
 
 
 @media (max-width: 647px) {

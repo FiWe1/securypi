@@ -5,11 +5,13 @@
 {% endblock %}
 
 {% block body %}
-  <form method="post">
+  <form method="post" class="auth__form">
     <label for="username">Username</label>
     <input name="username" id="username" required>
+
     <label for="password">Password</label>
     <input type="password" name="password" id="password" required>
-    <input type="submit" value="Register">
+
+    <input class="auth__form--submit" type="submit" value="Register">
   </form>
 {% endblock %}

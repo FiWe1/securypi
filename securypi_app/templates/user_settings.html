@@ -9,5 +9,23 @@
 		<span>You {% if g.user["is_admin"] == False %}are standard user.{% else %}have administrator rights.{% endif %}
 		</span>
 	</section>
+
+	<div class="user_settings__change_password">
+    <h2>
+      It's always a good idea to change your password!
+    </h2>
+		<form method="post" class="auth__form">
+			<label for="current_password">Current password</label>
+			<input type="password" name="current_password" required>
+
+			<label for="new_password">New password</label>
+			<input type="password" name="new_password" required>
+
+      <label for="new_password_again">New password again</label>
+			<input type="password" name="new_password_again" required>
+
+			<input class="auth__form--submit" type="submit" value="Change password">
+		</form>
+	</div>
 </div>
 {% endblock %}
