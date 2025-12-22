@@ -52,6 +52,7 @@
       };
 
       const darkLayout = {
+        dragmode: false,
         paper_bgcolor: 'rgba(0,0,0,0)', // controled by style
         plot_bgcolor: 'rgba(0,0,0,0)',
         margin: { t: 40, r: 20, l: 50, b: 50 },
@@ -70,20 +71,31 @@
         }
       };
 
+      const config = {
+        displayModeBar: false,   // removes the toolbar entirely
+        scrollZoom: false,
+        responsive: true
+      };
+
       Plotly.newPlot('temp_graph', [temp_trace], {
           ...darkLayout,
-          yaxis: { ...darkLayout.yaxis, title: '°C' }
-      }, {responsive: true});
+          yaxis: { ...darkLayout.yaxis, title: '°C' },
+      },
+      config);
 
       Plotly.newPlot('hum_graph', [hum_trace], {
           ...darkLayout,
-          yaxis: { ...darkLayout.yaxis, title: '%' }
-      }, {responsive: true});
+          yaxis: { ...darkLayout.yaxis, title: '%' },
+          config
+      },
+      config);
 
       Plotly.newPlot('pres_graph', [pres_trace], {
           ...darkLayout,
-          yaxis: { ...darkLayout.yaxis, title: 'hPa' }
-      }, {responsive: true});
+          yaxis: { ...darkLayout.yaxis, title: 'hPa' },
+          config
+      },
+      config);
   }
 
   setInterval(fetchData, 30000);  // refresh every 30s

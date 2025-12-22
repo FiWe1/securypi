@@ -273,7 +273,7 @@ body {
 
   display: grid;
   grid-template-columns: repeat(11, 1fr);
-  grid-template-rows: min-content repeat(3, 50vh);
+  grid-template-rows: min-content repeat(3, 30em);
 
   margin: 1em;
   overflow-y: auto; /* overflow this section, keep navigation fixed */
