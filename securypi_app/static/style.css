@@ -262,36 +262,56 @@ body {
 
 
 /*
-***                            ***
-      ***  Temperature   ***
-***                            ***
+***                                    ***
+      ***  Temperature history   ***
+***                                    ***
 */
 
-.temperature {
+.history {
   grid-column: var(--grid-content-span-column);
   grid-row: var(--grid-content-span-row);
 
   display: grid;
   grid-template-columns: repeat(11, 1fr);
-  grid-template-rows: auto 1fr;
+  grid-template-rows: min-content repeat(3, 50vh);
 
   margin: 1em;
+  overflow-y: auto; /* overflow this section, keep navigation fixed */
 }
 
-.temperature__title {
+.history__title {
   grid-column: 1 / 12;
   grid-row: 1;
+
+  /* margin-bottom: 1em; */
+}
+
+.history__graph--temp {
+  grid-column: 1 / 12;
+  grid-row: 2;
 
   margin-bottom: 1em;
 }
 
-.temperature__content_todo {
+.history__graph--hum {
   grid-column: 1 / 12;
-  grid-row: 2;
-
-  margin-left: 1em
+  grid-row: 3;
+  
+  margin-bottom: 1em;
 }
 
+.history__graph--pres {
+  grid-column: 1 / 12;
+  grid-row: 4;
+}
+
+.history__graph--temp,
+.history__graph--hum,
+.history__graph--pres {
+  border-radius: 5px;
+  overflow: hidden;
+  background: #242424;
+}
 
 
 

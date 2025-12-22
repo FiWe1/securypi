@@ -10,7 +10,7 @@ def inject_nav_links():
     """
     main_nav_links = [
         ("Overview", url_for("overview.index")),
-        ("Temperature", url_for("temp_history.index")),
+        ("Measurements", url_for("measurements.index")),
         ("Camera", url_for("camera_control.index")),
         ("Recordings", url_for("recordings.index"))
     ]

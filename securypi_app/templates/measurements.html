@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+{% endblock %}
+
+{% block body %}
+<div class="history">
+  <h1 class="history__title">{% block title %}Temperature history{% endblock %}</h1>
+
+    <div class="history__graph--temp">
+      <div id="temp_graph"></div>
+    </div>
+    <div class="history__graph--hum">
+      <div id="hum_graph"></div>
+    </div>
+    <div class="history__graph--pres">
+      <div id="pres_graph"></div>
+    </div>
+</div>
+<script>
+  async function fetchData() {
+      const response = await fetch('/measurements/data'); // ?window=' + windowMode);
+      const data = await response.json();
+
+      let temp_trace = {
+          x: data.time,
+          y: data.temp,
+          type: 'scatter',
+          mode: 'lines+markers',
+          line: { color: 'red' },
+          name: 'Temperature',
+          hovertemplate: '%{y} °C at %{x}<extra></extra>'
+      };
+      let hum_trace = {
+          x: data.time,
+          y: data.hum,
+          type: 'scatter',
+          mode: 'lines+markers',
+          line: { color: 'blue' },
+          name: 'Humidity',
+          hovertemplate: '%{y} % at %{x}<extra></extra>'
+      };
+      let pres_trace = {
+          x: data.time,
+          y: data.pres,
+          type: 'scatter',
+          mode: 'lines+markers',
+          line: { color: 'green' },
+          name: 'Pressure',
+          hovertemplate: '%{y} % at %{x}<extra></extra>'
+      };
+
+      const darkLayout = {
+        paper_bgcolor: 'rgba(0,0,0,0)', // controled by style
+        plot_bgcolor: 'rgba(0,0,0,0)',
+        margin: { t: 40, r: 20, l: 50, b: 50 },
+
+        xaxis: {
+          title: 'Time',
+          type: 'date',
+          tickformat: '%H:%M',
+          color: 'white',
+          gridcolor: '#333'
+        },
+
+        yaxis: {
+          color: 'white',
+          gridcolor: '#333'
+        }
+      };
+
+      Plotly.newPlot('temp_graph', [temp_trace], {
+          ...darkLayout,
+          yaxis: { ...darkLayout.yaxis, title: '°C' }
+      }, {responsive: true});
+
+      Plotly.newPlot('hum_graph', [hum_trace], {
+          ...darkLayout,
+          yaxis: { ...darkLayout.yaxis, title: '%' }
+      }, {responsive: true});
+
+      Plotly.newPlot('pres_graph', [pres_trace], {
+          ...darkLayout,
+          yaxis: { ...darkLayout.yaxis, title: 'hPa' }
+      }, {responsive: true});
+  }
+
+  setInterval(fetchData, 30000);  // refresh every 30s
+  fetchData();
+</script>
+{% endblock %}

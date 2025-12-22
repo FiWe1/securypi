@@ -10,9 +10,15 @@
 {% if g.user is not none %}
   {% include "includes/navbar.html" %}
 {% endif %}
+
 {% for message in get_flashed_messages() %}
 <div class="flash">{{ message }}</div>
 {% endfor %}
+
+<div class="site_content">
+  <!-- @TODO overflow-y site content - fix scroll bar -->
+  {% block site_content %}{% endblock %}
+</div>
 {% block body %}{% endblock %}
 </body>
 </html>
