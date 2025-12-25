@@ -18,7 +18,7 @@ from securypi_app.peripherals.measurements.measurement_logger import (
 # @TODO move to centralised serialised json config
 USE_DHT22 = True
 USE_SHT30 = False
-USE_QMP6988 = False
+USE_QMP6988 = True
 
 
 class WeatherStation(WeatherStationInterface):

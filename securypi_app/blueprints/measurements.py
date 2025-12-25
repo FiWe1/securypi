@@ -31,9 +31,9 @@ def index():
     weather_station = WeatherStation.get_instance()
     
     # cli measurements test
-    last24 = map(Measurement.to_local_timezone,
-                 Measurement.fetch_previous_range(days_before=1))
-    for m in last24:
-        print(m)
+    # last24 = map(Measurement.to_local_timezone,
+    #              Measurement.fetch_previous_range(days_before=1))
+    # for m in last24:
+    #     print(m)
     
     return render_template("measurements.html")

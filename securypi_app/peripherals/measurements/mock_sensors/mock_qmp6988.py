@@ -9,7 +9,7 @@ from typing import NamedTuple
 
 
 MOCKED_TEMPERATURE = -273.15
-MOCKED_PRESSURE = 0.0
+MOCKED_PRESSURE = 1013.25
 
 
 class MockOversampling(IntEnum):
