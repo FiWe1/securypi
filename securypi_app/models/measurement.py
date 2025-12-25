@@ -40,7 +40,7 @@ class Measurement(db.Model):
             f"pressure={self.pressure})"
         )
     
-    def to_local_timezone(self, local_timezone: ZoneInfo = None) -> Measurement:
+    def to_local_timezone(self, local_timezone: ZoneInfo | None = None) -> Measurement:
         """
         Converts Measurement to local time zone. (implicitly from config)
         """
@@ -73,7 +73,7 @@ class Measurement(db.Model):
 
     @classmethod
     def fetch_previous_range(cls,
-                             target_datetime_timezone: datetime = None,
+                             target_datetime_timezone: datetime | None = None,
                              days_before: int = 0,
                              hours_before: int = 0,
                              minutes_before: int = 0) -> list[Measurement]:

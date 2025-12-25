@@ -8,7 +8,7 @@ from enum import IntEnum
 from typing import NamedTuple
 
 
-MOCKED_TEMPERATURE = -273.15
+MOCKED_TEMPERATURE = 21.5
 MOCKED_PRESSURE = 1013.25
 
 

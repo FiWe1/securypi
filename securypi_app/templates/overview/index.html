@@ -8,7 +8,14 @@
   <div class="overview__temphum">
     <span class="overview__temphum--temperature">{{ temperature }} &deg;{{ temperature_unit }}</span>
     <span class="overview__temphum--humidity">{{ humidity }} %</span>
-    <span class="overview__temphum--pressure">{{ pressure }} hPa</span>
+    <span class="overview__temphum--pressure">
+      {{ absolute_pressure }} hPa
+      <span class="overview__temphum--pressure_variant"> (abs)</span>
+    </span>
+    <span class="overview__temphum--pressure">
+      {{ relative_pressure }} hPa
+      <span class="overview__temphum--pressure_variant"> (rel)</span>
+    </span>
   </div>
   <div class="overview__camera_feed">
     {% if mode == "stream" %}

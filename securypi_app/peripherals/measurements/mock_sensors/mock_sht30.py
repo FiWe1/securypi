@@ -5,8 +5,8 @@ for platform independent development and testing.
 - Sht30 connected to I2C
 """
 
-MOCKED_TEMPERATURE = -273.15
-MOCKED_HUMIDITY = 0.0
+MOCKED_TEMPERATURE = 21.5
+MOCKED_HUMIDITY = 45
 
 
 class MockSHT31D:

@@ -5,8 +5,8 @@ for platform independent development and testing.
 - DHT22 connected to gpio4
 """
 
-MOCKED_TEMPERATURE = -273.15
-MOCKED_HUMIDITY = 0.0
+MOCKED_TEMPERATURE = 21.5
+MOCKED_HUMIDITY = 45
 
 
 class MockDHT22:

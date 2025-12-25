@@ -1,3 +1,5 @@
+import math
+
 from flask import current_app
 from securypi_app.models.measurement import Measurement
 from securypi_app.peripherals.measurements.weather_station_interface import (
@@ -19,6 +21,7 @@ from securypi_app.peripherals.measurements.measurement_logger import (
 USE_DHT22 = True
 USE_SHT30 = False
 USE_QMP6988 = True
+ELEVATION = 992 # m above sea level - Tatranska Javorina
 
 
 class WeatherStation(WeatherStationInterface):
@@ -155,3 +158,31 @@ class WeatherStation(WeatherStationInterface):
     def f_to_celsius(fahrenheit: float) -> float:
         """ Convert Fahrenheit to Celsius. """
         return (fahrenheit - 32) * 5/9
+
+    @staticmethod
+    def relative_pressure(pressure,
+                          temperature,
+                          elevation = ELEVATION) -> float | str:
+        """
+        Converts absolute atmospheric pressure to relative pressure
+        at sea level based on 'elevation' above sea level and 'temperature'.
+        Returns "N/A" if inputs are not float.
+        """
+        try:
+            pressure = float(pressure)
+            temperature = float(temperature)
+            elevation = float(elevation)
+        except (TypeError, ValueError):
+            return "N/A"
+        
+        gas_constant = 8.31432 # [N · m/(mol · K)] -> universal gas constant
+        g = 9.81 # [m / s^2]
+        air_molar_mass = 0.0289644 # [kg/mol]
+        
+        temperature_k = temperature + 273.15
+        
+
+        rel_pressure = pressure * math.exp(
+            -g * air_molar_mass * (-elevation / (gas_constant * temperature_k))
+        )
+        return round(rel_pressure, 1)

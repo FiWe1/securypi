@@ -62,6 +62,8 @@ def index():
     temp_unit = "C"  # @TODO from user settings in db
     sensor = WeatherStation.get_instance()
     readings = sensor.present_measure_or_na(temp_unit=temp_unit)
+    relative_pressure = WeatherStation.relative_pressure(pressure=readings["pressure"],
+                                                         temperature=readings["temperature"])
 
     # Determine the template and URL for the <img> tag based on the mode
     if mode == "stream":
@@ -74,5 +76,6 @@ def index():
                            img_src=img_src,
                            temperature=readings["temperature"],
                            humidity=readings["humidity"],
-                           pressure=readings["pressure"],
+                           absolute_pressure=readings["pressure"],
+                           relative_pressure=relative_pressure,
                            temperature_unit=temp_unit)

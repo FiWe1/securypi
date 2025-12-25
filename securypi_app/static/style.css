@@ -196,8 +196,8 @@ body {
   grid-row: 1;
   align-self: center;
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: auto;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
   font-size: 3vw;
   margin: 1em;
 }
@@ -206,8 +206,12 @@ body {
 .overview__temphum--humidity,
 .overview__temphum--pressure {
   align-self: center;          /* vertical alignment inside the box */
-  justify-self: center;  /* horizontal alignment inside the box */
+  justify-self: left;  /* horizontal alignment inside the box */
   margin: 1rem 0;
+}
+
+.overview__temphum--pressure_variant {
+  font-size: 0.7em;
 }
 
 .overview__camera_feed {
@@ -534,7 +538,7 @@ body {
   */
 
   .overview__temphum {
-    grid-column: 7 / 12;
+    grid-column: 6 / 12;
     grid-row: 1;
     align-self: center;
     display: grid;
