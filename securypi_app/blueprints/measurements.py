@@ -15,13 +15,18 @@ bp = Blueprint("measurements", __name__, url_prefix="/measurements")
 @login_required
 def data():
     measurements = Measurement.fetch_previous_range(datetime.now(timezone.utc))
-    json_data = jsonify({
-        "time": [mes.time.isoformat() for mes in measurements],
-        "temp": [mes.temperature for mes in measurements],
-        "hum": [mes.humidity for mes in measurements],
-        "pres": [mes.pressure for mes in measurements]
-    })
-    return json_data
+    data = {
+        "time": [], "temp": [], "hum": [], "pres": []
+    }
+    for mes in measurements:
+        local = mes.to_local_timezone()
+        
+        data["time"].append(local.time.isoformat())
+        data["temp"].append(mes.temperature)
+        data["hum"].append(mes.humidity)
+        data["pres"].append(mes.pressure)
+
+    return jsonify(data)
 
 @bp.route("/")
 @login_required
