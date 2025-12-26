@@ -191,26 +191,37 @@ body {
   align-self: center;
 }
 
-.overview__temphum {
+.overview__measurements {
   grid-column: 6 / 12;
   grid-row: 1;
   align-self: center;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
+
+  display: flex;
+  flex-direction: column;
+
   font-size: 3vw;
   margin: 1em;
 }
 
-.overview__temphum--temperature,
-.overview__temphum--humidity,
-.overview__temphum--pressure {
-  align-self: center;          /* vertical alignment inside the box */
-  justify-self: left;  /* horizontal alignment inside the box */
+.overview__temphum {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto;
+}
+
+.overview__pressures {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: auto;
+}
+
+.overview__measurements--value {
+  justify-self: left;  /* grid: alignment along the main axis (horizontal) */
+  align-self: center;  /* cross axis (vertical) */
   margin: 1rem 0;
 }
 
-.overview__temphum--pressure_variant {
+.overview__pressures--pressure_variant {
   font-size: 0.7em;
 }
 
@@ -260,7 +271,7 @@ body {
   grid-column: 2;
   grid-row: 3;
   max-width: 8rem;
-  justify-self: right;
+  justify-self: end;
 }
 
 
@@ -537,22 +548,24 @@ body {
    * OVERVIEW
   */
 
-  .overview__temphum {
+  .overview__measurements {
     grid-column: 6 / 12;
     grid-row: 1;
     align-self: center;
-    display: grid;
-    grid-template-columns: auto;
-    grid-template-rows: repeat(3, 1fr);
+
+    display: flex;
+    flex-direction: column;
 
     font-size: 6vw;
   }
 
-  .overview__temphum--temperature,
-  .overview__temphum--humidity,
-  .overview__temphum--pressure {
-    align-self: left;          /* vertical alignment inside the box */
-    justify-self: left;  /* horizontal alignment inside the box */
+  .overview__pressures,
+  .overview__temphum {
+    display: contents;
+  }
+
+  .overview__measurements--value {
+    align-self: flex-start;
     margin: 0.2rem;
   }
 
@@ -593,6 +606,5 @@ body {
   .recordings__list--recordings {
     margin-left: 1em;
   }
-
 
 }

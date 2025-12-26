@@ -5,17 +5,27 @@
     <h1>{% block title %}Your Home{% endblock %}</h1>
   </header>
 
-  <div class="overview__temphum">
-    <span class="overview__temphum--temperature">{{ temperature }} &deg;{{ temperature_unit }}</span>
-    <span class="overview__temphum--humidity">{{ humidity }} %</span>
-    <span class="overview__temphum--pressure">
-      {{ absolute_pressure }} hPa
-      <span class="overview__temphum--pressure_variant"> (abs)</span>
-    </span>
-    <span class="overview__temphum--pressure">
-      {{ relative_pressure }} hPa
-      <span class="overview__temphum--pressure_variant"> (rel)</span>
-    </span>
+  <div class="overview__measurements">
+    <div class="overview__temphum">
+      <span class="overview__measurements--value">{{ temperature }} &deg;{{ temperature_unit }}</span>
+      <span class="overview__measurements--value">{{ humidity }} %</span>
+    </div>
+    
+    <div class="overview__pressures">
+      {% if absolute_pressure != "N/A" %}
+      <span class="overview__measurements--value">
+        {{ absolute_pressure }} hPa
+        <span class="overview__pressures--pressure_variant"> (abs)</span>
+      </span>
+      {% endif %}
+      {% if relative_pressure != "N/A" %}
+      <span class="overview__measurements--value">
+        {{ relative_pressure }} hPa
+        <span class="overview__pressures--pressure_variant"> (rel)</span>
+      </span>
+      {% endif %}
+    </div>
+
   </div>
   <div class="overview__camera_feed">
     {% if mode == "stream" %}
