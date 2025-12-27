@@ -18,10 +18,10 @@ from securypi_app.peripherals.measurements.measurement_logger import (
 
 
 # @TODO move to centralised serialised json config
-USE_DHT22 = True
-USE_SHT30 = False
+USE_DHT22 = False
+USE_SHT30 = True
 USE_QMP6988 = True
-ELEVATION = 992 # m above sea level - Tatranska Javorina
+ELEVATION = 210 # m above sea level - Dlhe Diely
 
 
 class WeatherStation(WeatherStationInterface):
