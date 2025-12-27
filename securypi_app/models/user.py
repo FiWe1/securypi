@@ -1,7 +1,7 @@
 from __future__ import annotations # fix class forward referencing issue
 
 from sqlalchemy import Integer, String, Boolean, select, Row
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, MappedAsDataclass
 from werkzeug.security import generate_password_hash
 
 from . import db
@@ -11,23 +11,23 @@ from . import db
 HASH_METHOD = "pbkdf2:sha256"
 
 
-class User(db.Model):
+class User(MappedAsDataclass, db.Model):
     __tablename__ = "user"
 
     id: Mapped[int] = mapped_column(
-        Integer, primary_key=True, autoincrement="auto"
+        Integer, init=False, primary_key=True, autoincrement=True
     )
     username: Mapped[str] = mapped_column(
         String, unique=True, nullable=False
     )
-    hashed_password: Mapped[str] = mapped_column( # @TODO rename to hashed_password
+    hashed_password: Mapped[str] = mapped_column(
         String, nullable=False
     )
     is_admin: Mapped[bool] = mapped_column(
-        Boolean, server_default="0", nullable=False
+        Boolean, default=False, nullable=False
     )
     email: Mapped[str | None] = mapped_column(
-        String, nullable=True
+        String, default=None, nullable=True
     )
     
     _hash_method = HASH_METHOD
@@ -39,20 +39,21 @@ class User(db.Model):
         )
 
     @classmethod
-    def get_by_id(cls, user_id: int) -> User:
+    def get_by_id(cls, user_id: int) -> User | None:
         stmt = select(cls).where(cls.id == user_id)
         return db.session.execute(stmt).scalar_one_or_none()
 
     @classmethod
-    def get_by_username(cls, username: str) -> User:
+    def get_by_username(cls, username: str) -> User | None:
         stmt = select(cls).where(cls.username == username)
         return db.session.execute(stmt).scalar_one_or_none()
 
     @classmethod
-    def get_meta_by_id(cls, user_id: int) -> Row:
+    def get_meta_by_id(cls, user_id: int) -> Row | None:
         """ 
-        Returns Row for better data manipulation.
-        (Row._mapping -> dict)
+        Returns Row object of the user attributes - without password
+        for better data manipulation.
+        (Row._mapping -> dict of attributes)
         """
         stmt = select(cls.id, cls.username, cls.is_admin, cls.email).where(
             cls.id == user_id

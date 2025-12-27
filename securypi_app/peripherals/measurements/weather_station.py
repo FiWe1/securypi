@@ -120,22 +120,23 @@ class WeatherStation(WeatherStationInterface):
 
     def present_measure_or_na(self,
                               round_digits=1,
-                              temp_unit="C") -> dict[str, float] | dict[str, str]:
-        values = self.measure()
-        temp = values["temperature"]
+                              temp_unit="C") -> dict[str, float | str]:
+        measured = self.measure()
+        temp = measured["temperature"]
         
         if temp is not None and temp_unit == "F":
-            values["temperature"] = self.c_to_fahrenheit(temp)
-            
-        for key, val in values.items():
-            if val == None:
+            measured["temperature"] = self.c_to_fahrenheit(temp)
+        
+        values: dict[str, float | str] = {}
+        for key, val in measured.items():
+            if val is None:
                 values[key] = "N/A"
             else:
                 values[key] = round(val, round_digits)
         
         return values
 
-    def measure_and_log(self) -> dict[str, float] | None:
+    def measure_and_log(self) -> dict[str, float | None] | None:
         measurements = self.measure()
 
         if any(value is not None for value in measurements.values()):

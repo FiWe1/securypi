@@ -24,11 +24,13 @@ def load_logged_in_user():
     """
     user_id = session.get("user_id")
 
-    if user_id is None:
-        g.user = None
-    else:
-        g.user = User.get_meta_by_id(user_id)._mapping
-
+    if user_id is not None:
+        user_row = User.get_meta_by_id(user_id)
+        if user_row is not None:
+            g.user = user_row._mapping # success
+            return
+    
+    g.user = None # fail
 
 @bp.route("/logout")
 def logout():
@@ -53,14 +55,15 @@ def login():
         if error is None:
             user, error = validate_login(username, password)
 
-        if error is None:
+        if error is None and user is not None:
             # login successful
             session.clear()
             session["user_id"] = user.id
             session["username"] = user.username
             return redirect(url_for("index"))
-
-        flash(error)
+        
+        if error is not None:
+            flash(error)
         sleep(1.5) # restrict brute force
     return render_template("auth/login.html")
 
@@ -77,7 +80,7 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        is_admin = request.form["is_admin"]
+        is_admin = True if request.form["is_admin"] == "True" else False
         error = None
         error = validate_str_username(username)
         if error is None:

@@ -93,8 +93,11 @@ class TestWeatherStation():
     def test_logging(self, station):
         original_state = station.measurement_logger.is_logging()
         try:
+            station.measurement_logger.set_log_in_background(True)
+            sleep(2)
             station.measurement_logger.set_log_in_background(False)
             old_mes = Measurement.fetch_latest()
+            assert old_mes is not None
             old_time = old_mes.time
 
             sleep(1)
@@ -102,6 +105,7 @@ class TestWeatherStation():
             sleep(1)
             
             new_mes = Measurement.fetch_latest()
+            assert new_mes is not None
             new_time = new_mes.time
         finally:
             station.measurement_logger.set_log_in_background(original_state)
@@ -132,7 +136,11 @@ class TestWeatherStation():
             # reapply the previous config value
             station.measurement_logger.set_log_in_background(original_state)
             station.measurement_logger.set_logging_interval(original_interval)
-            
+        
+        assert first_mes is not None
+        assert second_mes is not None
+        assert third_mes is not None
+        
         assert first_mes.time < second_mes.time
         assert second_mes.time < third_mes.time
         

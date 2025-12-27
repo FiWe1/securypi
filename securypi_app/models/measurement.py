@@ -3,7 +3,7 @@ from __future__ import annotations  # fix class forward referencing issue
 from zoneinfo import ZoneInfo
 from datetime import datetime, timedelta, timezone
 from sqlalchemy import Integer, Float, DateTime, select, text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, MappedAsDataclass
 
 from . import db
 
@@ -12,25 +12,25 @@ from . import db
 TIMEZONE_ZONEINFO = "Europe/Prague"
 
 
-class Measurement(db.Model):
+class Measurement(MappedAsDataclass, db.Model):
     __tablename__ = "measurement"
 
     id: Mapped[int] = mapped_column(
-        Integer, primary_key=True, autoincrement="auto"
+        Integer, init=False, primary_key=True, autoincrement=True
     )
+    temperature: Mapped[float | None] = mapped_column(
+        Float, nullable=True
+    )
+    humidity: Mapped[float | None] = mapped_column(
+        Float, nullable=True
+    )
+    pressure: Mapped[float | None] = mapped_column(
+        Float, nullable=True
+    )
+
     time: Mapped[datetime] = mapped_column(
-        DateTime(timezone=True), # hadnling only UTC time
-        nullable=False,
-        server_default=text("CURRENT_TIMESTAMP") # is UTC
-    )
-    temperature: Mapped[float] = mapped_column(
-        Float, nullable=True
-    )
-    humidity: Mapped[float] = mapped_column(
-        Float, nullable=True
-    )
-    pressure: Mapped[float] = mapped_column(
-        Float, nullable=True
+        default_factory=lambda: datetime.now(timezone.utc).replace(microsecond=0),
+        nullable=False
     )
 
     def __repr__(self) -> str:
@@ -108,7 +108,7 @@ class Measurement(db.Model):
                 .where(cls.time <= target_datetime_timezone)
                 .order_by(cls.time.asc())
                 )
-        return db.session.execute(stmt).scalars().all()
+        return list(db.session.execute(stmt).scalars().all())
     
     @classmethod
     def testprintall(cls) -> None:
