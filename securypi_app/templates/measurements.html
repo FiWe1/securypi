@@ -28,6 +28,7 @@
           y: data.temp,
           type: 'scatter',
           mode: 'lines+markers',
+          marker: { size: 4 },
           line: { color: 'red' },
           name: 'Temperature',
           hovertemplate: '%{y} °C at %{x}<extra></extra>'
@@ -37,6 +38,7 @@
           y: data.hum,
           type: 'scatter',
           mode: 'lines+markers',
+          marker: { size: 4 },
           line: { color: 'blue' },
           name: 'Humidity',
           hovertemplate: '%{y} % at %{x}<extra></extra>'
@@ -46,6 +48,7 @@
           y: data.pres,
           type: 'scatter',
           mode: 'lines+markers',
+          marker: { size: 4 },
           line: { color: 'green' },
           name: 'Pressure',
           hovertemplate: '%{y} % at %{x}<extra></extra>'
@@ -58,7 +61,7 @@
         margin: { t: 40, r: 20, l: 50, b: 50 },
 
         xaxis: {
-          title: 'Time',
+          title: { text: 'Time' },
           type: 'date',
           tickformat: '%H:%M',
           color: 'white',
@@ -68,6 +71,12 @@
         yaxis: {
           color: 'white',
           gridcolor: '#333'
+        },
+
+        title: {
+          font: {
+            color: 'white'
+          },
         }
       };
 
@@ -78,22 +87,32 @@
       };
 
       Plotly.newPlot('temp_graph', [temp_trace], {
-          ...darkLayout,
-          yaxis: { ...darkLayout.yaxis, title: '°C' },
+        ...darkLayout,
+        title: { text: 'Temperature', ...darkLayout.title },
+        yaxis: {
+          ...darkLayout.yaxis,
+          title: { text: '°C' }
+        }
       },
       config);
 
       Plotly.newPlot('hum_graph', [hum_trace], {
-          ...darkLayout,
-          yaxis: { ...darkLayout.yaxis, title: '%' },
-          config
+        ...darkLayout,
+        title: { text: 'Humidity', ...darkLayout.title },
+        yaxis: {
+          ...darkLayout.yaxis,
+          title: { text: '%' }
+        }
       },
       config);
 
       Plotly.newPlot('pres_graph', [pres_trace], {
-          ...darkLayout,
-          yaxis: { ...darkLayout.yaxis, title: 'hPa' },
-          config
+        ...darkLayout,
+        title: { text: 'Pressure', ...darkLayout.title },
+        yaxis: {
+          ...darkLayout.yaxis,
+          title: { text: 'hPa' }
+        }
       },
       config);
   }
