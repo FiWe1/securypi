@@ -1,0 +1,23 @@
+# sudo cp ./scripts/systemd_services/securypi.service /etc/systemd/system/securypi.service
+# sudo systemctl daemon-reload
+# sudo systemctl enable securypi.service && sudo systemctl start securypi.service
+#
+# view logs:
+# journalctl -u securypi.service
+
+[Unit]
+Description=Securypi Flask App
+Requires=pigpiod.service tailscaled.service
+After=pigpiod.service tailscaled.service
+
+[Service]
+Type=simple
+User=fiwe1
+WorkingDirectory=/home/fiwe1/Coding/securypi
+
+ExecStart=/bin/bash /home/fiwe1/Coding/securypi/scripts/app_run.sh
+
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

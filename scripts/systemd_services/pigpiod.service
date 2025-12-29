@@ -1,0 +1,16 @@
+# sudo cp ./scripts/systemd_services/pigpiod.service /etc/systemd/system/pigpiod.service
+# sudo systemctl daemon-reload
+# sudo systemctl enable pigpiod.service && sudo systemctl start pigpiod.service
+
+[Unit]
+Description=Pigpio Daemon
+After=network.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/pigpiod -g
+User=root
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
