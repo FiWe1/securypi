@@ -164,13 +164,14 @@ class MockPicamera2:
         self._mock_encoder_thread.start()
 
     def start_recording(self, encoder, output, name="main"):
-        self.start_encoder(self, encoder, output, name=name)
+        self.start_encoder(self, encoder, output, name)
         self.start()
 
     def stop_encoder(self, recording_encoder="<default mock encoder"):
         print(f"[MockPicamera2] Stopping encoder {recording_encoder}.")
         self._mock_encoder_stop_event.set()  # signal stop
-        self._mock_encoder_thread.join()
+        if self._mock_encoder_thread is not None:
+            self._mock_encoder_thread.join()
         self._mock_encoder_stop_event.clear()  # clear stop signal
 
         self._mock_encoder_thread = None
