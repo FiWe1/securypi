@@ -32,6 +32,7 @@ def inject_nav_links():
 
 def inject_active_page():
     """ Return dictionary with the active page URL for context processor. """
+    endpoint = request.endpoint or ""
     return {
-        "active_page": url_for(request.endpoint)
+        "active_page": url_for(endpoint)
     }
