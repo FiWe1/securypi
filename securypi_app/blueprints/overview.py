@@ -67,13 +67,13 @@ def index():
 
     # Determine the template and URL for the <img> tag based on the mode
     if mode == "stream":
-        img_src = url_for("overview.video_feed")
+        camera_feed_src = url_for("overview.video_feed")
     else:  # Default is "picture"
-        img_src = url_for("overview.picture_feed")
+        camera_feed_src = url_for("overview.picture_feed")
 
     return render_template("overview/index.html",
                            mode=mode,
-                           img_src=img_src,
+                           camera_feed_src=camera_feed_src,
                            temperature=readings["temperature"],
                            humidity=readings["humidity"],
                            absolute_pressure=readings["pressure"],

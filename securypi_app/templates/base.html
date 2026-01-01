@@ -6,7 +6,7 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   {% block head %}{% endblock %}
 </head>
-<body class="grid text-style-roboto">
+<body class="grid">
 {% if g.user is not none %}
   {% include "includes/navbar.html" %}
 {% endif %}
