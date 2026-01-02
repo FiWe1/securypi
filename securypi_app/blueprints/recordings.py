@@ -16,17 +16,17 @@ from securypi_app.services.auth import is_logged_in_admin
 bp = Blueprint("recordings", __name__, url_prefix="/recordings")
 
 
-@bp.route("/download_motion_capture/<path:filename>")
+@bp.route("/download_motion_capture/<filename>")
 def download_motion_capture(filename):
     directory = motion_captures_absolute_path(current_app.root_path)
     if is_motion_capture_valid(filename):
         return send_from_directory(directory, filename, as_attachment=True)
 
-    flash(f"Invalid filename: {filename}")  # @TODO fix flash style layout
+    flash(f"Invalid filename: {filename}")
     return redirect(url_for("recordings.index"))
 
 
-@bp.route("/download_recording/<path:filename>")
+@bp.route("/download_recording/<filename>")
 def download_recording(filename):
     directory = recordings_absolute_path(current_app.root_path)
     if is_recording_valid(filename):
