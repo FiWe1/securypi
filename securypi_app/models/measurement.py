@@ -40,28 +40,28 @@ class Measurement(MappedAsDataclass, db.Model):
             f"pressure={self.pressure})"
         )
     
-    def to_local_timezone(self, local_timezone: ZoneInfo | None = None) -> Measurement:
+    def time_local_timezone(self, local_timezone: ZoneInfo | None = None) -> DateTime:
         """
-        Converts Measurement to local time zone. (implicitly from config)
+        Returns measurement's time: DateTime in local time zone. (implicitly from config)
         """
         if local_timezone is None:
             # @TODO fetch from json config
             local_timezone = ZoneInfo(TIMEZONE_ZONEINFO)
         
         tm = self.time.replace(tzinfo=timezone.utc)
-        self.time = tm.astimezone(local_timezone)
-        return self
+        return tm.astimezone(local_timezone)
 
     def log(self) -> bool:
+        """ Write measurement (self) to the database, returns True on success. """
         db.session.add(self)
         try:
             db.session.commit()
         except Exception as e:
             db.session.rollback()
             print(e)
-            return True
+            return False
 
-        return False
+        return True
 
     @classmethod
     def fetch_latest(cls) -> Measurement | None:

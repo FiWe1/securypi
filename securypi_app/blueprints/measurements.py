@@ -19,9 +19,7 @@ def data():
         "time": [], "temp": [], "hum": [], "pres": []
     }
     for mes in measurements:
-        local = mes.to_local_timezone()
-        
-        data["time"].append(local.time.isoformat())
+        data["time"].append(mes.time_local_timezone().isoformat())
         data["temp"].append(mes.temperature)
         data["hum"].append(mes.humidity)
         data["pres"].append(mes.pressure)
