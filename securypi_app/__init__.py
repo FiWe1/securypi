@@ -15,10 +15,15 @@ def create_app(test_config=None):
         # a default secret, should be overridden by instance config
         SECRET_KEY="very_complex_and_unpredictable_secret_key",
         # db path: instance folder
-        SQLALCHEMY_DATABASE_URI=(
+        SQLALCHEMY_DATABASE_URI = (
             "sqlite:///" + os.path.join(app.instance_path,
                                         "securypi_app.sqlite")
-        )
+        ),
+        SQLALCHEMY_ENGINE_OPTIONS = {
+            "pool_size": 10,
+            "max_overflow": 5,
+            "pool_timeout": 30,
+        },
     )
 
     if test_config is None:
@@ -49,6 +54,11 @@ def create_app(test_config=None):
     # DATABASE
     # initialize the app with the extension
     db.init_app(app)
+    
+    # release db.session on session close
+    @app.teardown_appcontext
+    def release_db_session(exception=None):
+        db.session.remove()
 
     # CONTEXT PROCESSOR
     # inject into the template context
