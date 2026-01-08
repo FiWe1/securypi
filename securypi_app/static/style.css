@@ -509,6 +509,14 @@ body {
   margin-left: 1em;
 }
 
+.user_settings__change_password--current {
+  margin-bottom: 1em;
+}
+
+.user_settings__change_password .auth__form--submit {
+  margin-top: 2em;
+}
+
 .user_settings__change_password .auth__form {
   background-color: rgb(54, 2, 103);
 }
