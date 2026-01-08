@@ -527,6 +527,8 @@ body {
   :root {
     --content-span-grid-columns: 1 / -1; /* now site conent spans full width */
     --content-span-grid-rows: 2; /* navigation moved to the top */
+
+    --nav-link-size: 3.3vw;
   }
 
   /* add new row at the top for navbar */
@@ -545,7 +547,7 @@ body {
     height: auto; /* override */
     box-sizing: border-box;
 
-    font-size: 3.3vw;
+    font-size: var(--nav-link-size);
   }
 
   .navbar__main,
