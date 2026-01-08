@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
-{% block body %}
+
+{% block site_content %}
 <div class="recordings">
   <h1 class="recordings__title">{% block title %}Recordings{% endblock %}</h1>
   
@@ -44,7 +45,9 @@
     </div>
   </form>
 </div>
+{% endblock %}
 
+{% block body %}
 <script>
 document.addEventListener("DOMContentLoaded", () => {
 

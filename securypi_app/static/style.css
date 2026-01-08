@@ -9,8 +9,8 @@
 
   --overview__camera_feed-switch-color: #ff3a3a;
 
-  --grid-content-span-column: 2 / -1; /* first column is navbar */
-  --grid-content-span-row: 2; /* below flash messages */
+  --content-span-grid-columns: 2 / -1; /* first column is navbar */
+  --content-span-grid-rows: 1 / -1;
 
   --nav-link-size: 1.1rem;
 }
@@ -37,17 +37,28 @@ body {
   color: var(--text-color);
 }
 
-/* the main body grid for laying out navigation and the rest of the site */
+/* the main body grid for laying out navigation and site_content */
 .grid {
   display: grid;
   grid-template-columns: 1fr 11fr;
+  grid-template-rows: auto;
+}
+
+.site_content {
+  grid-column: var(--content-span-grid-columns);
+  grid-row: var(--content-span-grid-rows);
+  
+  display: grid;
+  grid-template-columns: auto;
   grid-template-rows: auto 1fr;
+
+  overflow-y: auto; /* overflow this section, keep navigation fixed */
 }
 
 
 .flash {
   grid-column: 1 / -1;
-  grid-row: 1; /* at the top */
+  grid-row: 1; /* site_content: at the top */
 
   display: flex;
   justify-content: center;  /* horizontal center */
@@ -70,7 +81,7 @@ body {
 
 .navbar {
   grid-column: 1;
-  grid-row: 2;
+  grid-row: 1;
 
   display: flex;
   flex-direction: column;
@@ -126,7 +137,7 @@ body {
 
 .login {
   grid-column: 1 / -1; /* full width */
-  grid-row: var(--grid-content-span-row);
+  grid-row: var(--content-span-grid-rows);
   
   /* Fill available space */
   display: flex;
@@ -176,8 +187,9 @@ body {
 */
 
 .overview {
-  grid-column: var(--grid-content-span-column);
-  grid-row: var(--grid-content-span-row);
+  grid-column: 1 / -1;
+  grid-row: 2; /* site content: below flash messages */
+
   display: grid;
   grid-template-columns: repeat(11, 1fr);
   grid-template-rows: auto auto;
@@ -284,15 +296,14 @@ body {
 */
 
 .history {
-  grid-column: var(--grid-content-span-column);
-  grid-row: var(--grid-content-span-row);
+  grid-column: 1 / -1;
+  grid-row: 2; /* site content: below flash messages */
 
   display: grid;
   grid-template-columns: repeat(11, 1fr);
   grid-template-rows: min-content repeat(3, 30em);
 
   margin: 1em;
-  overflow-y: auto; /* overflow this section, keep navigation fixed */
 }
 
 .history__title {
@@ -338,8 +349,8 @@ body {
 */
 
 .camera_control {
-  grid-column: var(--grid-content-span-column);
-  grid-row: var(--grid-content-span-row);
+  grid-column: 1 / -1;
+  grid-row: 2; /* site content: below flash messages */
 
   display: grid;
   grid-template-columns: repeat(11, 1fr);
@@ -375,15 +386,14 @@ body {
 */
 
 .recordings {
-  grid-column: var(--grid-content-span-column);
-  grid-row: var(--grid-content-span-row);
+  grid-column: 1 / -1;
+  grid-row: 2; /* site content: below flash messages */
 
   display: grid;
   grid-template-columns: repeat(11, 1fr);
   grid-template-rows: auto 1fr auto;
 
   margin: 1em;
-  overflow-y: auto; /* overflow this section, keep navigation fixed */
 }
 
 .recordings__title {
@@ -437,8 +447,8 @@ body {
 */
 
 .configure {
-  grid-column: var(--grid-content-span-column);
-  grid-row: var(--grid-content-span-row);
+  grid-column: 1 / -1;
+  grid-row: 2; /* site content: below flash messages */
 
   display: grid;
   grid-template-columns: repeat(11, 1fr);
@@ -470,8 +480,8 @@ body {
 */
 
 .user_settings {
-  grid-column: var(--grid-content-span-column);
-  grid-row: var(--grid-content-span-row);
+  grid-column: 1 / -1;
+  grid-row: 2; /* site content: below flash messages */
 
   display: grid;
   grid-template-columns: repeat(11, 1fr);
@@ -495,7 +505,8 @@ body {
 }
 
 .user_settings__change_password {
-  margin-top: 1em;
+  margin-top: 2em;
+  margin-left: 1em;
 }
 
 .user_settings__change_password .auth__form {
@@ -506,27 +517,20 @@ body {
 @media (max-width: 647px) {
 
   :root {
-    --grid-content-span-column: 1 / -1; /* now site conent spans full width */
-    --grid-content-span-row: 3; /* navigation moved to the top */
+    --content-span-grid-columns: 1 / -1; /* now site conent spans full width */
+    --content-span-grid-rows: 2; /* navigation moved to the top */
   }
 
   /* add new row at the top for navbar */
   .grid {
     grid-template-columns: auto;
-    grid-template-rows: auto auto 1fr;
-  }
-  
-  .flash {
-    grid-row: 2; /* now appearing below navbar */
+    grid-template-rows: auto 1fr;
   }
 
   /*
-   * NAVBAR
+   * NAVIGATION
   */
   .navbar {
-    grid-column: 1 / -1;
-    grid-row: 1;
-
     display: flex;
     flex-direction: column;
     width: 100%;
