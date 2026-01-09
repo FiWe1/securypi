@@ -682,5 +682,12 @@ body {
     margin-left: 1em;
     margin-top: 1em;
   }
-
+  
+  /*
+   * USER SETTINGS
+   */
+  .user_settings__user_type,
+  .user_settings__change_password {
+    margin-left: 0em;
+  }
 }
