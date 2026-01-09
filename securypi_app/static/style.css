@@ -26,11 +26,8 @@ html, body {
   height: 100dvh;
   width: 100dvw;
 
-  /* debug: */
-  /* overflow-x: hidden; */
+  font-family: "Arial";
 }
-/* @TODO change html font!) */
-
 
 body {
   background-color: var(--background-primary);
