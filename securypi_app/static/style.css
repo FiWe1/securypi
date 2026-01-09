@@ -609,10 +609,19 @@ body {
   .navbar__bottom {
     flex-direction: row;
   }
-
+  
+  .navbar__bottom {
+    margin-top: 0rem;
+    margin-bottom: 0.5rem;
+  }
+  
   .navbar a {
     color: var(--nav-link-color);
     text-decoration: none;
+  }
+
+  .navbar__main a {
+    margin-bottom: 0.8rem;
   }
 
   /*
