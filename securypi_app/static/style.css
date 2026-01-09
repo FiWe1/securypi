@@ -34,6 +34,36 @@ body {
   color: var(--text-color);
 }
 
+
+
+/* universal */
+
+.text_color_danger {
+  color: red;
+}
+
+.text_color_go {
+  color: green;
+}
+
+.background_color_go {
+  background-color: green;
+}
+
+.background_color_danger {
+  background-color: red;
+}
+
+
+
+/*
+***                           ***
+        ***  LAYOUT   ***
+***                           ***
+*/
+
+
+
 /* the main body grid for laying out navigation and site_content */
 .grid {
   display: grid;
@@ -374,14 +404,6 @@ body {
   margin-bottom: 2em;
 }
 
-.text_color_danger {
-  color: red;
-}
-
-.text_color_go {
-  color: green;
-}
-
 
 
 /*
@@ -406,7 +428,7 @@ body {
   grid-row: 1;
 }
 
-.recordings__form {
+#recordings__form {
   display: contents; /* positioning its children */
 }
 
@@ -414,9 +436,18 @@ body {
   display: contents; /* positioning its children */
 }
 
+
+.recordings__form--check_all {
+  display: inline-block; /* required for span positioning */
+  margin-bottom: 0.5rem;
+}
+
 .recordings__list--motion_captures {
   grid-column: 1 / 6;
   grid-row: 2;
+
+  display: flex;
+  flex-direction: column;
 
   margin-left: 1em;
 }
@@ -424,6 +455,9 @@ body {
 .recordings__list--recordings {
   grid-column: 6 / 12;
   grid-row: 2;
+
+  display: flex;
+  flex-direction: column;
 }
 
 .recordings__buttons {
@@ -431,16 +465,17 @@ body {
   grid-row: 3;
   display: flex;
   justify-content: space-between;
+
+  margin-top: 2em;
+  margin-bottom: 1em;
 }
 
-.recordings__buttons--download {
-  background-color: green;
+.recordings__buttons--button {
+  height: 2.5em;
+  min-width: 9em;
+  color: white;
 
   margin-left: 1em;
-}
-
-.recordings__buttons--delete {
-  background-color: red;
 }
 
 
@@ -630,6 +665,7 @@ body {
 
   .recordings__list--recordings {
     margin-left: 1em;
+    margin-top: 1em;
   }
 
 }
