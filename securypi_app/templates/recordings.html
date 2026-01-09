@@ -26,7 +26,7 @@
             check all Recordings
           </span>
           {% for entry in recordings %}
-          <span>
+          <span class="recordings__list--item">
             <input type="checkbox" class="recording" name="{{ entry }}" value="no">
             <a href="{{ url_for('recordings.download_recording', filename=entry) }}">{{ entry }}</a>
           </span>
