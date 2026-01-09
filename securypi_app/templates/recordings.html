@@ -34,12 +34,12 @@
       </div>
     </div>
     
-    <div class="recordings__buttons">
-      <button class="recordings__buttons--button background_color_go" type="submit" name="action" value="download_selected">
+    <div class="recordings__form--submit_buttons">
+      <button class="button_mild_round background_color_go" type="submit" name="action" value="download_selected">
         Download selected
       </button>
       {% if g.user["is_admin"] == True %}
-      <button class="recordings__buttons--button background_color_danger" type="submit" name="action" value="delete_selected">
+      <button class="button_mild_round background_color_danger" type="submit" name="action" value="delete_selected">
         Delete selected
       </button>
       {% endif %}

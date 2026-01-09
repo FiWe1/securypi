@@ -55,6 +55,16 @@ body {
   background-color: red;
 }
 
+.button_mild_round {
+  border-radius: 5px;
+  border: none;
+  padding: 0.5rem;
+}
+
+.button_mild_round:hover {
+  opacity: 0.85;
+}
+
 
 
 /*
@@ -465,7 +475,7 @@ body {
   flex-direction: column;
 }
 
-.recordings__buttons {
+.recordings__form--submit_buttons {
   grid-column: 1 / 12;
   grid-row: 3;
   display: flex;
@@ -475,9 +485,9 @@ body {
   margin-bottom: 1em;
 }
 
-.recordings__buttons--button {
+.recordings__form--submit_buttons button {
   height: 2.5em;
-  min-width: 9em;
+  min-width: 10em;
   color: white;
 
   margin-left: 1em;
