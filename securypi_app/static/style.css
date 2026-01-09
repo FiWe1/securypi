@@ -7,7 +7,7 @@
   --background-secondary: #142556;
   --flash-warning-color: rgb(223, 145, 0);
 
-  --overview__camera_feed-switch-color: #ff3a3a;
+  --overview__camera_feed-switch-color: white;
 
   --content-span-grid-columns: 2 / -1; /* first column is navbar */
   --content-span-grid-rows: 1 / -1;
@@ -372,6 +372,14 @@ body {
 
 .camera_control__recording {
   margin-bottom: 2em;
+}
+
+.text_color_danger {
+  color: red;
+}
+
+.text_color_go {
+  color: green;
 }
 
 

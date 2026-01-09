@@ -8,10 +8,10 @@
       <span>
       {% if is_weather_logging %}
       <span>Running background measurements as we speak...  ...</span>
-      <a href={{ url_for('configure.stop_weather_logging') }}>Stop it now</a>
+      <a class="text_color_danger" href={{ url_for('configure.stop_weather_logging') }}>Stop it now</a>
       {% else %}
       <span>Currently not running background measurements.</span>
-      <a href={{ url_for('configure.start_weather_logging') }}>I want log!</a>
+      <a class="text_color_go" href={{ url_for('configure.start_weather_logging') }}>I want log!</a>
       {% endif %}
     </span>
   </div>
