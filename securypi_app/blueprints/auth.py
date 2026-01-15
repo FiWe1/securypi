@@ -68,7 +68,7 @@ def login():
     return render_template("auth/login.html")
 
 
-# @TODO clear? - not enabling register
+# not enabling register for now
 # @bp.route("/register", methods=("GET", "POST"))
 def register():
     """

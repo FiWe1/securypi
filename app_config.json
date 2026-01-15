@@ -1,0 +1,74 @@
+{
+  "camera": {
+    "streaming": {
+      "resolution": [1280, 720],
+      "framerate": 15,
+      "timeout_seconds": 300,
+      "description": "Live video streaming configuration"
+    },
+    "recording": {
+      "resolution": [1920, 1080],
+      "framerate": 25,
+      "description": "Video recording configuration in FPS"
+    },
+    "motion_capturing": {
+      "capture_motion_in_background": false,
+      "motion_detection_framerate": 10,
+      "min_motion_capture_length_sec": 2,
+      "max_motion_capture_length_sec": 60,
+      "frame_change_ratio_threshold": 0.001,
+      "description": "Motion detection and capture configuration"
+    }
+  },
+
+  "measurements": {
+    "weather_station": {
+      "logging_interval_sec": 30,
+      "log_in_background": true,
+      "elevation_meters": 210,
+      "timezone": "Europe/Prague",
+      "description": "Weather station sensor logging configuration"
+    },
+    "mock_sensors": {
+      "mocked_temperature": 21.5,
+      "mocked_humidity": 45,
+      "mocked_pressure": 1013.25,
+      "description": "Mock sensor values"
+    }
+  },
+
+  "authentication": {
+    "password": {
+      "min_length": 8,
+      "max_length": 64,
+      "hash_method": "pbkdf2:sha256",
+      "description": "Password policy and hashing configuration"
+    },
+    "username": {
+      "min_length": 4,
+      "max_length": 16,
+      "description": "Username policy configuration"
+    }
+  },
+
+  "storage": {
+    "captures": {
+      "motion_captures_path": "captures/motion_captures",
+      "recordings_path": "captures/recordings",
+      "description": "File system paths for motion captures and video recordings"
+    }
+  },
+
+  "mock_camera": {
+    "encoder_timeout_seconds": 5,
+    "motion_capturing": {
+      "capture_motion_in_background": false,
+      "motion_detection_framerate": 10,
+      "min_motion_capture_length_sec": 2,
+      "max_motion_capture_length_sec": 60,
+      "frame_change_ratio_threshold": 0.001,
+      "description": "Mock motion capturing configuration for testing"
+    }
+  },
+  "description": "Global securypi_app configuration"
+}

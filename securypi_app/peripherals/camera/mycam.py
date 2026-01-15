@@ -5,6 +5,7 @@ from securypi_app.services.string_parsing import timed_filename
 from securypi_app.services.captures import recordings_path
 from securypi_app.peripherals.camera.mycam_interface import MyPicamera2Interface
 from securypi_app.peripherals.camera.streaming import Streaming
+from securypi_app.services.app_config import AppConfig
 
 # Conditional Import for RPi picamera2 library
 try:
@@ -31,13 +32,6 @@ except ImportError as e:
     Quality = MockQuality
     controls = Controls
     MotionCapturing = MockMotionCapturing
-
-
-# @TODO move to global json config
-STREAM_TIMEOUT = 5 * 60  # 5 minutes
-RECORDING_FRAMERATE = 25
-MAIN_RESOLUTION = (1920, 1080)
-STREAM_RESOLUTION = (800, 450)
 
 
 class MyPicamera2(MyPicamera2Interface):
@@ -106,9 +100,9 @@ class MyPicamera2(MyPicamera2Interface):
         Set sensor configuration to the best mode
         inside the passed config.
         """
-        # @TODO retrieve from config.json
-        resolution = MAIN_RESOLUTION
-        fps = RECORDING_FRAMERATE
+        config = AppConfig.get()
+        resolution = config.camera.recording.resolution
+        fps = config.camera.recording.framerate
 
         config = self._picam.video_configuration
 
@@ -137,22 +131,21 @@ class MyPicamera2(MyPicamera2Interface):
         - main stream: high-res recording, snapshots
         - lores stream: for preview
         """
-        # @TODO retrieve from config.json
-        main_resolution = MAIN_RESOLUTION
-        stream_resolution = STREAM_RESOLUTION
+        config = AppConfig.get()
+        main_resolution = config.camera.recording.resolution
+        streaming_resolution = config.camera.streaming.resolution
 
         self._picam.stop()  # must be stopped before configuring
 
         config = self._picam.video_configuration
         config.main.size = main_resolution
 
-        stream_res = stream_resolution
-        if (stream_resolution[0] > main_resolution[0] or
-                stream_resolution[1] > main_resolution[1]):
-            stream_res = MAIN_RESOLUTION
+        if (streaming_resolution[0] > main_resolution[0] or
+            streaming_resolution[1] > main_resolution[1]):
+            streaming_resolution = main_resolution
 
         config.enable_lores()
-        config.lores.size = stream_res
+        config.lores.size = streaming_resolution
         # default stream for video encoding
         # config.encode = "main" (defaul value)
 
@@ -169,7 +162,7 @@ class MyPicamera2(MyPicamera2Interface):
 
     def configure_runtime_controls(self):
         self.set_noise_reduction()
-        self.set_framerate(RECORDING_FRAMERATE)
+        self.set_framerate()
         return self
 
     def set_noise_reduction(self, noise_reduction_mode="Fast"):
@@ -183,8 +176,13 @@ class MyPicamera2(MyPicamera2Interface):
         return self
 
     def set_framerate(self, framerate=None):
-        if framerate is None:
-            framerate = RECORDING_FRAMERATE
+        config = AppConfig.get()
+        recording_framerate = config.camera.recording.framerate
+        streaming_framerate = config.camera.streaming.framerate
+        
+        framerate = max(framerate if framerate is not None else 0,
+                        recording_framerate,
+                        streaming_framerate)
         if framerate < 1:
             framerate = 30
 

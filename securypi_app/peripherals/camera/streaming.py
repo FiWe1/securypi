@@ -1,7 +1,9 @@
 import io
 from threading import Condition, Timer
+from time import sleep
 
 from securypi_app.peripherals.camera.streaming_interface import StreamingInterface
+from securypi_app.services.app_config import AppConfig
 
 # Conditional Import for RPi picamera2 library
 try:
@@ -15,10 +17,6 @@ except ImportError as e:
     )
     JpegEncoder = MockEncoder
     FileOutput = MockStreamingOutput
-
-
-# @TODO move to global config
-STREAM_TIMEOUT = 5 * 60  # 5 minutes
 
 
 class StreamingOutput(io.BufferedIOBase):
@@ -42,6 +40,10 @@ class StreamingOutput(io.BufferedIOBase):
         Wailts for a new frame from the camera and
         yields it as part of a multipart HTTP response.
         """
+        config = AppConfig.get()
+        framerate = config.camera.streaming.framerate
+        sleep_time = 1 / framerate
+        
         while True:
             with self.condition:
                 self.condition.wait()
@@ -50,6 +52,7 @@ class StreamingOutput(io.BufferedIOBase):
                 b"Content-Type: image/jpeg\r\n"
                 b"Content-Length: " + f"{len(frame)}".encode() + b"\r\n\r\n" +
                 frame + b"\r\n")
+            sleep(sleep_time)
 
 
 class Streaming(StreamingInterface):
@@ -71,6 +74,9 @@ class Streaming(StreamingInterface):
         return self._streaming_encoder is not None
 
     def start_capture_stream(self, stream: str = "lores") -> StreamingOutput:
+        config = AppConfig.get()
+        stream_timeout = config.camera.streaming.timeout_seconds
+        
         # cancel stream timeout if set - avoid timing out prematurely
         if self._stream_timer is not None:
             self._stream_timer.cancel()
@@ -82,15 +88,19 @@ class Streaming(StreamingInterface):
                                       name=stream)
             self._mycam._picam.start()
 
-        self._stream_timer = Timer(STREAM_TIMEOUT, self.stop_capture_stream)
+        self._stream_timer = Timer(stream_timeout, self.stop_capture_stream)
         self._stream_timer.start()
 
         return self._streaming_output
 
+        return self._streaming_output
+
     def stop_capture_stream(self):
+        """ Stop capturing stream. Resets the timeout timer. """
         if self._stream_timer is not None:
             self._stream_timer.cancel()
             self._stream_timer = None
+            
         if self._streaming_encoder is not None:
             self._mycam._picam.stop_encoder(self._streaming_encoder)
             self._streaming_encoder = None
