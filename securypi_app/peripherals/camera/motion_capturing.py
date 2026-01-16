@@ -47,7 +47,7 @@ class MotionCapturing(MotionCapturingInterface):
         self.set_motion_capturing(capture)
 
     def is_motion_capturing(self) -> bool:
-        return self._capturing_thread is not None
+        return self._capture_motion_in_background
 
     # setters / getters
     def set_motion_capturing(self, set: bool):
@@ -124,7 +124,7 @@ class MotionCapturing(MotionCapturingInterface):
         if self._mycam.is_recording() and not self.is_motion_capturing():
             raise RuntimeError("Can not start MotionCapturing "
                                "while another recording is running.")
-        if self.is_motion_capturing():
+        if self._capturing_thread is not None:
             print("Background MotionCapturing was not stopped, "
                   "stopping now...")
             self.stop()
@@ -137,7 +137,7 @@ class MotionCapturing(MotionCapturingInterface):
         print("Background MotionCapturing has started")
 
     def stop(self):
-        if self.is_motion_capturing():
+        if self._capturing_thread is not None:
             self._capturing_stop_event.set()  # signal stop
             if self._capturing_thread:
                 self._capturing_thread.join()
