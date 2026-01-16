@@ -9,15 +9,6 @@ from threading import Lock
 # leaf schemas 
 #
 # - camera -
-class MotionCaptureConfig(BaseModel):
-    """ Appears in 'camera' and 'mock_camera'. """
-    capture_motion_in_background: bool
-    motion_detection_framerate: int = Field(gt=0) # > 0
-    min_motion_capture_length_sec: int = Field(gt=0) # > 0
-    max_motion_capture_length_sec: int
-    frame_change_ratio_threshold: float = Field(ge=0.0, le=1.0) # 0.0 <= x= < 1.0
-    description: Optional[str] = None
-
 class StreamingConfig(BaseModel):
     resolution: Tuple[int, int]  # Enforces exactly two integers: [width, height]
     framerate: int = Field(gt=0) # > 0
@@ -27,6 +18,15 @@ class StreamingConfig(BaseModel):
 class RecordingConfig(BaseModel):
     resolution: Tuple[int, int]
     framerate: int
+    description: Optional[str] = None
+
+class MotionCaptureConfig(BaseModel):
+    """ Appears in 'camera' and 'mock_camera'. """
+    capture_motion_in_background: bool
+    motion_detection_framerate: int = Field(gt=0) # > 0
+    min_motion_capture_length_sec: int = Field(gt=0) # > 0
+    max_motion_capture_length_sec: int
+    frame_change_ratio_threshold: float = Field(ge=0.0, le=1.0) # 0.0 <= x= < 1.0
     description: Optional[str] = None
 
 # - measurements -
@@ -76,24 +76,20 @@ class CapturesConfig(BaseModel):
 class CameraConfig(BaseModel):
     streaming: StreamingConfig
     recording: RecordingConfig
-    motion_capturing: MotionCaptureConfig
-    description: Optional[str] = None
+    motion_capturing: MotionCaptureConfig # <--- Reuse 1
 
 class MeasurementsConfig(BaseModel):
     sensors: SensorsConfig
     weather_station: WeatherStationConfig
     geolocation: GeolocationConfig
     mock_sensors: MockSensorsConfig
-    description: Optional[str] = None
 
 class AuthenticationConfig(BaseModel):
     password: PasswordConfig
     username: UsernameConfig
-    description: Optional[str] = None
 
 class StorageConfig(BaseModel):
     captures: CapturesConfig
-    description: Optional[str] = None
 
 
 # root schema
