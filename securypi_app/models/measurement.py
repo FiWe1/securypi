@@ -6,10 +6,7 @@ from sqlalchemy import Integer, Float, DateTime, select, text
 from sqlalchemy.orm import Mapped, mapped_column, MappedAsDataclass
 
 from . import db
-
-
-# @TODO move to json config
-TIMEZONE_ZONEINFO = "Europe/Prague"
+from securypi_app.services.app_config import AppConfig
 
 
 class Measurement(MappedAsDataclass, db.Model):
@@ -42,11 +39,12 @@ class Measurement(MappedAsDataclass, db.Model):
     
     def time_local_timezone(self, local_timezone: ZoneInfo | None = None) -> DateTime:
         """
-        Returns measurement's time: DateTime in local time zone. (implicitly from config)
+        Returns measurement's time: DateTime in local time zone.
+        (implicitly fetches from config)
         """
         if local_timezone is None:
-            # @TODO fetch from json config
-            local_timezone = ZoneInfo(TIMEZONE_ZONEINFO)
+            config = AppConfig.get()
+            local_timezone = ZoneInfo(config.measurements.weather_station.timezone)
         
         tm = self.time.replace(tzinfo=timezone.utc)
         return tm.astimezone(local_timezone)

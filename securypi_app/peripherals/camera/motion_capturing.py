@@ -11,14 +11,8 @@ from securypi_app.services.captures import motion_captures_path
 from securypi_app.peripherals.camera.motion_capturing_interface import (
     MotionCapturingInterface
 )
-
-
-# @TODO move to global json config
-CAPTURE_MOTION_IN_BACKGROUND = False
-MOTION_DETECTION_FRAMERATE = 10
-MIN_MOTION_CAPTURE_LENGTH_SEC = 2
-MAX_MOTION_CAPTURE_LENGTH_SEC = 60
-FRAME_CHANGE_RATIO_THRESHOLD = 0.001
+from securypi_app.peripherals.camera.mycam_interface import MyPicamera2Interface
+from securypi_app.services.app_config import AppConfig
 
 
 class MotionCapturing(MotionCapturingInterface):
@@ -28,7 +22,7 @@ class MotionCapturing(MotionCapturingInterface):
     """
     def __init__(self, mycam):
         """ Initialize with MyPicamera2 instance. """
-        self._mycam = mycam
+        self._mycam: MyPicamera2Interface = mycam
 
         # background motion detector
         self._capture_motion_in_background = False
@@ -37,12 +31,13 @@ class MotionCapturing(MotionCapturingInterface):
         self.apply_capturing_config()
 
     def apply_capturing_config(self):
-        # @TODO: from json
-        capture = CAPTURE_MOTION_IN_BACKGROUND
-        detection_rate = MOTION_DETECTION_FRAMERATE
-        threshold_ratio = FRAME_CHANGE_RATIO_THRESHOLD
-        min_length = MIN_MOTION_CAPTURE_LENGTH_SEC
-        max_length = MAX_MOTION_CAPTURE_LENGTH_SEC
+        config = AppConfig.get()
+        
+        capture = config.camera.motion_capturing.capture_motion_in_background
+        detection_rate = config.camera.motion_capturing.motion_detection_framerate
+        threshold_ratio = config.camera.motion_capturing.frame_change_ratio_threshold
+        min_length = config.camera.motion_capturing.min_motion_capture_length_sec
+        max_length = config.camera.motion_capturing.max_motion_capture_length_sec
 
         self._detection_rate = detection_rate
         self._change_ratio_threshold = threshold_ratio
@@ -56,18 +51,30 @@ class MotionCapturing(MotionCapturingInterface):
 
     # setters / getters
     def set_motion_capturing(self, set: bool):
-        self._capture_motion_in_background = set
-        if set:
-            self.start()
-        else:
-            self.stop()
+        if self.is_motion_capturing() != set:
+            self._capture_motion_in_background = set
+            if set:
+                self.start()
+            else:
+                self.stop()
+        
+        # update config:
+        config = AppConfig.get()
+        if config.camera.motion_capturing.capture_motion_in_background != set:
+            config.camera.motion_capturing.capture_motion_in_background = set
+            config.save()
 
     def get_detection_rate(self) -> int:
         return self._detection_rate
 
     def set_detection_rate(self, framerate):
         self._detection_rate = framerate
-        # @TODO: update json
+        
+        # update config:
+        config = AppConfig.get()
+        if config.camera.motion_capturing.motion_detection_framerate != framerate:
+            config.camera.motion_capturing.motion_detection_framerate = framerate
+            config.save()
 
         if self.is_motion_capturing():
             self.start()  # restarts the running logging
@@ -77,7 +84,12 @@ class MotionCapturing(MotionCapturingInterface):
 
     def set_change_ratio_threshold(self, threshold):
         self._change_ratio_threshold = threshold
-        # @TODO: update json
+        
+        # update config:
+        config = AppConfig.get()
+        if config.camera.motion_capturing.frame_change_ratio_threshold != threshold:
+            config.camera.motion_capturing.frame_change_ratio_threshold = threshold
+            config.save()
 
     # recording length
     def get_min_recording_length(self) -> int:
@@ -85,14 +97,24 @@ class MotionCapturing(MotionCapturingInterface):
 
     def set_min_recording_length(self, seconds):
         self._min_recording_length = seconds
-        # @TODO: update json
+        
+        # update config:
+        config = AppConfig.get()
+        if config.camera.motion_capturing.min_motion_capture_length_sec != seconds:
+            config.camera.motion_capturing.min_motion_capture_length_sec = seconds
+            config.save()
 
     def get_max_recording_length(self) -> int:
         return self._max_recording_length
 
     def set_max_recording_length(self, seconds):
         self._max_recording_length = seconds
-        # @TODO: update json
+        
+        # update config:
+        config = AppConfig.get()
+        if config.camera.motion_capturing.max_motion_capture_length_sec != seconds:
+            config.camera.motion_capturing.max_motion_capture_length_sec = seconds
+            config.save()
 
     def start(self):
         """

@@ -5,12 +5,7 @@ from datetime import datetime
 import secrets
 import string
 
-
-# @TODO move to json? config file
-MIN_USERNAME_LENGTH = 4
-MIN_PASSWORD_LENGTH = 8
-MAX_USERNAME_LENGTH = 16
-MAX_PASSWORD_LENGTH = 64
+from securypi_app.services.app_config import AppConfig
 
 
 def validate_str_input_len(input,
@@ -41,9 +36,12 @@ def validate_str_username(username) -> None | str:
     Check if username string length is within given limits. 
     Return None if valid, otherwise return error message.
     """
+    config = AppConfig.get()
+    min_username_len = config.authentication.username.min_length
+    max_username_len = config.authentication.username.max_length
     return validate_str_input_len(username,
-                                  min_len=MIN_USERNAME_LENGTH,
-                                  max_len=MAX_USERNAME_LENGTH,
+                                  min_len=min_username_len,
+                                  max_len=max_username_len,
                                   expr_name="user name")
 
 
@@ -52,9 +50,12 @@ def validate_str_password(password) -> None | str:
     Check if password string length is within given limits.
     Return None if valid, otherwise return error message.
     """
+    config = AppConfig.get()
+    min_pw_len = config.authentication.password.min_length
+    max_pw_len = config.authentication.password.max_length
     return validate_str_input_len(password,
-                                  min_len=MIN_PASSWORD_LENGTH,
-                                  max_len=MAX_PASSWORD_LENGTH,
+                                  min_len=min_pw_len,
+                                  max_len=max_pw_len,
                                   expr_name="password")
 
 

@@ -3,10 +3,12 @@ import os
 from typing import ClassVar, Tuple, Optional
 from pydantic import BaseModel, Field
 from pathlib import Path
+from threading import Lock
 
 
 # leaf schemas 
 #
+# - camera -
 class MotionCaptureConfig(BaseModel):
     """ Appears in 'camera' and 'mock_camera'. """
     capture_motion_in_background: bool
@@ -27,12 +29,21 @@ class RecordingConfig(BaseModel):
     framerate: int
     description: Optional[str] = None
 
+# - measurements -
+class SensorsConfig(BaseModel):
+    use_dht22: bool
+    use_sht30: bool
+    use_qmp6988: bool
+    description: Optional[str] = None
+    
 class WeatherStationConfig(BaseModel):
     logging_interval_sec: int = Field(gt=0) # > 0
     log_in_background: bool
+    description: Optional[str] = None
+
+class GeolocationConfig(BaseModel):
     elevation_meters: int
     timezone: str
-    description: Optional[str] = None
 
 class MockSensorsConfig(BaseModel):
     mocked_temperature: float
@@ -65,7 +76,9 @@ class CameraConfig(BaseModel):
     motion_capturing: MotionCaptureConfig # <--- Reuse 1
 
 class MeasurementsConfig(BaseModel):
+    sensors: SensorsConfig
     weather_station: WeatherStationConfig
+    geolocation: GeolocationConfig
     mock_sensors: MockSensorsConfig
 
 class AuthenticationConfig(BaseModel):
@@ -90,7 +103,8 @@ class AppConfig(BaseModel):
     mock_camera: MockCameraConfig
     description: Optional[str] = None
 
-    # singleton & loading logic (ClassVar protects from pydantic)
+    _lock: ClassVar[Lock] = Lock() # (ClassVar protects from pydantic)
+    # singleton & loading logic
     _instance: ClassVar[Optional['AppConfig']] = None
 
     @classmethod
@@ -99,7 +113,7 @@ class AppConfig(BaseModel):
         return Path("app_config.json")
 
     @classmethod
-    def load(cls):
+    def fetch(cls):
         path = cls.get_file_path()
         with open(path, "r") as f:
             data = json.load(f)
@@ -109,5 +123,18 @@ class AppConfig(BaseModel):
     @classmethod
     def get(cls) -> 'AppConfig':
         if cls._instance is None:
-            cls.load()
+            cls.fetch()
         return cls._instance
+    
+    def save(self):
+        with self._lock:
+            config_dict = self.model_dump()
+            
+            temp_path = f"{self.get_file_path()}.tmp"
+            with open(temp_path, "w") as f:
+                json.dump(config_dict, f, indent=2)
+                
+            # atomic rename - os-level operation
+            # ('config.json' is never in a half-written state)
+            os.replace(temp_path, self.get_file_path())
+            print("Config saved safely to disk.")

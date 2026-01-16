@@ -4,11 +4,7 @@ from threading import Thread, Event
 from securypi_app.peripherals.measurements.measurement_logger_interface import (
     MeasurementLoggerInterface
 )
-
-
-# @TODO move to centralised serialised json config
-LOGGING_INTERVAL_SEC = 30
-LOG_WEATHER_IN_BACKGROUND = True
+from securypi_app.services.app_config import AppConfig
 
 
 class MeasurementLogger(MeasurementLoggerInterface):
@@ -44,30 +40,41 @@ class MeasurementLogger(MeasurementLoggerInterface):
 
     def apply_logging_config(self):
         """ Load and apply background logging configuration. """
-        # @TODO: from json
-        log = LOG_WEATHER_IN_BACKGROUND
-        log_sec = LOGGING_INTERVAL_SEC
+        config = AppConfig.get()
+        log = config.measurements.weather_station.log_in_background
+        log_sec = config.measurements.weather_station.logging_interval_sec
         
         self.set_logging_interval(log_sec)
         self.set_log_in_background(log)
 
     def set_log_in_background(self, set: bool):
         self._log_in_background = set
-        # @TODO: update json
+        
         if set:
             self.start_logging()
         else:
             self.stop_logging()
+        
+        # update config:
+        config = AppConfig.get()
+        if config.measurements.weather_station.log_in_background != set:
+            config.measurements.weather_station.log_in_background = set
+            config.save()
 
     def get_logging_interval(self) -> int:
         return self._logging_interval
 
     def set_logging_interval(self, seconds: int):
         self._logging_interval = seconds
-        # @TODO: update json
         
         if self.is_logging():
             self.start_logging()  # restarts the running logging
+        
+        # update config:
+        config = AppConfig.get()
+        if config.measurements.weather_station.logging_interval_sec != seconds:
+            config.measurements.weather_station.logging_interval_sec = seconds
+            config.save()
 
     def start_logging(self):
         """

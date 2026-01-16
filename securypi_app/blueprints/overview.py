@@ -52,10 +52,10 @@ def stop_video_feed():
 def index():
     """
     Main overview page showing either live stream or snapshot based on mode,
-    together with temperature and humidity readings.
+    together with measurements.
     """
 
-    # Get the desired mode from the request (default to "picture")
+    # get the desired mode from the request (default to "picture")
     mode = request.args.get("mode", "picture")
 
     # temperature and humidity sensor @TODO from db)
@@ -65,7 +65,7 @@ def index():
     relative_pressure = WeatherStation.relative_pressure(pressure=readings["pressure"],
                                                          temperature=readings["temperature"])
 
-    # Determine the template and URL for the <img> tag based on the mode
+    # determine the template and URL for the <img> tag based on the mode
     if mode == "stream":
         camera_feed_src = url_for("overview.video_feed")
     else:  # Default is "picture"

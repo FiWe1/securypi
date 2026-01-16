@@ -5,6 +5,7 @@ from securypi_app.models.measurement import Measurement
 from securypi_app.peripherals.measurements.weather_station_interface import (
     WeatherStationInterface
 )
+from securypi_app.services.app_config import AppConfig
 
 # sensors
 from securypi_app.peripherals.measurements.sensors.sensor_dht22 import SensorDht22
@@ -15,13 +16,6 @@ from securypi_app.peripherals.measurements.sensors.sensor_qmp6988 import SensorQ
 from securypi_app.peripherals.measurements.measurement_logger import (
     MeasurementLogger
 )
-
-
-# @TODO move to centralised serialised json config
-USE_DHT22 = False
-USE_SHT30 = True
-USE_QMP6988 = True
-ELEVATION = 210 # m above sea level - Dlhe Diely
 
 
 class WeatherStation(WeatherStationInterface):
@@ -59,10 +53,10 @@ class WeatherStation(WeatherStationInterface):
     
     def init_sensors(self):
         """ Set and initialize concrete sensors for measurement. """
-        # @TODO fetch from json config
-        use_dht22 = USE_DHT22
-        use_sht30 = USE_SHT30
-        use_qmp6988 = USE_QMP6988
+        config = AppConfig.get()
+        use_dht22 = config.measurements.sensors.use_dht22
+        use_sht30 = config.measurements.sensors.use_sht30
+        use_qmp6988 = config.measurements.sensors.use_qmp6988
         
         
         self._sensor_temperature = None
@@ -77,9 +71,13 @@ class WeatherStation(WeatherStationInterface):
         if use_qmp6988:
             self._sensor_pressure = SensorQmp6988()
         
-        # Use the same sensor for temperature + humidity
-        if self._sensor_humidity:
+        # Use the same sensor for temperature + humidity,
+        # otherwise pressure + temperature
+        if self._sensor_humidity is not None:
             self._sensor_temperature = self._sensor_humidity
+        elif use_qmp6988:
+            self._sensor_temperature = self._sensor_pressure
+            
 
     def get_temperature(self, repeat=5) -> float | None:
         if self._sensor_temperature is not None:
@@ -163,12 +161,15 @@ class WeatherStation(WeatherStationInterface):
     @staticmethod
     def relative_pressure(pressure,
                           temperature,
-                          elevation = ELEVATION) -> float | str:
+                          elevation=None) -> float | str:
         """
         Converts absolute atmospheric pressure to relative pressure
         at sea level based on 'elevation' above sea level and 'temperature'.
         Returns "N/A" if inputs are not float.
         """
+        if elevation is None:
+            config = AppConfig.get()
+            elevation = config.measurements.geolocation.elevation_meters
         try:
             pressure = float(pressure)
             temperature = float(temperature)

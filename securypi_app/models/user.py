@@ -3,12 +3,9 @@ from __future__ import annotations # fix class forward referencing issue
 from sqlalchemy import Integer, String, Boolean, select, Row
 from sqlalchemy.orm import Mapped, mapped_column, MappedAsDataclass
 from werkzeug.security import generate_password_hash
+from securypi_app.services.app_config import AppConfig
 
 from . import db
-
-
-# @TODO check hash method: soft
-HASH_METHOD = "pbkdf2:sha256"
 
 
 class User(MappedAsDataclass, db.Model):
@@ -29,14 +26,18 @@ class User(MappedAsDataclass, db.Model):
     email: Mapped[str | None] = mapped_column(
         String, default=None, nullable=True
     )
-    
-    _hash_method = HASH_METHOD
-
+        
     def __repr__(self) -> str:
         return (
             f"User(id={self.id}, username={self.username}, "
             f"is_admin={self.is_admin}, email={self.email})"
         )
+    
+    @classmethod
+    def get_hash_method(cls) -> str:
+        """ Fetches hash method from app configuration. """
+        config = AppConfig.get()
+        return config.authentication.password.hash_method
 
     @classmethod
     def get_by_id(cls, user_id: int) -> User | None:
@@ -70,7 +71,7 @@ class User(MappedAsDataclass, db.Model):
         -> (True, "succes message")
         -> (False, "error message")
         """
-        hashed = generate_password_hash(password, method=cls._hash_method)
+        hashed = generate_password_hash(password, method=cls.get_hash_method())
 
         new_user = cls(
             username=username,
@@ -104,7 +105,7 @@ class User(MappedAsDataclass, db.Model):
         # hash new password
         self.hashed_password = generate_password_hash(
             new_password,
-            method=self._hash_method
+            method=self.get_hash_method()
         )
         
         try:

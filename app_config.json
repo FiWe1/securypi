@@ -1,18 +1,24 @@
 {
   "camera": {
     "streaming": {
-      "resolution": [1280, 720],
+      "resolution": [
+        1280,
+        720
+      ],
       "framerate": 15,
       "timeout_seconds": 300,
       "description": "Live video streaming configuration"
     },
     "recording": {
-      "resolution": [1920, 1080],
+      "resolution": [
+        1920,
+        1080
+      ],
       "framerate": 25,
       "description": "Video recording configuration in FPS"
     },
     "motion_capturing": {
-      "capture_motion_in_background": false,
+      "capture_motion_in_background": true,
       "motion_detection_framerate": 10,
       "min_motion_capture_length_sec": 2,
       "max_motion_capture_length_sec": 60,
@@ -20,23 +26,30 @@
       "description": "Motion detection and capture configuration"
     }
   },
-
   "measurements": {
+    "sensors": {
+      "use_dht22": false,
+      "use_sht30": true,
+      "use_qmp6988": true,
+      "description": "Which sensors to read from"
+    },
     "weather_station": {
-      "logging_interval_sec": 30,
+      "logging_interval_sec": 60,
       "log_in_background": true,
+      "description": "Weather station logging configuration"
+    },
+    "geolocation": {
       "elevation_meters": 210,
       "timezone": "Europe/Prague",
-      "description": "Weather station sensor logging configuration"
+      "description": "Geolocation and timezone information for accurate measurements (relative humidity)"
     },
     "mock_sensors": {
       "mocked_temperature": 21.5,
-      "mocked_humidity": 45,
+      "mocked_humidity": 45.0,
       "mocked_pressure": 1013.25,
       "description": "Mock sensor values"
     }
   },
-
   "authentication": {
     "password": {
       "min_length": 8,
@@ -50,7 +63,6 @@
       "description": "Username policy configuration"
     }
   },
-
   "storage": {
     "captures": {
       "motion_captures_path": "captures/motion_captures",
@@ -58,7 +70,6 @@
       "description": "File system paths for motion captures and video recordings"
     }
   },
-
   "mock_camera": {
     "encoder_timeout_seconds": 5,
     "motion_capturing": {

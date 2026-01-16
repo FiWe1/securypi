@@ -5,11 +5,7 @@ import os
 from pathlib import Path
 from werkzeug.utils import secure_filename
 from zipstream import ZipStream
-
-
-# @TODO move to global json config
-MOTION_CAPTURES_PROJECT_PATH = "captures/motion_captures"
-RECORDINGS_PROJECT_PATH = "captures/recordings"
+from securypi_app.services.app_config import AppConfig
 
 
 def motion_captures_path() -> Path:
@@ -17,8 +13,8 @@ def motion_captures_path() -> Path:
     Return Path to motion_captures (relative) in project directory,
     ensuring it exists.
     """
-    # @TODO: load from json config
-    path_str = MOTION_CAPTURES_PROJECT_PATH
+    config = AppConfig.get()
+    path_str = config.storage.captures.motion_captures_path
 
     path = Path(path_str)
     path.mkdir(parents=True, exist_ok=True)
@@ -30,8 +26,8 @@ def recordings_path() -> Path:
     Return Path to recordings (relative) in project directory,
     ensuring it exists.
     """
-    # @TODO: load from json config
-    path_str = RECORDINGS_PROJECT_PATH
+    config = AppConfig.get()
+    path_str = config.storage.captures.recordings_path
 
     path = Path(path_str)
     path.mkdir(parents=True, exist_ok=True)
