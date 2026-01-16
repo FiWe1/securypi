@@ -44,6 +44,7 @@ class WeatherStationConfig(BaseModel):
 class GeolocationConfig(BaseModel):
     elevation_meters: int
     timezone: str
+    description: Optional[str] = None
 
 class MockSensorsConfig(BaseModel):
     mocked_temperature: float
@@ -51,6 +52,7 @@ class MockSensorsConfig(BaseModel):
     mocked_pressure: float
     description: Optional[str] = None
 
+# - authentication -
 class PasswordConfig(BaseModel):
     min_length: int = Field(ge=1) # >= 0
     max_length: int
@@ -62,6 +64,7 @@ class UsernameConfig(BaseModel):
     max_length: int
     description: Optional[str] = None
 
+# - storage -
 class CapturesConfig(BaseModel):
     motion_captures_path: str
     recordings_path: str
@@ -73,24 +76,29 @@ class CapturesConfig(BaseModel):
 class CameraConfig(BaseModel):
     streaming: StreamingConfig
     recording: RecordingConfig
-    motion_capturing: MotionCaptureConfig # <--- Reuse 1
+    motion_capturing: MotionCaptureConfig
+    description: Optional[str] = None
 
 class MeasurementsConfig(BaseModel):
     sensors: SensorsConfig
     weather_station: WeatherStationConfig
     geolocation: GeolocationConfig
     mock_sensors: MockSensorsConfig
+    description: Optional[str] = None
 
 class AuthenticationConfig(BaseModel):
     password: PasswordConfig
     username: UsernameConfig
+    description: Optional[str] = None
 
 class StorageConfig(BaseModel):
     captures: CapturesConfig
+    description: Optional[str] = None
 
 class MockCameraConfig(BaseModel):
     encoder_timeout_seconds: int
-    motion_capturing: MotionCaptureConfig # <--- Reuse 2
+    motion_capturing: MotionCaptureConfig
+    description: Optional[str] = None
 
 
 # root schema
