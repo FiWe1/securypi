@@ -101,7 +101,7 @@ class User(MappedAsDataclass, db.Model):
             print(e)
             return False, message
 
-        user_type = "admin" if is_admin else "standard user"
+        user_type = "administrator" if is_admin else "standard user"
         return True, f"Successfully registered {username} as {user_type}."
     
     def change_password(self,
