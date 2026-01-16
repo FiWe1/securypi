@@ -108,7 +108,7 @@ class AppConfig(BaseModel):
     @classmethod
     def get_file_path(cls) -> str:
         """ Assumes structure: root/config.json """
-        return Path("app_config.json")
+        return "app_config.json"
 
     @classmethod
     def fetch(cls):
@@ -116,7 +116,7 @@ class AppConfig(BaseModel):
         with open(path, "r") as f:
             data = json.load(f)
             cls._instance = cls(**data)
-            print(f"Configuration loaded from {path}")
+            # print(f"Configuration loaded from {path}")
 
     @classmethod
     def get(cls) -> 'AppConfig':

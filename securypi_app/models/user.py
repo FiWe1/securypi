@@ -48,6 +48,11 @@ class User(MappedAsDataclass, db.Model):
     def get_by_username(cls, username: str) -> User | None:
         stmt = select(cls).where(cls.username == username)
         return db.session.execute(stmt).scalar_one_or_none()
+    
+    @classmethod
+    def is_username_free(cls, username) -> bool:
+        """ Chcecks if username is not taken. """
+        return cls.get_by_username(username) is None
 
     @classmethod
     def get_meta_by_id(cls, user_id: int) -> Row | None:
@@ -86,9 +91,9 @@ class User(MappedAsDataclass, db.Model):
             db.session.rollback()
             message = (
                 f"Failed to register user with username: '{username}',\n"
-                "it is already taken."
+                "There was a database error. Please, check logs."
             )
-            # print(message) # debug
+            print(e)
             return False, message
 
         user_type = "admin" if is_admin else "standard user"

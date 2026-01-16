@@ -85,6 +85,9 @@ def register():
         error = validate_str_username(username)
         if error is None:
             error = validate_str_password(password)
+        
+        if not User.is_username_free(username):
+            error = f"Username '{username}' is already taken!"
 
         if error is None:
             success, message = User.register(username, password, is_admin)

@@ -81,13 +81,16 @@ def register_cli_commands(app):
         else:
             is_admin = False
 
-        error = None
         error = validate_str_username(username)
-        if error is None:
-            error = validate_str_password(password)
-
         if error is not None:
-            click.echo(error)
-            return
+            return click.echo(error)
+        
+        if not User.is_username_free(username):
+            return click.echo(f"Username '{username}' is already taken!")
+        
+        error = validate_str_password(password)
+        if error is not None:
+            return click.echo(error)
+        
         _, message = User.register(username, password, is_admin)
         click.echo(message)
