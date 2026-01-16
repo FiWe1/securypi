@@ -18,7 +18,7 @@
       "description": "Video recording configuration in FPS"
     },
     "motion_capturing": {
-      "capture_motion_in_background": true,
+      "capture_motion_in_background": false,
       "motion_detection_framerate": 10,
       "min_motion_capture_length_sec": 2,
       "max_motion_capture_length_sec": 60,

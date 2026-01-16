@@ -60,6 +60,9 @@ class MyPicamera2(MyPicamera2Interface):
         self.configure_video_sensor()
         self.configure_video_streams()
         self.configure_runtime_controls()
+        
+        # starting picamera here
+        self._picam.start()
 
         # encoders
         self._recording_encoder = None
@@ -209,7 +212,7 @@ class MyPicamera2(MyPicamera2Interface):
                                   PyavOutput(output_path),
                                   name=stream,
                                   quality=encode_quality)
-        self._picam.start()
+        # self._picam.start()
         return self
 
     def start_default_recording(self,
@@ -233,7 +236,7 @@ class MyPicamera2(MyPicamera2Interface):
     def capture_picture(self):
         """ Capture still picture and return it's raw value. """
         buffer = io.BytesIO()
-        self._picam.start()
+        # self._picam.start()
         self._picam.capture_file(buffer, format="jpeg")
 
         # Return the byte data

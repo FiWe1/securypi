@@ -87,7 +87,7 @@ class MeasurementLogger(MeasurementLoggerInterface):
             self.stop_logging()
 
         self._logging_thread = (
-            Thread(target=self.logger)
+            Thread(target=self.logger, daemon=True)
         )
         self._logging_stop_event.clear()  # clear stop signal
         self._logging_thread.start()
@@ -97,7 +97,7 @@ class MeasurementLogger(MeasurementLoggerInterface):
         if self.is_logging():
             self._logging_stop_event.set()  # signal stop
             if self._logging_thread:
-                self._logging_thread.join()
+                self._logging_thread.join(timeout=2.0)
 
             self._logging_thread = None
         else:

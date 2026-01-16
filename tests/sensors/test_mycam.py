@@ -33,6 +33,8 @@ class TestMycamClass():
 
         mypicam._recording_encoder = None
         mypicam._streaming_encoder = None
+        
+        mypicam._picam.start()
 
         del mypicam  # delete object reference
 

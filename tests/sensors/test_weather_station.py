@@ -31,7 +31,7 @@ class TestWeatherStation():
         station.measurement_logger._logging_stop_event.set()
         if station.measurement_logger.is_logging():
             if station.measurement_logger._logging_thread is not None:
-                station.measurement_logger._logging_thread.join()
+                station.measurement_logger._logging_thread.join(timeout=2.0)
                 station.measurement_logger._logging_thread = None
         station.measurement_logger._logging_stop_event.clear()
         

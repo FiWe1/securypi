@@ -39,12 +39,14 @@ class MotionCapturing(MotionCapturingInterface):
         min_length = config.camera.motion_capturing.min_motion_capture_length_sec
         max_length = config.camera.motion_capturing.max_motion_capture_length_sec
 
+        self._capture_motion_in_background = capture
         self._detection_rate = detection_rate
         self._change_ratio_threshold = threshold_ratio
         self._min_recording_length = min_length
         self._max_recording_length = max_length
 
-        self.set_motion_capturing(capture)
+        if capture:
+            self.start()
 
     def is_motion_capturing(self) -> bool:
         return self._capture_motion_in_background
@@ -130,7 +132,7 @@ class MotionCapturing(MotionCapturingInterface):
             self.stop()
 
         self._capturing_thread = (
-            Thread(target=self.loop_motion_capturing)
+            Thread(target=self.loop_motion_capturing, daemon=True)
         )
         self._capturing_stop_event.clear()  # clear stop signal
         self._capturing_thread.start()
@@ -140,7 +142,7 @@ class MotionCapturing(MotionCapturingInterface):
         if self._capturing_thread is not None:
             self._capturing_stop_event.set()  # signal stop
             if self._capturing_thread:
-                self._capturing_thread.join()
+                self._capturing_thread.join(timeout=2.0)
 
             self._capturing_thread = None
 
@@ -163,6 +165,7 @@ class MotionCapturing(MotionCapturingInterface):
         recording_start_time: time = 0
         prev = None
         while True:
+            
             cur = self._mycam._picam.capture_buffer("lores")
             cur = cur[:w * h].reshape(h, w)
             cur = gaussian_filter(cur.astype(np.float32), sigma=1)  # smooth

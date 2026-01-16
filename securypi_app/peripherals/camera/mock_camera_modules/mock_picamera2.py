@@ -168,7 +168,7 @@ class MockPicamera2:
         print(f"[MockPicamera2] Stopping encoder {recording_encoder}.")
         self._mock_encoder_stop_event.set()  # signal stop
         if self._mock_encoder_thread is not None:
-            self._mock_encoder_thread.join()
+            self._mock_encoder_thread.join(timeout=2.0)
         self._mock_encoder_stop_event.clear()  # clear stop signal
 
         self._mock_encoder_thread = None
