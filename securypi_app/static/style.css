@@ -78,7 +78,7 @@ body {
 /* the main body grid for laying out navigation and site_content */
 .grid {
   display: grid;
-  grid-template-columns: 1fr 11fr;
+  grid-template-columns: auto 11fr;
   grid-template-rows: auto;
 }
 
