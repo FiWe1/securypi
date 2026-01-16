@@ -52,7 +52,12 @@ class User(MappedAsDataclass, db.Model):
     @classmethod
     def is_username_free(cls, username) -> bool:
         """ Chcecks if username is not taken. """
-        return cls.get_by_username(username) is None
+        try:
+            return cls.get_by_username(username) is None
+        except Exception as e:
+            print(e)
+            raise RuntimeError("Error while checking username. "
+                               "Is the database initialized?")
 
     @classmethod
     def get_meta_by_id(cls, user_id: int) -> Row | None:
