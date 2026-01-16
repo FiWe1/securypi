@@ -34,6 +34,8 @@ class TestWeatherStation():
                 station.measurement_logger._logging_thread.join()
                 station.measurement_logger._logging_thread = None
         station.measurement_logger._logging_stop_event.clear()
+        
+        station.measurement_logger.__init__(station)
 
         del station  # delete object reference
 
