@@ -70,16 +70,5 @@
       "description": "File system paths for motion captures and video recordings"
     }
   },
-  "mock_camera": {
-    "encoder_timeout_seconds": 5,
-    "motion_capturing": {
-      "capture_motion_in_background": false,
-      "motion_detection_framerate": 10,
-      "min_motion_capture_length_sec": 2,
-      "max_motion_capture_length_sec": 60,
-      "frame_change_ratio_threshold": 0.001,
-      "description": "Mock motion capturing configuration for testing"
-    }
-  },
   "description": "Global securypi_app configuration"
 }

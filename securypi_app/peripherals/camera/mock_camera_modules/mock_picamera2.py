@@ -5,9 +5,6 @@ from io import BytesIO
 from PIL import Image
 
 
-MOCK_ENCODER_TIMEOUT = 5
-
-
 class MockStreamingOutput:
     def __init__(self, output=None):
         self.output = output

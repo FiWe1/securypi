@@ -95,11 +95,6 @@ class StorageConfig(BaseModel):
     captures: CapturesConfig
     description: Optional[str] = None
 
-class MockCameraConfig(BaseModel):
-    encoder_timeout_seconds: int
-    motion_capturing: MotionCaptureConfig
-    description: Optional[str] = None
-
 
 # root schema
 #
@@ -108,7 +103,6 @@ class AppConfig(BaseModel):
     measurements: MeasurementsConfig
     authentication: AuthenticationConfig
     storage: StorageConfig
-    mock_camera: MockCameraConfig
     description: Optional[str] = None
 
     _lock: ClassVar[Lock] = Lock() # (ClassVar protects from pydantic)
