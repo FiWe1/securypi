@@ -6,6 +6,11 @@ from securypi_app.peripherals.camera.mycam import MyPicamera2
 from securypi_app.peripherals.measurements.weather_station import WeatherStation
 
 
+# @TODO from user settings db
+TEMP_UNIT = "C"
+MEASUREMENTS_REFRESH_SEC = 30
+
+
 ### Globals ###
 bp = Blueprint("overview", __name__)  # no url_prefix, main overview page
 
@@ -65,8 +70,8 @@ def index():
     Main overview page showing either live stream or snapshot based on mode,
     together with measurements.
     """
-    temp_unit = "C"  # @TODO from user settings db
-    measurements_refresh_sec = 30  # @TODO from user settings db
+    temp_unit = TEMP_UNIT
+    measurements_refresh_sec = MEASUREMENTS_REFRESH_SEC
 
     sensor = WeatherStation.get_instance()
     measurements = sensor.present_measure_or_na(temp_unit=temp_unit)
