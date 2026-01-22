@@ -129,8 +129,7 @@
       config);
   }
 
-  // loggin rate in milliseconds
-  setInterval(fetchData, {{ logging_rate_sec * 1000 }});
+  setInterval(fetchData, {{ logging_rate_sec * 1000 }}); // logging rate in milliseconds
   fetchData();
 </script>
 {% endblock %}

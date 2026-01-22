@@ -65,8 +65,8 @@ def index():
     Main overview page showing either live stream or snapshot based on mode,
     together with measurements.
     """
-    # temperature and humidity sensor @TODO from db)
-    temp_unit = "C"  # @TODO from user settings in db
+    temp_unit = "C"  # @TODO from user settings db
+    measurements_refresh_sec = 30  # @TODO from user settings db
 
     sensor = WeatherStation.get_instance()
     measurements = sensor.present_measure_or_na(temp_unit=temp_unit)
@@ -84,5 +84,6 @@ def index():
         "overview/index.html",
         mode=mode,
         camera_feed_src=camera_feed_src,
-        measurements=measurements
+        measurements=measurements,
+        measurements_refresh_sec=measurements_refresh_sec
     )

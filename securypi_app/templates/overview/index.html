@@ -79,6 +79,6 @@ function refreshSnapshot() {
   document.getElementById('overview__camera_feed--output').src = '{{ camera_feed_src }}?' + new Date().getTime()
   // appending time value to force reload
 }
-setInterval(refreshMeasurements, 30000);  // refresh every 30s
+setInterval(refreshMeasurements, {{ measurements_refresh_sec * 1000 }}); // current measurements refresh rate in milliseconds
 </script>
 {% endblock %}
