@@ -129,7 +129,8 @@
       config);
   }
 
-  setInterval(fetchData, 30000);  // refresh every 30s
+  // loggin rate in milliseconds
+  setInterval(fetchData, {{ logging_rate_sec * 1000 }});
   fetchData();
 </script>
 {% endblock %}

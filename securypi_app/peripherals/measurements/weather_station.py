@@ -122,8 +122,14 @@ class WeatherStation(WeatherStationInterface):
         measured = self.measure()
         temp = measured["temperature"]
         
+        relative_pressure = WeatherStation.relative_pressure(
+            pressure=measured["pressure"],
+            temperature=temp
+        ) if measured["pressure"] is not None and temp is not None else "N/A"
+        
         if temp is not None and temp_unit == "F":
             measured["temperature"] = self.c_to_fahrenheit(temp)
+        
         
         values: dict[str, float | str] = {}
         for key, val in measured.items():
@@ -131,6 +137,9 @@ class WeatherStation(WeatherStationInterface):
                 values[key] = "N/A"
             else:
                 values[key] = round(val, round_digits)
+        
+        values["relative_pressure"] = relative_pressure
+        values["temperature_unit"] = temp_unit
         
         return values
 

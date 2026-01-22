@@ -19,18 +19,20 @@ def data():
     # optimalisation: fetching local timezone only once here
     config = AppConfig.get()
     local_timezone = ZoneInfo(config.measurements.geolocation.timezone)
-    
+
     measurements = Measurement.fetch_previous_range(datetime.now(timezone.utc))
     data = {
         "time": [], "temp": [], "hum": [], "pres": []
     }
     for mes in measurements:
-        data["time"].append(mes.time_local_timezone(local_timezone).isoformat())
+        data["time"].append(mes.time_local_timezone(
+            local_timezone).isoformat())
         data["temp"].append(mes.temperature)
         data["hum"].append(mes.humidity)
         data["pres"].append(mes.pressure)
 
     return jsonify(data)
+
 
 @bp.route("/")
 @login_required
@@ -38,11 +40,17 @@ def index():
     """ Default (index) route for measurements blueprint. """
     # init WeatherStation to start logging
     weather_station = WeatherStation.get_instance()
-    
+
+    config = AppConfig.get()
+    logging_rate_sec = config.measurements.weather_station.logging_interval_sec
+
     # cli measurements test
     # last24 = map(Measurement.to_local_timezone,
     #              Measurement.fetch_previous_range(days_before=1))
     # for m in last24:
     #     print(m)
-    
-    return render_template("measurements.html")
+
+    return render_template(
+        "measurements.html",
+        logging_rate_sec=logging_rate_sec
+    )

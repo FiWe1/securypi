@@ -8,20 +8,25 @@
 
   <div class="overview__measurements">
     <div class="overview__temphum">
-      <span class="overview__measurements--value">{{ temperature }} &deg;{{ temperature_unit }}</span>
-      <span class="overview__measurements--value">{{ humidity }} %</span>
+      <span class="overview__measurements--value">
+          <span id="temp-val">{{ measurements["temperature"] }}</span> 
+          &deg;<span id="temp-unit">{{ measurements["temperature_unit"] }}</span>
+      </span>
+      <span class="overview__measurements--value">
+          <span id="hum-val">{{ measurements["humidity"] }}</span> %
+      </span>
     </div>
     
     <div class="overview__pressures">
-      {% if absolute_pressure != "N/A" %}
+      {% if measurements["pressure"] != "N/A" %}
       <span class="overview__measurements--value">
-        {{ absolute_pressure }} hPa
+        <span id="press-abs">{{ measurements["pressure"] }}</span> hPa
         <span class="overview__pressures--pressure_variant"> (abs)</span>
       </span>
       {% endif %}
-      {% if relative_pressure != "N/A" %}
+      {% if measurements["relative_pressure"] != "N/A" %}
       <span class="overview__measurements--value">
-        {{ relative_pressure }} hPa
+        <span id="press-rel">{{ measurements["relative_pressure"] }}</span> hPa
         <span class="overview__pressures--pressure_variant"> (rel)</span>
       </span>
       {% endif %}
@@ -33,7 +38,47 @@
     {% include 'overview/stream.html' %}
     {% else %}
     {% include 'overview/snapshot.html' %}
+    <button class="button_mild_round overview__camera_feed--refresh" title="Refresh snapshot and current measurements" onclick="refreshMeasurements(); refreshSnapshot()">
+      Refresh
+    </button>
     {% endif %}
   </div>
 </div>
+{% endblock %}
+
+{% block body %}
+<script>
+function refreshMeasurements() {
+    fetch('/current_measurements')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            document.getElementById('temp-val').textContent = data.temperature.toFixed(1);
+            document.getElementById('temp-unit').textContent = data.temperature_unit;
+            document.getElementById('hum-val').textContent = data.humidity.toFixed(1);
+            
+            // Handle potentially missing pressure data
+            if(typeof data.pressure === 'number') {
+                document.getElementById('press-abs').textContent = data.pressure.toFixed(1);
+            }
+            if(typeof data.relative_pressure === 'number') {
+                document.getElementById('press-rel').textContent = data.relative_pressure.toFixed(1);
+            }
+            
+            console.log("Measurements updated!", data);
+        })
+        .catch(error => {
+            console.error('Error while fetching current measurement data:', error);
+        });
+}
+function refreshSnapshot() {
+  document.getElementById('overview__camera_feed--output').src = '{{ camera_feed_src }}?' + new Date().getTime()
+  // appending time value to force reload
+}
+setInterval(refreshMeasurements, 30000);  // refresh every 30s
+</script>
 {% endblock %}

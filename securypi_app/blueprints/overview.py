@@ -1,4 +1,4 @@
-from flask import Response, Blueprint, render_template, request, url_for
+from flask import Response, Blueprint, render_template, request, url_for, jsonify
 
 from securypi_app.services.auth import login_required
 
@@ -39,6 +39,17 @@ def picture_feed():
         return Response(status=500)
 
 
+@bp.route("/current_measurements")
+@login_required
+def current_measurements():
+    # temperature and humidity sensor @TODO from db)
+    temp_unit = "C"  # @TODO from user settings in db
+
+    sensor = WeatherStation.get_instance()
+    measurements = sensor.present_measure_or_na(temp_unit=temp_unit)
+    return jsonify(measurements)
+
+
 @bp.route("/stop_camera", methods=["POST"])
 @login_required
 def stop_video_feed():
@@ -54,16 +65,14 @@ def index():
     Main overview page showing either live stream or snapshot based on mode,
     together with measurements.
     """
+    # temperature and humidity sensor @TODO from db)
+    temp_unit = "C"  # @TODO from user settings in db
+
+    sensor = WeatherStation.get_instance()
+    measurements = sensor.present_measure_or_na(temp_unit=temp_unit)
 
     # get the desired mode from the request (default to "picture")
     mode = request.args.get("mode", "picture")
-
-    # temperature and humidity sensor @TODO from db)
-    temp_unit = "C"  # @TODO from user settings in db
-    sensor = WeatherStation.get_instance()
-    readings = sensor.present_measure_or_na(temp_unit=temp_unit)
-    relative_pressure = WeatherStation.relative_pressure(pressure=readings["pressure"],
-                                                         temperature=readings["temperature"])
 
     # determine the template and URL for the <img> tag based on the mode
     if mode == "stream":
@@ -71,11 +80,9 @@ def index():
     else:  # Default is "picture"
         camera_feed_src = url_for("overview.picture_feed")
 
-    return render_template("overview/index.html",
-                           mode=mode,
-                           camera_feed_src=camera_feed_src,
-                           temperature=readings["temperature"],
-                           humidity=readings["humidity"],
-                           absolute_pressure=readings["pressure"],
-                           relative_pressure=relative_pressure,
-                           temperature_unit=temp_unit)
+    return render_template(
+        "overview/index.html",
+        mode=mode,
+        camera_feed_src=camera_feed_src,
+        measurements=measurements
+    )
