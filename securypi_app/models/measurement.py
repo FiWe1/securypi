@@ -37,7 +37,7 @@ class Measurement(MappedAsDataclass, db.Model):
             f"pressure={self.pressure})"
         )
     
-    def time_local_timezone(self, local_timezone: ZoneInfo | None = None) -> DateTime:
+    def time_local_timezone(self, local_timezone: ZoneInfo | None = None) -> datetime:
         """
         Returns measurement's time: DateTime in local time zone.
         (implicitly fetches from config)
