@@ -22,9 +22,49 @@
 
 {% block body %}
 <script>
+  function calculateStats(dataArray) {
+      // filter finite numbers (exclude NaN)
+      const validData = dataArray.filter(v => typeof v === 'number' && Number.isFinite(v));
+      
+      if (validData.length === 0) return { min: '-', max: '-', avg: '-' };
+
+      const min = Math.min(...validData);
+      const max = Math.max(...validData);
+
+      const sum = validData.reduce((acc, val) => acc + val, 0);
+      const avg = sum / validData.length;
+
+      return {
+          min: min.toFixed(1),
+          max: max.toFixed(1),
+          avg: avg.toFixed(1)
+      };
+  }
+
+
+  function getStatsAnnotation(stats, unit) {
+      return {
+          xref: 'paper',
+          yref: 'paper',
+          x: 1, // right
+          y: 1, // top
+          xanchor: 'right',
+          yanchor: 'top',
+
+          text: `ᐁ${stats.min} ▲${stats.max},  avg: ${stats.avg}`,
+          showarrow: false,
+          font: { color: 'white' },
+          borderpad: 0
+      };
+  }
+
   async function fetchData() {
-      const response = await fetch('/measurements/data'); // ?window=' + windowMode);
+      const response = await fetch('/measurements/data'); 
       const data = await response.json();
+
+      const tempStats = calculateStats(data.temp);
+      const humStats = calculateStats(data.hum);
+      const presStats = calculateStats(data.pres);
 
       let temp_trace = {
           x: data.time,
@@ -36,6 +76,7 @@
           name: 'Temperature',
           hovertemplate: '%{y} °C at %{x}<extra></extra>'
       };
+      
       let hum_trace = {
           x: data.time,
           y: data.hum,
@@ -46,6 +87,7 @@
           name: 'Humidity',
           hovertemplate: '%{y} % at %{x}<extra></extra>'
       };
+      
       let pres_trace = {
           x: data.time,
           y: data.pres,
@@ -54,7 +96,7 @@
           marker: { size: 4 },
           line: { color: 'green' },
           name: 'Pressure',
-          hovertemplate: '%{y} % at %{x}<extra></extra>'
+          hovertemplate: '%{y} hPa at %{x}<extra></extra>'
       };
 
       const darkLayout = {
@@ -62,7 +104,6 @@
         paper_bgcolor: 'rgba(0,0,0,0)', // controled by style
         plot_bgcolor: 'rgba(0,0,0,0)',
         margin: { t: 40, r: 20, l: 50, b: 50 },
-
         xaxis: {
           {# title: { text: 'Time' }, #}
           type: 'date',
@@ -70,16 +111,12 @@
           color: 'white',
           gridcolor: '#333'
         },
-
         yaxis: {
           color: 'white',
           gridcolor: '#333'
         },
-
         title: {
-          font: {
-            color: 'white'
-          },
+          font: { color: 'white' },
         }
       };
 
@@ -95,6 +132,7 @@
           text: 'Temperature (°C)',
           ...darkLayout.title
         },
+        annotations: [getStatsAnnotation(tempStats, '°C')],
         {# yaxis: {
           ...darkLayout.yaxis,
           title: { text: '°C' }
@@ -108,19 +146,21 @@
           text: 'Humidity (%)',
           ...darkLayout.title
         },
+        annotations: [getStatsAnnotation(humStats, '%')],
         {# yaxis: {
-          ...darkLayout.yaxis,
-          title: { text: '%' }
-        } #}
+            ...darkLayout.yaxis,
+            title: { text: '%' }
+          } #}
       },
       config);
 
       Plotly.newPlot('pres_graph', [pres_trace], {
         ...darkLayout,
-        title: {
+        title: { 
           text: 'Absolute atm. pressure (hPa)',
           ...darkLayout.title
         },
+        annotations: [getStatsAnnotation(presStats, 'hPa')],
         {# yaxis: {
           ...darkLayout.yaxis,
           title: { text: 'hPa' }

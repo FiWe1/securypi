@@ -34,7 +34,7 @@
       "description": "Which sensors to read from"
     },
     "weather_station": {
-      "logging_interval_sec": 60,
+      "logging_interval_sec": 120,
       "log_in_background": true,
       "description": "Weather station logging configuration"
     },
