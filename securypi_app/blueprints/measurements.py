@@ -27,9 +27,12 @@ def data():
     for mes in measurements:
         data["time"].append(mes.time_local_timezone(
             local_timezone).isoformat())
-        data["temp"].append(mes.temperature)
-        data["hum"].append(mes.humidity)
-        data["pres"].append(mes.pressure)
+        if mes.temperature is not None:
+            data["temp"].append(round(mes.temperature, 2))
+        if mes.humidity is not None:
+            data["hum"].append(round(mes.humidity, 2))
+        if mes.pressure is not None:
+            data["pres"].append(round(mes.pressure, 2))
 
     return jsonify(data)
 

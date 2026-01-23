@@ -1,4 +1,6 @@
-from flask import Response, Blueprint, render_template, request, url_for, jsonify
+from flask import (
+    Response, Blueprint, render_template, request, url_for, jsonify
+)
 
 from securypi_app.services.auth import login_required
 
