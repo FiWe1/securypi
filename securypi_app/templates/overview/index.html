@@ -61,7 +61,7 @@ function refreshMeasurements() {
             document.getElementById('temp-unit').textContent = data.temperature_unit;
             document.getElementById('hum-val').textContent = data.humidity.toFixed(1);
             
-            // Handle potentially missing pressure data
+            // pressure data is displayed optionally
             if(typeof data.pressure === 'number') {
                 document.getElementById('press-abs').textContent = data.pressure.toFixed(1);
             }

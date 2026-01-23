@@ -28,11 +28,11 @@ def data():
         data["time"].append(mes.time_local_timezone(
             local_timezone).isoformat())
         if mes.temperature is not None:
-            data["temp"].append(round(mes.temperature, 2))
+            data["temp"].append(mes.temperature)
         if mes.humidity is not None:
-            data["hum"].append(round(mes.humidity, 2))
+            data["hum"].append(mes.humidity)
         if mes.pressure is not None:
-            data["pres"].append(round(mes.pressure, 2))
+            data["pres"].append(mes.pressure)
 
     return jsonify(data)
 
