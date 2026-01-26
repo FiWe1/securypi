@@ -22,7 +22,7 @@ def read_password_loop() -> str:
     """
     while True:
         password_input = input(
-            "enter admin password (default if empty ''): "
+            "enter admin password (leave empty to generate random password): "
         )
         if (password_input == ""):
             return generate_random_password_formatted() # less secure, easier
