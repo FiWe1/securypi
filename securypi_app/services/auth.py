@@ -47,7 +47,11 @@ def logged_out_required(view):
 
 
 def is_logged_in_admin():
-    return is_logged_in() and g.user["is_admin"] == True
+    return (
+        is_logged_in()
+        and g.user is not None
+        and g.user["is_admin"] == True
+    )
 
 
 def admin_rights_required(view):

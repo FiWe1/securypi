@@ -10,6 +10,7 @@ bp = Blueprint("configure", __name__, url_prefix="/configure")
 
 @bp.route("/start_weather_logging")
 @login_required
+@admin_rights_required
 def start_weather_logging():
     sensor = WeatherStation.get_instance()
 
@@ -25,6 +26,7 @@ def start_weather_logging():
 
 @bp.route("/stop_weather_logging")
 @login_required
+@admin_rights_required
 def stop_weather_logging():
     sensor = WeatherStation.get_instance()
 
