@@ -5,16 +5,16 @@
 {% endblock %}
 
 {% block site_content %}
-<div class="history">
-  <h1 class="history__title">{% block title %}Measurements from sensors{% endblock %}</h1>
+<div class="measurements">
+  <h1 class="measurements__title">{% block title %}Measurements from sensors{% endblock %}</h1>
 
-  <div class="history__graph history__graph--temp">
+  <div class="measurements__graph measurements__graph--temp">
     <div id="plt_graph_temp"></div>
   </div>
-  <div class="history__graph history__graph--hum">
+  <div class="measurements__graph measurements__graph--hum">
     <div id="plt_graph_hum"></div>
   </div>
-  <div class="history__graph history__graph--pres">
+  <div class="measurements__graph measurements__graph--pres">
     <div id="plt_graph_pres"></div>
   </div>
 </div>
