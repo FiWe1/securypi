@@ -8,14 +8,14 @@
 <div class="history">
   <h1 class="history__title">{% block title %}Measurements from sensors{% endblock %}</h1>
 
-  <div class="history__graph--temp">
-    <div id="temp_graph"></div>
+  <div class="history__graph history__graph--temp">
+    <div id="plt_graph_temp"></div>
   </div>
-  <div class="history__graph--hum">
-    <div id="hum_graph"></div>
+  <div class="history__graph history__graph--hum">
+    <div id="plt_graph_hum"></div>
   </div>
-  <div class="history__graph--pres">
-    <div id="pres_graph"></div>
+  <div class="history__graph history__graph--pres">
+    <div id="plt_graph_pres"></div>
   </div>
 </div>
 {% endblock %}
@@ -105,7 +105,7 @@
         dragmode: false,
         paper_bgcolor: 'rgba(0,0,0,0)', // controled by style
         plot_bgcolor: 'rgba(0,0,0,0)',
-        margin: { t: 40, r: 20, l: 50, b: 50 },
+        margin: { t: 60, r: 20, l: 50, b: 25 },
         xaxis: {
           {# title: { text: 'Time' }, #}
           type: 'date',
@@ -128,7 +128,7 @@
         responsive: true
       };
 
-      Plotly.newPlot('temp_graph', [temp_trace], {
+      Plotly.newPlot('plt_graph_temp', [temp_trace], {
         ...darkLayout,
         title: {
           text: 'Temperature (°C)',
@@ -142,7 +142,7 @@
       },
       config);
 
-      Plotly.newPlot('hum_graph', [hum_trace], {
+      Plotly.newPlot('plt_graph_hum', [hum_trace], {
         ...darkLayout,
         title: {
           text: 'Humidity (%)',
@@ -156,7 +156,7 @@
       },
       config);
 
-      Plotly.newPlot('pres_graph', [pres_trace], {
+      Plotly.newPlot('plt_graph_pres', [pres_trace], {
         ...darkLayout,
         title: { 
           text: 'Absolute atm. pressure (hPa)',
