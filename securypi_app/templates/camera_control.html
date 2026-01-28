@@ -6,28 +6,24 @@
   <div class="camera_control__background_tasks">
     <div class="camera_control__recording">
       <h2>Recording to a file</h2>
-      <span>
-        {% if is_recording %}
-        <span>Recording is running as we speak...  ...</span>
-        <a class="text_color_danger" href={{ url_for('camera_control.stop_recording') }}>Stop it now</a>
-        {% else %}
-        <span>Currently not running a recording.</span>
-        <a class="text_color_go" href={{ url_for('camera_control.start_recording') }}>I want to record!</a>
-        {% endif %}
-      </span>
+      {% if is_recording %}
+      <span>Recording is running as we speak...  ...</span>
+      <a class="camera_control__action text_color_danger" href={{ url_for('camera_control.stop_recording') }}>Stop it now</a>
+      {% else %}
+      <span>Currently not running a recording.</span>
+      <a class="camera_control__action text_color_go" href={{ url_for('camera_control.start_recording') }}>I want to record!</a>
+      {% endif %}
     </div>
     
     <div class="camera_control__motion_capturing">
       <h2>Motion Capturing</h2>
-      <span>
-        {% if is_motion_capturing %}
-        <span>Detecting and capturing motion as we speak...  ...</span>
-        <a class="text_color_danger" href={{ url_for('camera_control.stop_motion_capturing') }}>Stop it now</a>
-        {% else %}
-        <span>Currently not capturing motion.</span>
-        <a class="text_color_go" href={{ url_for('camera_control.start_motion_capturing') }}>I want to detect and capture motion</a>
-        {% endif %}
-      </span>
+      {% if is_motion_capturing %}
+      <span>Detecting and capturing motion as we speak...  ...</span>
+      <a class="camera_control__action text_color_danger" href={{ url_for('camera_control.stop_motion_capturing') }}>Stop it now</a>
+      {% else %}
+      <span>Currently not capturing motion.</span>
+      <a class="camera_control__action text_color_go" href={{ url_for('camera_control.start_motion_capturing') }}>I want to detect and capture motion!</a>
+      {% endif %}
     </div>
   </div>
 </div>

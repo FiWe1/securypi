@@ -414,7 +414,19 @@ body {
 }
 
 .camera_control__recording {
+  display: flex;
+  flex-direction: column;
+
   margin-bottom: 2em;
+}
+
+.camera_control__motion_capturing {
+  display: flex;
+  flex-direction: column;
+}
+
+.camera_control__action {
+  margin-top: 0.3em;
 }
 
 
