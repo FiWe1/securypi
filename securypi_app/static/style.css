@@ -671,9 +671,14 @@ body {
   /*
    * MEASUREMENTS
   */
+  .measurements {
+    margin: 1em 0.5em;
+  }
 
   .measurements__title {
     font-size: 6.5vw;
+
+    margin-left: 0.5em;
   }
 
   /*
