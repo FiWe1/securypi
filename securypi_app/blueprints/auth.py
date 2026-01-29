@@ -5,7 +5,7 @@ from flask import (
 )
 
 from securypi_app.models.user import User
-from securypi_app.services.auth import validate_login, logged_out_required
+from securypi_app.services.auth import validate_login, login_required, logged_out_required
 from securypi_app.services.string_parsing import (
     validate_str_username, validate_str_password
 )
@@ -33,6 +33,7 @@ def load_logged_in_user():
     g.user = None # fail
 
 @bp.route("/logout")
+@login_required
 def logout():
     session.clear()
     print(f"User '{g.user['username']}' has logged out.")
