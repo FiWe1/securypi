@@ -51,7 +51,7 @@ b.) or manually create venv and install requirements:
 
 - now you can access the app at http://localhost:5555
 
-- change '*-h localhost*' to '**-h 0.0.0.0**' to server on all networks - unsafe!
+- change '*-h localhost*' to '**-h 0.0.0.0**' to make it visible on all networks - unsafe!
 - you should use VPN tunel for remote access
 
 
