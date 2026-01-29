@@ -1,5 +1,15 @@
 # Securypi - Simple Home Security System built around Raspberry Pi
 
+# What you need:
+- **Raspberry Pi** 4 / 5, 2+GB RAM
+- **SSD** storage recommended
+- **Debian Bookworm** (or newer versions, but there may be limited compatibility with some sensors - QMP6988)
+- **Raspberry Pi Camera v3** / v3 wide
+- optionally **temperature, humidity, pressure sensors** (recommended humidity sensors: adafruit sht30, sht40; pressure sensor: QMP6988)
+
+It is possible to run the app on any system, but only for testing purpouses (sensors will be mocked).
+
+
 # Setup:
 ## 1. Create virtual environment and install pip dependencies
 
@@ -51,4 +61,3 @@ b.) or manually create venv and install requirements:
 - Run the register-user command:
 
     .venv/bin/python -m flask --app securypi_app register-user [username] [password] ['admin' | 'standard']
-
