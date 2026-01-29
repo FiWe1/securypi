@@ -1,6 +1,6 @@
 # Securypi - Simple Home Security System built around Raspberry Pi
 
-# What you need:
+## What you need:
 - **Raspberry Pi** 4 / 5, 2+GB RAM
 - **SSD** storage recommended
 - **Debian Bookworm** (or newer versions, but there may be limited compatibility with some sensors - QMP6988)
@@ -10,8 +10,8 @@
 It is possible to run the app on any system, but only for testing purpouses (sensors will be mocked).
 
 
-# Setup:
-## 1. Create virtual environment and install pip dependencies
+## Setup:
+### 1. Create virtual environment and install pip dependencies
 
 a.) Use bash install script:
 
@@ -30,7 +30,7 @@ b.) or manually create venv and install requirements:
     python -m pip install -r rpi_requirements.txt
 
 
-## 2. Initialize db
+### 2. Initialize db
 
 1.) Activate virtual environment:
 
@@ -45,7 +45,7 @@ b.) or manually create venv and install requirements:
 - There will now be a '**securypi_app.sqlite**' file in the ./instance folder
 
 
-## 3. Run the app:
+### 3. Run the app:
 
     .venv/bin/python -m flask --app securypi_app run -h localhost -p 5555 --debugger
 
@@ -57,7 +57,7 @@ b.) or manually create venv and install requirements:
 
 
 
-## To manually add another user:
+### To manually add another user:
 - Run the register-user command:
 
     .venv/bin/python -m flask --app securypi_app register-user [username] [password] ['admin' | 'standard']
