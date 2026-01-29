@@ -35,6 +35,8 @@ def load_logged_in_user():
 @bp.route("/logout")
 def logout():
     session.clear()
+    print(f"User '{g.user['username']}' has logged out.")
+    
     return redirect(url_for("index"))
 
 
@@ -60,9 +62,12 @@ def login():
             session.clear()
             session["user_id"] = user.id
             session["username"] = user.username
+            
+            print(f"User '{username}' has successfully logged in.")
             return redirect(url_for("index"))
         
         if error is not None:
+            print(f"User '{username}' login attempt failed:\n{error}.")
             flash(error)
         sleep(1.5) # restrict brute force
     return render_template("auth/login.html")
