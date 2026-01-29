@@ -19,7 +19,7 @@ else
     echo "Not on Raspberry Pi."
 
     # keeping package isolation on other systems
-    echo "Creating isolated .venv/ directory..."
+    echo "Not installing sensor libraries - creating isolated .venv/ directory..."
     $PYTHON -m venv .venv
 fi
 

@@ -5,11 +5,4 @@
 }
 
 CONTINUE WITH:
-1. sources
-
-
-
-
-@TODO { someday:
-    - SSL
-}
+1. @TODO Check linences and T&Cs of libraries (requirements.txt)
