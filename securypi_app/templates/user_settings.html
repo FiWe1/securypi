@@ -7,11 +7,9 @@
 	<header class="user_settings__title">
 		<h1>{{ g.user["username"] }}, let's check your user settings!</h1>
 	</header>
-	<section class="user_settings__user_type">
-		<span>
-      You {% if g.user["is_admin"] == False %}are standard user.{% else %}have administrator rights.{% endif %}
-		</span>
-	</section>
+  <span class="user_settings__user_type">
+    You {% if g.user["is_admin"] == False %}are standard user.{% else %}have administrator rights.{% endif %}
+  </span>
 
 	<div class="user_settings__change_password">
     <h2>It's always a good idea to change your password!</h2>
