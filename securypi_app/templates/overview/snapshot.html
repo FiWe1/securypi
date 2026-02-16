@@ -1,6 +1,8 @@
 {# included by index, does not extend #}
 {% block camera_overview %}
-    <span class="overview__camera_feed--title">Snapshot</span>
+    <span class="overview__camera_feed--title">
+      Snapshot: <span id="overview__camera_feed--timestamp"></span>
+    </span>
     <img id="overview__camera_feed--output" src="{{ camera_feed_src }}" alt="Live video feed from the camera">
 
     <a class="overview__camera_feed--switch" href="{{ url_for('overview.index', mode='stream') }}">

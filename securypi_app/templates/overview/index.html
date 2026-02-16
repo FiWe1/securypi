@@ -76,9 +76,47 @@ function refreshMeasurements() {
         });
 }
 function refreshSnapshot() {
-  document.getElementById('overview__camera_feed--output').src = '{{ camera_feed_src }}?' + new Date().getTime()
+  const now = new Date();
+  const imageElement = document.getElementById('overview__camera_feed--output');
+
   // appending time value to force reload
+  imageElement.src = '{{ camera_feed_src }}?' + now.getTime();
+
+  updateTimestamp(imageElement, now);
+}
+
+let loadingInterval; // tracking in global scope
+function updateTimestamp(img, now) {
+  const timestampElement = document.getElementById('overview__camera_feed--timestamp');
+  const timeString = now.toLocaleTimeString([], {
+    hour: '2-digit', minute: '2-digit', hour12: false
+  });
+
+  img.style.opacity = "0.6"; // dim old image
+
+  // Prevent overlapping intervals if clicked rapidly
+  clearInterval(loadingInterval);
+  // Start Animation
+  let count = 0;
+  loadingInterval = setInterval(() => {
+      count = (count + 1) % 4; // Cycles 0, 1, 2, 3
+      timestampElement.textContent = `${".".repeat(count)}`;
+  }, 333); // in milliseconds
+
+  // Success Callback: Image finished loading
+  img.onload = () => {
+    img.style.opacity = "1";
+    clearInterval(loadingInterval);
+    timestampElement.textContent = `${timeString}`;
+  };
+
+  // Error Handling: Network or Server failure
+  img.onerror = () => {
+      clearInterval(loadingInterval);
+      timestampElement.textContent = `Chyba spojenia`;
+  };
 }
 setInterval(refreshMeasurements, {{ measurements_refresh_sec * 1000 }}); // current measurements refresh rate in milliseconds
+updateTimestamp(document.getElementById('overview__camera_feed--output'), new Date());
 </script>
 {% endblock %}
