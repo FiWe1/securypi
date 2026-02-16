@@ -5,6 +5,7 @@
   --nav-link-color-active: rgb(242, 255, 0);
   --background-primary: #0a1421;
   --background-secondary: #142556;
+  --background-ternary: rgb(42, 15, 121);
   --flash-warning-color: rgb(223, 145, 0);
   --recording-link-color: rgba(211, 211, 211, 0.771);
 
@@ -587,7 +588,7 @@ body {
 }
 
 .user_settings__change_password .auth__form {
-  background-color: rgb(54, 2, 103);
+  background-color: var(--background-ternary);
 }
 
 
