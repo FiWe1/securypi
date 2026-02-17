@@ -40,6 +40,19 @@ body {
 
 /* universal */
 
+.distinguished_link {
+  padding-top: 0.3em;
+  text-decoration: none;
+  align-self: start;
+  color: var(--recording-link-color);
+  
+  padding: 0.6rem;
+}
+
+.distinguished_link:hover {
+  text-decoration: underline;
+}
+
 .text_color_danger {
   color: red;
 }
@@ -65,22 +78,6 @@ body {
 .button_mild_round:hover {
   opacity: 0.85;
 }
-
-
-
-
-.configure_action_link {
-  padding-top: 0.3em;
-  text-decoration: none;
-  align-self: start;
-  
-  padding: 0.6rem;
-}
-
-.configure_action_link:hover {
-  text-decoration: underline;
-}
-
 
 
 /*
@@ -629,6 +626,30 @@ body {
 
 .user_settings__change_password .auth__form {
   background-color: var(--background-ternary);
+}
+
+
+/*
+***                       ***
+      ***  Error   ***
+***                       ***
+*/
+
+.error {
+  grid-column: 1 / -1;
+  grid-row: 2; /* site content: below flash messages */
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  box-sizing: border-box;
+  padding-bottom: 40em;
+}
+
+.error__body {
+  font-size: 1.1em;
 }
 
 

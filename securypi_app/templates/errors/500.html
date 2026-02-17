@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block site_content %}
+<div class="error">
+  <h1>{% block title %}Internal server error - 500{% endblock %}</h1>
+    <div class="error__body">
+      <p>
+        We are sorry for the inconvenience.
+        Please, contact system administrator or try again later.
+      </p>
+    </div>
+</div>
+{% endblock %}

@@ -7,10 +7,10 @@
     <h2>Background sensor measurement</h2>
       {% if is_weather_logging %}
       <span>Running background measurements</span>
-      <a class="configure_action_link text_color_danger" href={{ url_for('configure.stop_weather_logging') }}>Stop background measurements</a>
+      <a class="distinguished_link text_color_danger" href={{ url_for('configure.stop_weather_logging') }}>Stop background measurements</a>
       {% else %}
       <span>Currently not running background measurements</span>
-      <a class="configure_action_link text_color_go" href={{ url_for('configure.start_weather_logging') }}>Start background measurements</a>
+      <a class="distinguished_link text_color_go" href={{ url_for('configure.start_weather_logging') }}>Start background measurements</a>
       {% endif %}
   </div>
 </div>
