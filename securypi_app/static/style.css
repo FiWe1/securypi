@@ -149,9 +149,9 @@ body {
 .navbar a {
   color: var(--nav-link-color);
   text-decoration: none;
-  margin: 1em;
+  padding: 1em;
 
-  margin-left: 1.3em;
+  padding-left: 1.3em;
 }
 
 .navbar a:hover {
@@ -636,7 +636,7 @@ body {
   }
 
   .navbar__main a {
-    margin-bottom: 0.8rem;
+    padding-bottom: 0.9rem;
   }
 
   /*
