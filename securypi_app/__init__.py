@@ -1,5 +1,4 @@
 import os
-import logging  # @TODO logging
 
 from flask import Flask
 
@@ -38,19 +37,6 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    ###
-    # LOGGING
-    #
-    # @TODO Logging)
-    # # app log file in the instance folder
-    # log_path = os.path.join(app.instance_path, "app.log")
-    # logging.basicConfig(
-    #     filename=log_path,
-    #     level=logging.INFO,
-    #     format="%(asctime)s %(levelname)s: %(message)s
-    # ...[in %(pathname)s:%(lineno)d]"
-    # )
-
     # DATABASE
     # initialize the app with the extension
     db.init_app(app)
@@ -78,8 +64,8 @@ def create_app(test_config=None):
     for bp in blueprints:
         app.register_blueprint(bp)
 
-    # make url_for("index") == url_for("overview.index")
-    # -- overview.index is the main index
+    # url_for("index") = url_for("overview.index")
+    # --> overview.index is the root index
     app.add_url_rule("/", endpoint="index")
 
     from .models.init_db import register_cli_commands

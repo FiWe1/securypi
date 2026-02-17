@@ -1,13 +1,14 @@
 from flask import (
-    Blueprint, request, Response, render_template, send_from_directory, current_app, flash,
-    redirect, url_for
+    Blueprint, request, Response, render_template, send_from_directory,
+    current_app, flash, redirect, url_for
 )
 
 from securypi_app.services.auth import login_required
 from securypi_app.services.captures import (
-    list_motion_captures, motion_captures_absolute_path, is_motion_capture_valid,
-    list_recordings, recordings_absolute_path, is_recording_valid,
-    delete_motion_captures, delete_recordings, create_zip_stream
+    list_motion_captures, motion_captures_absolute_path,
+    is_motion_capture_valid, list_recordings, recordings_absolute_path,
+    is_recording_valid, delete_motion_captures, delete_recordings,
+    create_zip_stream
 )
 from securypi_app.services.auth import is_logged_in_admin
 
@@ -53,7 +54,9 @@ def handle_batch_form_action(form):
         delete_recordings(selected_recordings)
 
     elif action == "download_selected":
-        zip_stream = create_zip_stream(selected_motion_captures, selected_recordings)
+        zip_stream = create_zip_stream(
+            selected_motion_captures, selected_recordings
+        )
         return Response(
             zip_stream,
             mimetype="application/zip",
