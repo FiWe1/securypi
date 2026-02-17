@@ -8,26 +8,30 @@
     <div class="recordings__list">
       <div class="recordings__list--motion_captures">
         <h2>Motion Captures</h2>
-          <span class="recordings__form--check_all">
+          <label class="recordings__form--checkbox_area recordings__form--check_all">
             <input type="checkbox" id="check_all_motion_captures" name="check_all_motion_captures" value="no">
             check all Motion Captures
-          </span>
+          </label>
           {% for entry in motion_captures %}
           <span class="recordings__list--item">
-            <input type="checkbox" class="motion_capture" name="{{ entry }}" value="no">
+            <label class="recordings__form--checkbox_area">
+              <input type="checkbox" class="recordings__form--checkbox motion_capture_checkbox" name="{{ entry }}" value="no">
+            </label>
             <a href="{{ url_for('recordings.download_motion_capture', filename=entry) }}">{{ entry }}</a>
           </span>
           {% endfor %}
       </div>
       <div class="recordings__list--recordings">
         <h2>Recordings</h2>
-          <span class="recordings__form--check_all">
+          <label class="recordings__form--checkbox_area recordings__form--check_all">
             <input type="checkbox" id="check_all_recordings" name="check_all_recordings" value="no">
             check all Recordings
-          </span>
+          </label>
           {% for entry in recordings %}
           <span class="recordings__list--item">
-            <input type="checkbox" class="recording" name="{{ entry }}" value="no">
+          <label class="recordings__form--checkbox_area">
+            <input type="checkbox" class="recordings__form--checkbox recording_checkbox" name="{{ entry }}" value="no">
+          </label>
             <a href="{{ url_for('recordings.download_recording', filename=entry) }}">{{ entry }}</a>
           </span>
           {% endfor %}
@@ -79,8 +83,8 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  attachCheckAll("#check_all_motion_captures", ".motion_capture");
-  attachCheckAll("#check_all_recordings", ".recording");
+  attachCheckAll("#check_all_motion_captures", ".motion_capture_checkbox");
+  attachCheckAll("#check_all_recordings", ".recording_checkbox");
 
 
   function attachShiftSelect(selector) {
@@ -107,8 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
   
-  attachShiftSelect(".motion_capture");
-  attachShiftSelect(".recording");
+  attachShiftSelect(".recordings__form--checkbox");
 });
 </script>
 {% endblock %}

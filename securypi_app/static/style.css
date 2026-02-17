@@ -68,6 +68,21 @@ body {
 
 
 
+
+.configure_action_link {
+  padding-top: 0.3em;
+  text-decoration: none;
+  align-self: start;
+  
+  padding: 0.6rem;
+}
+
+.configure_action_link:hover {
+  text-decoration: underline;
+}
+
+
+
 /*
 ***                           ***
         ***  LAYOUT   ***
@@ -312,6 +327,11 @@ body {
   color: var(--overview__camera_feed-switch-color);
   text-decoration: none;
   align-self: center;
+  justify-self: start;
+
+  padding: 0.4rem;
+  padding-bottom: 0.6rem;
+  padding-left: 0.2rem;
 }
 
 .overview__camera_feed--switch:hover {
@@ -326,6 +346,8 @@ body {
   min-width: 5.5rem;
   height: 2rem;
   justify-self: end;
+
+  margin-right: 0.1rem;
 }
 
 
@@ -426,11 +448,6 @@ body {
   flex-direction: column;
 }
 
-.camera_control__action {
-  margin-top: 0.3em;
-}
-
-
 
 /*
 ***                           ***
@@ -465,11 +482,30 @@ body {
 
 .recordings__form--check_all {
   display: inline-block; /* required for span positioning */
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.8rem;
+  align-self: start;
+}
+
+.recordings__list--item {
+  margin: 0.15rem 0rem;
 }
 
 .recordings__list--item a {
   color: var(--recording-link-color);
+  text-decoration: none;
+  padding: 0.15rem;
+}
+
+.recordings__list--item a:hover {
+  text-decoration: underline;
+}
+
+.recordings__form--checkbox_area {
+  padding: 0.15rem;
+}
+
+.recordings__form--checkbox_area:hover {
+  opacity: 0.7;
 }
 
 .recordings__list--motion_captures {
@@ -505,7 +541,7 @@ body {
   min-width: 10em;
   color: white;
 
-  margin-left: 1em;
+  margin: 0em 0.5em;
 }
 
 
@@ -539,6 +575,8 @@ body {
   grid-row: 2;
 
   margin-left: 1em;
+  display: flex;
+  flex-direction: column;
 }
 
 
