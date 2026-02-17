@@ -14,6 +14,7 @@
   --content-span-grid-columns: 2 / -1; /* first column is navbar */
   --content-span-grid-rows: 1 / -1;
 
+  --text-size: 1.1rem;
   --nav-link-size: 1.1rem;
 }
 
@@ -103,6 +104,9 @@ body {
   display: grid;
   grid-template-columns: auto;
   grid-template-rows: auto 1fr;
+
+  font-size: var(--text-size);
+
 
   overflow-y: auto; /* overflow this section, keep navigation fixed */
 }
