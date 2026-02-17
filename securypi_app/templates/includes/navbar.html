@@ -1,15 +1,15 @@
 {# only to be included, does not extend #}
 <nav class="navbar">
   <div class="navbar__main">
-  {% for label, link in main_nav_links %}
-    <a href="{{ link }}" class="{% if active_page == link %}link--active{% endif %}">
+  {% for label, endpoint in main_nav_links %}
+    <a href="{{ url_for(endpoint) }}" class="{% if current_endpoint == endpoint %}link--active{% endif %}">
       {{ label }}
     </a>
   {% endfor %}
   </div>
   <div class="navbar__bottom">
-  {% for label, link in bottom_nav_links %}
-    <a href="{{ link }}" class="{% if active_page == link %}link--active{% endif %}">
+  {% for label, endpoint in bottom_nav_links %}
+    <a href="{{ url_for(endpoint) }}" class="{% if current_endpoint == endpoint %}link--active{% endif %}">
       {{ label }}
     </a>
   {% endfor %}

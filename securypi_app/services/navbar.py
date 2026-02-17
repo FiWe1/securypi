@@ -9,19 +9,19 @@ def inject_nav_links():
     available in all templates.
     """
     main_nav_links = [
-        ("Overview", url_for("overview.index")),
-        ("Measurements", url_for("measurements.index")),
-        ("Camera", url_for("camera_control.index")),
-        ("Recordings", url_for("recordings.index"))
+        ("Overview", "overview.index"),
+        ("Measurements", "measurements.index"),
+        ("Camera", "camera_control.index"),
+        ("Recordings", "recordings.index")
     ]
 
     bottom_nav_links = [
-        ("User settings", url_for("user_settings.index")),
-        ("Logout", url_for("auth.logout"))
+        ("User settings", "user_settings.index"),
+        ("Logout", "auth.logout")
     ]
     if is_logged_in_admin():
         bottom_nav_links.insert(
-            0, ("Configure", url_for("configure.index"))
+            0, ("Configure", "configure.index")
         )
 
     return {
@@ -32,7 +32,6 @@ def inject_nav_links():
 
 def inject_active_page():
     """ Return dictionary with the active page URL for context processor. """
-    endpoint = request.endpoint or ""
     return {
-        "active_page": url_for(endpoint)
+        "current_endpoint": request.endpoint
     }
