@@ -14,20 +14,22 @@ def start_recording():
     camera = MyPicamera2.get_instance()
 
     if camera.motion_capturing.is_motion_capturing():
-        print("Can't start a recording wile "
-              "background motion capturing is running.")
-        flash("Can't start a recording wile "
-              "background motion capturing is running.")
+        message = (
+            "Can't start a recording wile "
+            "background motion capturing is running."
+        )
     else:
         try:
             camera.start_default_recording(
                 stream="main",
                 encode_quality=Quality.LOW
             )
+            message = "Started recording."
         except Exception as e:
             print(f"Error starting recording: {e}")
-            flash(f"Error starting recording: {e}")
+            message = f"An error occured during starting recording."
 
+    flash(message)
     return redirect(url_for("camera_control.index"))
 
 
@@ -38,10 +40,12 @@ def stop_recording():
 
     try:
         camera.stop_recording_to_file()
+        message = "Stopped recording."
     except Exception as e:
         print(f"Error stopping recording: {e}")
-        flash("Error stopping recording.")
+        message = "An error occured during stopping recording."
 
+    flash(message)
     return redirect(url_for("camera_control.index"))
 
 @bp.route("/start_motion_capturing")
@@ -51,10 +55,12 @@ def start_motion_capturing():
 
     try:
         camera.motion_capturing.set_motion_capturing(True)
+        message = "Started motion capturing."
     except Exception as e:
         print(f"Error starting motion capturing: {e}")
-        flash(f"Error starting motion capturing: {e}")
+        message = f"An error occured during starting motion capturing."
 
+    flash(message)
     return redirect(url_for("camera_control.index"))
 
 
@@ -65,10 +71,12 @@ def stop_motion_capturing():
 
     try:
         camera.motion_capturing.set_motion_capturing(False)
+        message = "Stopped motion capturing."
     except Exception as e:
         print(f"Error stopping motion capturing: {e}")
-        flash("Error stopping motion capturing.")
+        message = "An error occured during stopping motion capturing."
 
+    flash(message)
     return redirect(url_for("camera_control.index"))
 
 

@@ -16,11 +16,12 @@ def start_weather_logging():
 
     try:
         sensor.measurement_logger.set_log_in_background(True)
+        message = "Started logging data from sensors."
     except Exception as e:
-        print(f"Error starting logging: {e}")
-        flash("Error starting logging.")
+        print(f"Error starting weather logging: {e}")
+        message = "An error occured during starting weather logging."
     
-    flash("Successfully started logging data from sensors.")
+    flash(message)
     return redirect(url_for("configure.index"))
 
 
@@ -32,11 +33,12 @@ def stop_weather_logging():
 
     try:
         sensor.measurement_logger.set_log_in_background(False)
+        message = "Stopped logging data from sensors."
     except Exception as e:
-        print(f"Error stopping logging: {e}")
-        flash("Error stopping logging.")
+        print(f"Error stopping weather logging: {e}")
+        message = "An error occured during stopping weather logging."
 
-    flash("Stopped logging data from sensors.")
+    flash(message)
     return redirect(url_for("configure.index"))
 
 

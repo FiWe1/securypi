@@ -47,12 +47,28 @@ def handle_batch_form_action(form):
                                 if form.get(motion) is not None]
     selected_recordings = [rec for rec in recordings
                            if form.get(rec) is not None]
+    motion_count = len(selected_motion_captures)
+    rec_count = len(selected_recordings)
 
-    # only admin can delete
-    if action == "delete_selected" and is_logged_in_admin():
-        delete_motion_captures(selected_motion_captures)
-        delete_recordings(selected_recordings)
+    if action == "delete_selected":
+        # only admin can delete
+        if is_logged_in_admin():
+            delete_motion_captures(selected_motion_captures)
+            delete_recordings(selected_recordings)
 
+            parts = []
+            if motion_count > 0:
+                parts.append(
+                    f"{motion_count} motion capture{'s' if motion_count != 1 else ''}"
+                )
+            if rec_count > 0:
+                parts.append(
+                    f"{rec_count} recording{'s' if rec_count != 1 else ''}"
+                )
+            message = f"Deleted {' and '.join(parts)}." if parts else "Nothing deleted."
+
+        else:
+            message = "Delete failed, you don't have enough privileges."
     elif action == "download_selected":
         zip_stream = create_zip_stream(
             selected_motion_captures, selected_recordings
@@ -65,6 +81,7 @@ def handle_batch_form_action(form):
             }
         )
 
+    flash(message)
     return redirect(url_for("recordings.index"))
 
 
