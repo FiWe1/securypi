@@ -663,6 +663,7 @@ body {
     --content-span-grid-columns: 1 / -1; /* now site conent spans full width */
     --content-span-grid-rows: 2; /* navigation moved to the top */
 
+    --text-size: 1rem;
     --nav-link-size: 3.3vw;
   }
 
@@ -740,6 +741,10 @@ body {
     height: auto;
     max-height: auto;
     object-fit: contain;
+  }
+
+  .overview__camera_feed--switch {
+    padding-left: 0rem;
   }
 
   .overview__camera_feed--refresh {
