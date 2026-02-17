@@ -6,18 +6,18 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
   {% block head %}{% endblock %}
 </head>
-<body class="grid">
+<body class="grid_navbar">
 {% if g.user is not none %}
   {% include "includes/navbar.html" %}
 {% endif %}
 
-<div class="site_content">
+<div class="grid_flash">
   {% for message in get_flashed_messages() %}
   <div class="flash">{{ message }}</div>
   {% endfor %}
   
   {% block site_content %}{% endblock %}
-</div>
+  </div>
 {% block body %}{% endblock %}
 </body>
 </html>

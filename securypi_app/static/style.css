@@ -92,13 +92,14 @@ body {
 
 
 /* the main body grid for laying out navigation and site_content */
-.grid {
+.grid_navbar {
   display: grid;
   grid-template-columns: auto 11fr;
   grid-template-rows: auto;
 }
 
-.site_content {
+/* flash messages at the top */
+.grid_flash {
   grid-column: var(--content-span-grid-columns);
   grid-row: var(--content-span-grid-rows);
   
@@ -115,6 +116,7 @@ body {
   grid-row: 1; /* site_content: at the top */
 
   display: flex;
+  flex-direction: row;
   justify-content: center;  /* horizontal center */
   align-items: center;      /* vertical center */
 
@@ -640,7 +642,7 @@ body {
   }
 
   /* add new row at the top for navbar */
-  .grid {
+  .grid_navbar {
     grid-template-columns: auto;
     grid-template-rows: auto 1fr;
   }
