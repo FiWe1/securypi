@@ -7,22 +7,22 @@
     <div class="camera_control__recording">
       <h2>Recording to a file</h2>
       {% if is_recording %}
-      <span>Recording is running as we speak...  ...</span>
-      <a class="configure_action_link text_color_danger" href={{ url_for('camera_control.stop_recording') }}>Stop it now</a>
+      <span>Recording is running</span>
+      <a class="configure_action_link text_color_danger" href={{ url_for('camera_control.stop_recording') }}>Stop recording</a>
       {% else %}
-      <span>Currently not running a recording.</span>
-      <a class="configure_action_link text_color_go" href={{ url_for('camera_control.start_recording') }}>I want to record!</a>
+      <span>Currently not running a recording</span>
+      <a class="configure_action_link text_color_go" href={{ url_for('camera_control.start_recording') }}>Start recording</a>
       {% endif %}
     </div>
     
     <div class="camera_control__motion_capturing">
       <h2>Motion Capturing</h2>
       {% if is_motion_capturing %}
-      <span>Detecting and capturing motion as we speak...  ...</span>
-      <a class="configure_action_link text_color_danger" href={{ url_for('camera_control.stop_motion_capturing') }}>Stop it now</a>
+      <span>Detecting and capturing motion</span>
+      <a class="configure_action_link text_color_danger" href={{ url_for('camera_control.stop_motion_capturing') }}>Stop motion capturing</a>
       {% else %}
-      <span>Currently not capturing motion.</span>
-      <a class="configure_action_link text_color_go" href={{ url_for('camera_control.start_motion_capturing') }}>I want to detect and capture motion!</a>
+      <span>Currently not capturing motion</span>
+      <a class="configure_action_link text_color_go" href={{ url_for('camera_control.start_motion_capturing') }}>Start  motion capturing</a>
       {% endif %}
     </div>
   </div>
