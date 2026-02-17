@@ -6,7 +6,7 @@ from sqlalchemy import Integer, Float, DateTime, select, text
 from sqlalchemy.orm import Mapped, mapped_column, MappedAsDataclass
 
 from . import db
-from securypi_app.services.app_config import AppConfig
+from securypi_app.models.app_config import AppConfig
 
 
 class Measurement(MappedAsDataclass, db.Model):

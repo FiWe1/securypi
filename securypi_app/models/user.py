@@ -3,7 +3,7 @@ from __future__ import annotations # fix class forward referencing issue
 from sqlalchemy import Integer, String, Boolean, select, Row
 from sqlalchemy.orm import Mapped, mapped_column, MappedAsDataclass
 from werkzeug.security import generate_password_hash
-from securypi_app.services.app_config import AppConfig
+from securypi_app.models.app_config import AppConfig
 
 from . import db
 

@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 from werkzeug.utils import secure_filename
 from zipstream import ZipStream
-from securypi_app.services.app_config import AppConfig
+from securypi_app.models.app_config import AppConfig
 
 
 def motion_captures_path() -> Path:

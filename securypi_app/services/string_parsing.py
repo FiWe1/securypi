@@ -5,7 +5,7 @@ from datetime import datetime
 import secrets
 import string
 
-from securypi_app.services.app_config import AppConfig
+from securypi_app.models.app_config import AppConfig
 
 
 def validate_str_input_len(input,

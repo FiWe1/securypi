@@ -4,7 +4,7 @@ from threading import Thread, Event
 from securypi_app.peripherals.measurements.measurement_logger_interface import (
     MeasurementLoggerInterface
 )
-from securypi_app.services.app_config import AppConfig
+from securypi_app.models.app_config import AppConfig
 
 
 class MeasurementLogger(MeasurementLoggerInterface):

@@ -5,7 +5,7 @@ from securypi_app.models.measurement import Measurement
 from securypi_app.peripherals.measurements.weather_station_interface import (
     WeatherStationInterface
 )
-from securypi_app.services.app_config import AppConfig
+from securypi_app.models.app_config import AppConfig
 
 # sensors
 from securypi_app.peripherals.measurements.sensors.sensor_dht22 import SensorDht22

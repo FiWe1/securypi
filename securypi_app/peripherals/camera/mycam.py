@@ -5,7 +5,7 @@ from securypi_app.services.string_parsing import timed_filename
 from securypi_app.services.captures import recordings_path
 from securypi_app.peripherals.camera.mycam_interface import MyPicamera2Interface
 from securypi_app.peripherals.camera.streaming import Streaming
-from securypi_app.services.app_config import AppConfig
+from securypi_app.models.app_config import AppConfig
 
 # Conditional Import for RPi picamera2 library
 try:

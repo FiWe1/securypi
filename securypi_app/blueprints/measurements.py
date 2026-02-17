@@ -6,7 +6,7 @@ from flask import Blueprint, render_template, jsonify, redirect, url_for
 from securypi_app.services.auth import login_required
 from securypi_app.models.measurement import Measurement
 from securypi_app.peripherals.measurements.weather_station import WeatherStation
-from securypi_app.services.app_config import AppConfig
+from securypi_app.models.app_config import AppConfig
 
 
 ### Globals ###

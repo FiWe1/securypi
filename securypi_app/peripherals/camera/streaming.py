@@ -3,7 +3,7 @@ from threading import Condition, Timer
 from time import sleep
 
 from securypi_app.peripherals.camera.streaming_interface import StreamingInterface
-from securypi_app.services.app_config import AppConfig
+from securypi_app.models.app_config import AppConfig
 
 # Conditional Import for RPi picamera2 library
 try:

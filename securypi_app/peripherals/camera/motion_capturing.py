@@ -12,7 +12,7 @@ from securypi_app.peripherals.camera.motion_capturing_interface import (
     MotionCapturingInterface
 )
 from securypi_app.peripherals.camera.mycam_interface import MyPicamera2Interface
-from securypi_app.services.app_config import AppConfig
+from securypi_app.models.app_config import AppConfig
 
 
 class MotionCapturing(MotionCapturingInterface):
