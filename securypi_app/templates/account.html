@@ -1,21 +1,21 @@
 {% extends 'base.html' %}
 
-{% block title %}User settings{% endblock %}
+{% block title %}Account{% endblock %}
 
 {% block site_content %}
-<div class="user_settings">
-	<header class="user_settings__title">
-		<h1>User settings: {{ g.user["username"] }}</h1>
+<div class="account">
+	<header class="account__title">
+		<h1>Account: {{ g.user["username"] }}</h1>
 	</header>
-  <span class="user_settings__user_type">
+  <span class="account__user_type">
     You {% if g.user["is_admin"] == False %}are standard user.{% else %}have administrator rights.{% endif %}
   </span>
 
-	<div class="user_settings__change_password">
+	<div class="account__change_password">
     <h2>Change your password:</h2>
 		<form method="post" class="auth__form">
 			<label for="current_password">Current password</label>
-			<input class="user_settings__change_password--current" type="password" name="current_password" required>
+			<input class="account__change_password--current" type="password" name="current_password" required>
 
 			<label for="new_password">New password</label>
 			<input type="password" name="new_password" required>

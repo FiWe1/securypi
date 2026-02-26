@@ -585,12 +585,12 @@ body {
 
 
 /*
-***                               ***
-      ***  User settings   ***
-***                               ***
+***                         ***
+      ***  Account   ***
+***                         ***
 */
 
-.user_settings {
+.account {
   grid-column: 1 / -1;
   grid-row: 2; /* site content: below flash messages */
 
@@ -601,34 +601,34 @@ body {
   margin: 1em;
 }
 
-.user_settings__title {
+.account__title {
   grid-column: 1 / 12;
   grid-row: 1;
 
   margin-bottom: 1em;
 }
 
-.user_settings__user_type {
+.account__user_type {
   grid-column: 1 / 12;
   grid-row: 2;
 
   margin-left: 1em;
 }
 
-.user_settings__change_password {
+.account__change_password {
   margin-top: 2em;
   margin-left: 1em;
 }
 
-.user_settings__change_password--current {
+.account__change_password--current {
   margin-bottom: 1em;
 }
 
-.user_settings__change_password .auth__form--submit {
+.account__change_password .auth__form--submit {
   margin-top: 2em;
 }
 
-.user_settings__change_password .auth__form {
+.account__change_password .auth__form {
   background-color: var(--background-ternary);
 }
 
@@ -792,10 +792,10 @@ body {
   }
   
   /*
-   * USER SETTINGS
+   * Account
    */
-  .user_settings__user_type,
-  .user_settings__change_password {
+  .account__user_type,
+  .account__change_password {
     margin-left: 0em;
   }
 }

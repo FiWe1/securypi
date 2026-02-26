@@ -5,7 +5,7 @@ from securypi_app.services.auth import login_required, validate_login
 from securypi_app.services.string_parsing import validate_str_password
 
 ### Globals ###
-bp = Blueprint("user_settings", __name__, url_prefix="/user_settings")
+bp = Blueprint("account", __name__, url_prefix="/account")
 
 
 ''' @TODO {
@@ -18,7 +18,7 @@ bp = Blueprint("user_settings", __name__, url_prefix="/user_settings")
 @bp.route("/", methods=("GET", "POST"))
 @login_required
 def index():
-    """ Default (index) route for user_settings blueprint."""
+    """ Default (index) route for account blueprint."""
     # change password
     if request.method == "POST":
         current_password = request.form["current_password"]
@@ -40,4 +40,4 @@ def index():
             result, mes = user.change_password(new_password)
             flash(mes)
         
-    return render_template("user_settings.html")
+    return render_template("account.html")

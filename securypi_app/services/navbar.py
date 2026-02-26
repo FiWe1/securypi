@@ -16,7 +16,7 @@ def inject_nav_links():
     ]
 
     bottom_nav_links = [
-        ("User settings", "user_settings.index"),
+        ("Account", "account.index"),
         ("Logout", "auth.logout")
     ]
     if is_logged_in_admin():

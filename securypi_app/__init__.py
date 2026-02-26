@@ -2,7 +2,6 @@ import os
 
 from flask import Flask
 
-from .blueprints import measurements
 from .models import db
 
 
@@ -54,12 +53,12 @@ def create_app(test_config=None):
 
     # REGISTER BLUEPRINTS
     from .blueprints import (
-        errors, auth, overview, recordings, camera_control,
-        configure, user_settings
+        errors, auth, overview, measurements, recordings, camera_control,
+        configure, account
     )
     blueprints = [
         errors.bp, auth.bp, overview.bp, measurements.bp, recordings.bp,
-        camera_control.bp, configure.bp, user_settings.bp
+        camera_control.bp, configure.bp, account.bp
     ]
     for bp in blueprints:
         app.register_blueprint(bp)

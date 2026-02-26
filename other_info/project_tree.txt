@@ -32,7 +32,7 @@
 │   │   ├── overview.py
 │   │   ├── recordings.py
 │   │   ├── temp_history.py
-│   │   └── user_settings.py
+│   │   └── account.py
 │   ├── models
 │   │   ├── __init__.py
 │   │   ├── init_db.py
@@ -66,7 +66,7 @@
 │       │   └── stream.html
 │       ├── recordings.html
 │       ├── temp_history.html
-│       └── user_settings.html
+│       └── account.html
 │
 │
 └── tests
