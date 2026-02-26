@@ -64,13 +64,13 @@
       const response = await fetch('/measurements/data'); 
       const data = await response.json();
 
-      const tempStats = calculateStats(data.temp);
-      const humStats = calculateStats(data.hum);
-      const presStats = calculateStats(data.pres);
+      const tempStats = calculateStats(data.temp.vals);
+      const humStats = calculateStats(data.hum.vals);
+      const presStats = calculateStats(data.pres.vals);
 
       let temp_trace = {
-          x: data.time,
-          y: data.temp.map(n => n.toFixed(roundDigits)),
+          x: data.temp.times,
+          y: data.temp.vals.map(n => n.toFixed(roundDigits)),
           type: 'scatter',
           mode: 'lines+markers',
           marker: { size: 4 },
@@ -80,8 +80,8 @@
       };
       
       let hum_trace = {
-          x: data.time,
-          y: data.hum.map(n => n.toFixed(roundDigits)),
+          x: data.hum.times,
+          y: data.hum.vals.map(n => n.toFixed(roundDigits)),
           type: 'scatter',
           mode: 'lines+markers',
           marker: { size: 4 },
@@ -91,8 +91,8 @@
       };
       
       let pres_trace = {
-          x: data.time,
-          y: data.pres.map(n => n.toFixed(roundDigits)),
+          x: data.temp.times,
+          y: data.pres.vals.map(n => n.toFixed(roundDigits)),
           type: 'scatter',
           mode: 'lines+markers',
           marker: { size: 4 },

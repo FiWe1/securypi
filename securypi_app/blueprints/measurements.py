@@ -22,17 +22,29 @@ def data():
 
     measurements = Measurement.fetch_previous_range(datetime.now(timezone.utc))
     data = {
-        "time": [], "temp": [], "hum": [], "pres": []
+        "temp": {
+            "times": [],
+            "vals": []
+        },
+        "hum": {
+            "times": [],
+            "vals": []
+        },
+        "pres": {
+            "times": [],
+            "vals": []
+        }
     }
     for mes in measurements:
-        data["time"].append(mes.time_local_timezone(
-            local_timezone).isoformat())
         if mes.temperature is not None:
-            data["temp"].append(mes.temperature)
+            data["temp"]["times"].append(mes.time_local_timezone(local_timezone).isoformat())
+            data["temp"]["vals"].append(mes.temperature)
         if mes.humidity is not None:
-            data["hum"].append(mes.humidity)
+            data["hum"]["times"].append(mes.time_local_timezone(local_timezone).isoformat())
+            data["hum"]["vals"].append(mes.humidity)
         if mes.pressure is not None:
-            data["pres"].append(mes.pressure)
+            data["pres"]["times"].append(mes.time_local_timezone(local_timezone).isoformat())
+            data["pres"]["vals"].append(mes.pressure)
 
     return jsonify(data)
 
