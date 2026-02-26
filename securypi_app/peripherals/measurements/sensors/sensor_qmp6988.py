@@ -34,23 +34,13 @@ class SensorQmp6988(PressureSensorInterface, TemperatureSensorInterface):
         
         self._sensor = QMP.PiQmp6988(config)
     
-    def sensor_read_pressure(self) -> float | None:
+    def sensor_read_pressure(self) -> float:
         readout = self._sensor.read()
-        pres = readout.get('pressure')
-        
-        if isinstance(pres, float):
-            return round(pres, 2)
-        
-        return None
+        return float(readout.get('pressure'))
     
-    def sensor_read_temperature(self) -> float | None:
+    def sensor_read_temperature(self) -> float:
         readout = self._sensor.read()
-        temp = readout.get('temperature')
-        
-        if isinstance(temp, float):
-            return round(temp, 2)
-
-        return None
+        return float(readout.get('temperature'))
 
     def sensor_close(self):
         pass

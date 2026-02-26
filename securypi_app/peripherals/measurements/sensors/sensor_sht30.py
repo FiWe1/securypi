@@ -27,23 +27,11 @@ class SensorSht30(TemperatureSensorInterface,
         
         self._sensor = SHT31D(board.I2C())
     
-    def sensor_read_temperature(self) -> float | None:
-        try:
-            temp = self._sensor.temperature
-        except Exception as err:
-            print(f"Failed to read from SHT30 temperature sensor: {err}")
-            return None
-        
-        return round(float(temp), 2) if temp is not None else None
+    def sensor_read_temperature(self) -> float:
+        return float(self._sensor.temperature)
     
-    def sensor_read_humidity(self) -> float | None:
-        try:
-            hum = self._sensor.relative_humidity
-        except Exception as err:
-            print(f"Failed to read from SHT30 humidity sensor: {err}")
-            return None
-        
-        return round(float(hum), 2) if hum is not None else None
+    def sensor_read_humidity(self) -> float:
+        return float(self._sensor.relative_humidity)
 
     def sensor_close(self):
         pass

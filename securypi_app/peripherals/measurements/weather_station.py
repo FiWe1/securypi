@@ -81,31 +81,41 @@ class WeatherStation(WeatherStationInterface):
 
     def get_temperature(self, repeat=5) -> float | None:
         if self._sensor_temperature is not None:
-            temp = self._sensor_temperature.sensor_read_temperature()
-            if temp is not None:
-                return temp
-            elif repeat > 0:
-                return self.get_temperature(repeat - 1)
-        
+            return self.get_sensor_reading(self._sensor_temperature.sensor_read_temperature,
+                                           sensor_name="temperature sensor",
+                                           repeat=repeat)
         return None
 
     def get_humidity(self, repeat=5) -> float | None:
         if self._sensor_humidity is not None:
-            hum = self._sensor_humidity.sensor_read_humidity()
-            if hum is not None:
-                return hum
-            elif repeat > 0:
-                return self.get_humidity(repeat - 1)
-        
+            return self.get_sensor_reading(self._sensor_humidity.sensor_read_humidity,
+                                           sensor_name="humidity sensor",
+                                           repeat=repeat)
         return None
     
     def get_pressure(self, repeat=5) -> float | None:
         if self._sensor_pressure is not None:
-            pres = self._sensor_pressure.sensor_read_pressure()
-            if pres is not None:
-                return pres
-            elif repeat > 0:
-                return self.get_humidity(repeat - 1)
+            return self.get_sensor_reading(self._sensor_pressure.sensor_read_pressure,
+                                           sensor_name="pressure sensor",
+                                           repeat=repeat)
+        return None
+    
+    def get_sensor_reading(self,
+                           sensor_read_func,
+                           sensor_name="a sensor",
+                           repeat=5) -> float | None:
+        try:
+            reading = sensor_read_func()
+        except Exception as err:
+            print(f"Failed to read from {sensor_name}:\n{err}")
+            reading = None
+            
+        if isinstance(reading, float):
+            return round(reading, 2)
+        elif repeat > 0:
+            return self.get_sensor_reading(sensor_read_func,
+                                           sensor_name,
+                                           repeat - 1)
         
         return None
 

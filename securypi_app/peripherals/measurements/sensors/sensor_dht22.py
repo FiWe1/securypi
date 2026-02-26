@@ -32,23 +32,11 @@ class SensorDht22(TemperatureSensorInterface,
         self._pin = board.D4
         self._sensor = DHT22(self._pin)
     
-    def sensor_read_temperature(self, repeat=5) -> float | None:
-        try:
-            temp = self._sensor.temperature
-        except Exception as err:
-            print(f"Failed to read from DHT22 temperature sensor: {err}")
-            return None
-        
-        return round(float(temp), 2) if temp is not None else None
+    def sensor_read_temperature(self, repeat=5) -> float:
+        return float(self._sensor.temperature)
     
-    def sensor_read_humidity(self, repeat=5) -> float | None:
-        try:
-            hum = self._sensor.humidity
-        except Exception as err:
-            print(f"Failed to read from DHT22 humidity sensor: {err}")
-            return None
-        
-        return round(float(hum), 2) if hum is not None else None
+    def sensor_read_humidity(self, repeat=5) -> float:
+        return float(self._sensor.humidity)
 
     def sensor_close(self):
         self._sensor.exit()
