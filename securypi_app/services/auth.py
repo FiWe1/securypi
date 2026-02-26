@@ -10,6 +10,7 @@ from flask import (
 from werkzeug.security import check_password_hash
 
 from securypi_app.models.user import User
+from securypi_app.services.string_parsing import validate_str_password
 
 
 def is_logged_in():
@@ -80,3 +81,26 @@ def validate_login(username, password) -> tuple[User | None, str | None]:
         user = None
     
     return user, error
+
+
+def verify_change_user_password(current_password,
+                                new_password,
+                                new_password_again) -> str:
+    user, old_password_error = (
+            validate_login(g.user["username"], current_password)
+        )
+    if old_password_error is not None:
+        return old_password_error
+    
+    new_password_error = validate_str_password(new_password)
+    if new_password_error is not None:
+        return new_password_error
+    
+    if new_password != new_password_again:
+        return "Passwords do not match!"
+
+    if user is not None:
+        _, mes = user.change_password(new_password)
+        return mes
+    
+    return "Failed to verify and change password"

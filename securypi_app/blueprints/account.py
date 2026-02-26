@@ -1,8 +1,9 @@
 from flask import Blueprint, render_template, request, flash, g
 
 from securypi_app.models.user import User
-from securypi_app.services.auth import login_required, validate_login
-from securypi_app.services.string_parsing import validate_str_password
+from securypi_app.services.auth import (
+    login_required, verify_change_user_password
+)
 
 ### Globals ###
 bp = Blueprint("account", __name__, url_prefix="/account")
@@ -15,29 +16,23 @@ bp = Blueprint("account", __name__, url_prefix="/account")
 '''
 
 
-@bp.route("/", methods=("GET", "POST"))
-@login_required
-def index():
-    """ Default (index) route for account blueprint."""
-    # change password
-    if request.method == "POST":
+def handle_form_action(form):
+    action = form["action"]
+    if action == "change_password":
         current_password = request.form["current_password"]
         new_password = request.form["new_password"]
         new_password_again = request.form["new_password_again"]
         
-        user, old_password_error = (
-            validate_login(g.user["username"], current_password)
-        )
-        new_password_error = validate_str_password(new_password)
-    
-        if old_password_error is not None:
-            flash(old_password_error)
-        elif new_password_error is not None:
-            flash(new_password_error)
-        elif new_password != new_password_again:
-            flash("Passwords do not match!")
-        else:
-            result, mes = user.change_password(new_password)
-            flash(mes)
+        message = verify_change_user_password(current_password,
+                                              new_password,
+                                              new_password_again)
+        flash(message)
+
+@bp.route("/", methods=("GET", "POST"))
+@login_required
+def index():
+    """ Default (index) route for account blueprint."""
+    if request.method == "POST":
+        handle_form_action(request.form)
         
     return render_template("account.html")

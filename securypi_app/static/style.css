@@ -80,14 +80,25 @@ body {
   opacity: 0.85;
 }
 
+.button_submit {
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  cursor: pointer;
+  background: var(--nav-link-color);
+  color: black;
+  font-weight: bold;
+}
+
+.button_submit:hover {
+  opacity: 0.85;
+}
+
 
 /*
 ***                           ***
         ***  LAYOUT   ***
 ***                           ***
 */
-
-
 
 /* the main body grid for laying out navigation and site_content */
 .grid_navbar {
@@ -220,18 +231,6 @@ body {
   border-radius: 5px;
   border: none;
   font-size: 1rem;
-}
-
-.auth__form--submit {
-  margin-top: 0.5rem;
-  cursor: pointer;
-  background: var(--nav-link-color);
-  color: black;
-  font-weight: bold;
-}
-
-.auth__form input[type="submit"]:hover {
-  opacity: 0.85;
 }
 
 
@@ -624,7 +623,7 @@ body {
   margin-bottom: 1em;
 }
 
-.account__change_password .auth__form--submit {
+.account__change_password .button_submit {
   margin-top: 2em;
 }
 
