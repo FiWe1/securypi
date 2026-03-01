@@ -94,6 +94,26 @@ body {
 }
 
 
+.auth__form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+
+  background: var(--background-secondary);
+  padding: 2rem;
+  border-radius: 10px;
+  width: 260px;
+}
+
+.auth__form input,
+.my_form_input {
+  padding: 0.5rem;
+  border-radius: 5px;
+  border: none;
+  font-size: 1rem;
+}
+
+
 /*
 ***                           ***
         ***  LAYOUT   ***
@@ -210,27 +230,6 @@ body {
   justify-content: center;
   align-items: center;
   margin-bottom: 13rem;
-}
-
-.auth__form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.8rem;
-
-  background: var(--background-secondary);
-  padding: 2rem;
-  border-radius: 10px;
-  width: 260px;
-
-  /* box-shadow: 0 0 20px rgba(52, 52, 52, 0.4); */
-}
-
-/* Inputs */
-.auth__form input {
-  padding: 0.5rem;
-  border-radius: 5px;
-  border: none;
-  font-size: 1rem;
 }
 
 
@@ -609,25 +608,30 @@ body {
 
 .account__info {
   margin-right: 2em;
+
+  margin-left: 1em;
 }
 
-.account__info--form ul {
+.account__info_list {
   list-style: none;
+  padding: 0;
+  margin: 0;
 
   display: grid;
   grid-template-columns: max-content 1fr;
   gap: 1rem 1.5rem;
   align-items: center;
   max-width: 25em;
+
+  margin-left: 1em;
 }
 
-.account__info li {
+.account__info_list--item {
   display: contents;
 }
 
 .account__change_password {
   margin-top: 2em;
-  margin-left: 1em;
 }
 
 .account__change_password--current {
@@ -804,14 +808,26 @@ body {
 }
 
 
-@media (max-width: 906px) {
+@media (max-width: 943px) {
   /*
    * Account
    */
    .account {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(2, min-content);
+    
+    margin-right: 0rem;
   }
+
+  .account__info {
+    margin: 0rem;
+  }
+  .account__info_list {
+    max-width: 20em;
+
+    margin-left: 0rem;
+  }
+
   .account__change_password {
     margin-left: 0em;
   }

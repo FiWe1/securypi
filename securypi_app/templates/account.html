@@ -10,19 +10,19 @@
 
   <section class="account__info">
     <h2>Account information</h2>
-    <form method="post" class="account__info--form">
-      <ul>
+    <form method="post">
+      <ul class="account__info_list">
         {% for key in account_details %}
 
         {% if key == "admin" %}
-        <li class="account__info--list_item">
+        <li class="account__info_list--item">
           <span>{{ key }}:</span>
           <span>{{ account_details[key] }}</span>
         </li>
         {% else %}
-        <li class="account__info--list_item">
+        <li class="account__info_list--item">
           {{ key }}:
-			    <input class="" name="{{ key }}" value="{{ account_details[key] }}">
+			    <input class="my_form_input" name="{{ key }}" value="{{ account_details[key] }}">
         </li>
         {% endif %}
 
