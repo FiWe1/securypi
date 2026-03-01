@@ -10,7 +10,9 @@ from flask import (
 from werkzeug.security import check_password_hash
 
 from securypi_app.models.user import User
-from securypi_app.services.string_parsing import validate_str_password
+from securypi_app.services.string_parsing import (
+    validate_str_password, validate_str_username, is_email_valid
+)
 
 
 def is_logged_in():
@@ -104,3 +106,43 @@ def verify_change_user_password(current_password,
         return mes
     
     return "Failed to verify and change password"
+
+
+def update_account_details(username=None, email=None) -> str:
+    user_id = session.get("user_id")
+    user = User.get_by_id(user_id) if user_id is not None else None
+    if user is None:
+        return "Failed to identify current user."
+    
+    update = False
+    # update username
+    if username is not None and username != user.username:
+        valid_username_error = validate_str_username(username)
+        if valid_username_error is not None:
+            return valid_username_error
+        username_free = User.is_username_free(username)
+        
+        if username_free:
+            user.username = username
+            update = True
+        else:
+            return f"Username '{username}' is already taken."
+    
+    # update email
+    if email is not None and email != user.email:
+        if is_email_valid(email):
+            user.email = email
+            update = True
+        else:
+            return f"Email '{email}' is in invalid format."
+    
+    # apply update
+    if update == True:
+        result = user.update()
+        if result is None:
+            return "Account details successfully updated."
+        else:
+            return result
+    else:
+        return "No changes to update."
+    

@@ -112,3 +112,13 @@ def generate_random_password(n) -> str:
        password_chars.append(secrets.choice(all))
 
     return ''.join(password_chars)
+
+
+def is_email_valid(email) -> bool:
+    """ Simple check if email is not in invalid format. """
+    if not email or "@" not in email:
+        return False
+    local_part, domain_part = email.split("@", 1)
+    if not local_part or not domain_part or "." not in domain_part:
+        return False
+    return True

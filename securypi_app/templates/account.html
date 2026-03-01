@@ -7,11 +7,34 @@
 	<header class="account__title">
 		<h1>Account: {{ g.user["username"] }}</h1>
 	</header>
-  <span class="account__user_type">
-    You {% if g.user["is_admin"] == False %}are standard user.{% else %}have administrator rights.{% endif %}
-  </span>
 
-	<div class="account__change_password">
+  <section class="account__info">
+    <h2>Account information</h2>
+    <form method="post" class="account__info--form">
+      <ul>
+        {% for key in account_details %}
+
+        {% if key == "admin" %}
+        <li class="account__info--list_item">
+          <span>{{ key }}:</span>
+          <span>{{ account_details[key] }}</span>
+        </li>
+        {% else %}
+        <li class="account__info--list_item">
+          {{ key }}:
+			    <input class="" name="{{ key }}" value="{{ account_details[key] }}">
+        </li>
+        {% endif %}
+
+        {% endfor %}
+        <button class="button_submit button_mild_round" type="submit" name="action" value="update_account_details">
+          Update
+        </button>
+      </ul>
+		</form>
+  </section>
+
+	<section class="account__change_password">
     <h2>Change your password:</h2>
 		<form method="post" class="auth__form">
 			<label for="current_password">Current password</label>
@@ -27,6 +50,6 @@
         Change password
       </button>
 		</form>
-	</div>
+	</section>
 </div>
 {% endblock %}

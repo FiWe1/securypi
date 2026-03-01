@@ -125,3 +125,30 @@ class User(MappedAsDataclass, db.Model):
             return False, "Failed to update password due to a database error."
 
         return True, f"Password successfully updated for user '{self.username}'."
+    
+    def account_details(self) -> dict[str, str]:
+        """ {
+            "user name": {username}
+            "email": {email} | ""
+            "admin": "yes" | "no"
+        }
+        """
+        return {
+            "user name": self.username,
+            "email": self.email if self.email is not None else "",
+            "admin": "yes" if self.is_admin else "no"
+        }
+
+    def update(self) -> str | None:
+        """
+        Applies changes of user to the database.
+        success -> None
+        error -> "error message"
+        """
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            return "Failed to update user due to a database error."
+
+        return None

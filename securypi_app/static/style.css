@@ -594,24 +594,35 @@ body {
   grid-row: 2; /* site content: below flash messages */
 
   display: grid;
-  grid-template-columns: repeat(11, 1fr);
-  grid-template-rows: repeat(3, min-content);
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: repeat(2, min-content);
 
   margin: 1em;
 }
 
 .account__title {
-  grid-column: 1 / 12;
+  grid-column: 1 / -1;
   grid-row: 1;
 
   margin-bottom: 1em;
 }
 
-.account__user_type {
-  grid-column: 1 / 12;
-  grid-row: 2;
+.account__info {
+  margin-right: 2em;
+}
 
-  margin-left: 1em;
+.account__info--form ul {
+  list-style: none;
+
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 1rem 1.5rem;
+  align-items: center;
+  max-width: 25em;
+}
+
+.account__info li {
+  display: contents;
 }
 
 .account__change_password {
@@ -789,11 +800,18 @@ body {
     margin-left: 1em;
     margin-top: 1em;
   }
-  
+
+}
+
+
+@media (max-width: 906px) {
   /*
    * Account
    */
-  .account__user_type,
+   .account {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(2, min-content);
+  }
   .account__change_password {
     margin-left: 0em;
   }
