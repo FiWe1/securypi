@@ -30,7 +30,7 @@ def handle_form_action(form):
                                               new_password_again)
         flash(message)
     elif action == "update_account_details":
-        username = form.get("user name")
+        username = form.get("username")
         email = form.get("email")
         
         username = username if username is not None and username != "" else None

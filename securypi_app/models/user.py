@@ -128,13 +128,13 @@ class User(MappedAsDataclass, db.Model):
     
     def account_details(self) -> dict[str, str]:
         """ {
-            "user name": {username}
+            "username": {username}
             "email": {email} | ""
             "admin": "yes" | "no"
         }
         """
         return {
-            "user name": self.username,
+            "username": self.username,
             "email": self.email if self.email is not None else "",
             "admin": "yes" if self.is_admin else "no"
         }
