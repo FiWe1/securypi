@@ -915,10 +915,12 @@ body {
    * UNIVERSAL
   */
   .checkbox_area:hover {
+    /* not dimming checkbox on hover for mobile devices */
     opacity: 1.0;
   }
 
   .distinguished_link {
+    /* enable link underline for mobile devices */
     text-decoration: underline;
   }
 
