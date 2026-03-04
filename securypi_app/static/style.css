@@ -8,9 +8,9 @@
   --nav-link-color-active: rgb(242, 255, 0);
   --background-primary: #0a1421;
   --background-secondary: #142556;
-  --background-ternary: rgb(42, 15, 121);
+  --background-ternary: rgb(52, 31, 117);
   --flash-warning-color: rgb(223, 145, 0);
-  --recording-link-color: rgba(211, 211, 211, 0.771);
+  --distinguished-link-color: #a5bcff;
 
   --overview__camera_feed-switch-color: white;
 
@@ -51,7 +51,7 @@ body {
   padding-top: 0.3em;
   text-decoration: none;
   align-self: start;
-  color: var(--recording-link-color);
+  color: var(--distinguished-link-color);
   
   padding: 0.6rem;
 }
@@ -520,14 +520,12 @@ body {
   margin: 0.15rem 0rem;
 }
 
-.recordings__list--item a {
-  color: var(--recording-link-color);
-  text-decoration: none;
+.recordings__list--file_link {
   padding: 0.15rem;
 }
 
-.recordings__list--item a:hover {
-  text-decoration: underline;
+.recordings .distinguished_link {
+  text-decoration: none;
 }
 
 .recordings__list--motion_captures {
@@ -892,20 +890,41 @@ body {
     margin-top: 1em;
   }
 
+  .recordings__list--item {
+    margin: 0.3rem 0rem;
+  }
+
+  .recordings__list--file_link {
+    padding: 0.3rem;
+  }
+
+
+  /*
+   * ERROR
+  */
+  .error {
+    margin: 0em 1em;
+  }
+
 }
 
 
+/* medium screen: shrinking large forms */
 @media (max-width: 943px) {
   /*
-   * Universal
+   * UNIVERSAL
   */
   .checkbox_area:hover {
     opacity: 1.0;
   }
 
+  .distinguished_link {
+    text-decoration: underline;
+  }
+
 
   /*
-   * Account
+   * ACCOUNT
   */
    .account {
     grid-template-columns: 1fr;
@@ -929,7 +948,7 @@ body {
 
 
   /*
-   * Manage users
+   * MANAGE USERS
   */
 
   .manage_users__user--labels {

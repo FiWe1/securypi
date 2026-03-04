@@ -17,7 +17,9 @@
             <label class="checkbox_area">
               <input type="checkbox" class="recordings__form--checkbox motion_capture_checkbox" name="{{ entry }}" value="no">
             </label>
-            <a href="{{ url_for('recordings.download_motion_capture', filename=entry) }}">{{ entry }}</a>
+            <a class="distinguished_link recordings__list--file_link" href="{{ url_for('recordings.download_motion_capture', filename=entry) }}">
+              {{ entry }}
+            </a>
           </span>
           {% endfor %}
       </div>
@@ -32,7 +34,9 @@
           <label class="checkbox_area">
             <input type="checkbox" class="recordings__form--checkbox recording_checkbox" name="{{ entry }}" value="no">
           </label>
-            <a href="{{ url_for('recordings.download_recording', filename=entry) }}">{{ entry }}</a>
+            <a class="distinguished_link recordings__list--file_link" href="{{ url_for('recordings.download_recording', filename=entry) }}">
+              {{ entry }}
+            </a>
           </span>
           {% endfor %}
       </div>
