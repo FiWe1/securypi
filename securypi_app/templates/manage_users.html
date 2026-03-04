@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage users{% endblock %}
+
+{% block site_content %}
+<div class="manage_users">
+	<header class="manage_users__title">
+		<h1>Manage users</h1>
+	</header>
+
+  <section class="manage_users__user">
+    <h2>Add new user</h2>
+    <form method="post">
+      <ul class="manage_users__user--info_list">
+        {% for key in user_data[0] %}
+
+        {% if key == "user_id" %}
+        <!-- user_id invisible -->
+        {% elif key == "admin" %}
+        <li class="manage_users__user--info_list_item">
+          <label class="checkbox_area">
+            <input type="checkbox" class="" name="{{ key }}">
+            admin
+          </label>
+        </li>
+        {% else %}
+        <li class="manage_users__user--info_list_item">
+			    <input
+            class="my_form_input manage_users__user--info_list_item_input"
+            name="{{ key }}"
+            placeholder="{{ key }}"
+            type="{{ 'password' if (key == 'new password' or key == 'confirm password') else 'text' }}">
+        </li>
+        {% endif %}
+
+        {% endfor %}
+          <div class="manage_users__user--buttons">
+            <button class="button_submit button_mild_round button_color_go" type="submit" name="action" value="add_new_user">
+              + add new user
+            </button>
+          </div>
+      </ul>
+		</form>
+  </section>
+
+  <section class="manage_users__user">
+    <h2>Edit users</h2>
+      <ul class="manage_users__user--labels">
+      {% for key in user_data[0] %}
+        {% if key != "user_id" and key != "is_admin"%}
+          <li>{{ key }}</li>
+        {% endif %}
+      {% endfor %}
+      </ul>
+
+      {% for user in user_data %}
+
+      <form method="post" class="manage_users__user--form">
+        <ul class="manage_users__user--info_list">
+          {% for key in user %}
+          
+          {% if key == "user_id" %}
+            <input name="user_id" class="manage_users__user--info_list_item_input" value="{{ user['user_id'] }}" hidden>
+          {% elif key == "new password" or key == "confirm password" %}
+          <li class="manage_users__user--info_list_item">
+            <input class="my_form_input manage_users__user--info_list_item_input" name="{{ key }}" placeholder="{{ key }}" type="password">
+          </li>
+          {% elif key == "admin" %}
+          <li class="manage_users__user--info_list_item">
+            <label class="checkbox_area">
+              <input type="checkbox" class="" name="{{ key }}" {{ "checked" if user[key] == True else "unchecked" }}>
+              admin
+            </label>
+          </li>
+          {% else %}
+          <li class="manage_users__user--info_list_item">
+            <input class="my_form_input manage_users__user--info_list_item_input" name="{{ key }}" placeholder="{{ key }}" value="{{ user[key] }}">
+          </li>
+          {% endif %}
+
+          {% endfor %}
+          <div class="manage_users__user--buttons">
+            <button class="button_submit button_mild_round button_color_caution" type="submit" name="action" value="edit_user">
+              Update
+            </button>
+            <button class="button_submit button_mild_round button_color_danger" type="submit" name="action" value="delete_user">
+              Delete
+            </button>
+          </div>
+        </ul>
+      </form>
+      {% endfor %}
+  </section>
+</div>
+{% endblock %}
+
+{% block body %}
+<script>
+  {# delete user confirm dialog #}
+  document.addEventListener("DOMContentLoaded", () => {
+    const editForms = document.querySelectorAll('.manage_users__user--form');
+
+    editForms.forEach(form => {
+      form.addEventListener('submit', function(event) {
+        // event.submitter identifies which button was clicked
+        const action = event.submitter ? event.submitter.value : null;
+
+        if (action === "delete_user") {
+          // 'this' refers to the specific form being submitted
+          const username = this.querySelector('input[name="username"]')?.value;
+          
+          if (!confirm(`Are you sure you want to delete user: ${username}?`)) {
+            event.preventDefault(); // Stop the form from sending 
+          }
+        }
+      });
+    });
+  });
+</script>
+{% endblock %}

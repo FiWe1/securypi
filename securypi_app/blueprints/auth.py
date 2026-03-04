@@ -5,7 +5,9 @@ from flask import (
 )
 
 from securypi_app.models.user import User
-from securypi_app.services.auth import validate_login, login_required, logged_out_required
+from securypi_app.services.auth import (
+    validate_login, login_required, logged_out_required, register_user
+)
 from securypi_app.services.string_parsing import (
     validate_str_username, validate_str_password
 )
@@ -74,7 +76,7 @@ def login():
     return render_template("auth/login.html")
 
 
-# not enabling register for now
+# not enabling register route
 # @bp.route("/register", methods=("GET", "POST"))
 def register():
     """
@@ -84,24 +86,17 @@ def register():
     credentials on POST.
     """
     if request.method == "POST":
-        username = request.form["username"]
-        password = request.form["password"]
-        is_admin = True if request.form["is_admin"] == "True" else False
-        error = None
-        error = validate_str_username(username)
-        if error is None:
-            error = validate_str_password(password)
+        username = request.form.get("username")
+        password = request.form.get("password")
+        confirm_password = request.form.get("confirm password")
+        is_admin = True if request.form.get("is_admin") == "on" else False
+        email = request.form.get("email")
         
-        if not User.is_username_free(username):
-            error = f"Username '{username}' is already taken!"
-
-        if error is None:
-            success, message = User.register(username, password, is_admin)
-            if success:
-                return redirect(url_for("auth.login"))
-            else:
-                error = message
-
+        error = register_user(username,
+                              password,
+                              confirm_password,
+                              is_admin,
+                              email)
         flash(error)
 
     return render_template("auth/register.html")

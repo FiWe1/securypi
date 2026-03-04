@@ -1,6 +1,9 @@
 :root {
   --title-color: white;
   --text-color: white;
+  --color-go: green;
+  --color-caution: yellow;
+  --color-danger: red;
   --nav-link-color: rgb(251, 255, 222);
   --nav-link-color-active: rgb(242, 255, 0);
   --background-primary: #0a1421;
@@ -38,8 +41,11 @@ body {
 }
 
 
-
-/* universal */
+/*
+***                            ***
+* ** ***    Universal     *** ** *
+***                            ***
+*/
 
 .distinguished_link {
   padding-top: 0.3em;
@@ -55,19 +61,19 @@ body {
 }
 
 .text_color_danger {
-  color: red;
+  color: var(--color-danger);
 }
 
 .text_color_go {
-  color: green;
+  color: var(--color-go);
 }
 
 .background_color_go {
-  background-color: green;
+  background-color: var(--color-go);
 }
 
 .background_color_danger {
-  background-color: red;
+  background-color: var(--color-danger);
 }
 
 .button_mild_round {
@@ -87,6 +93,21 @@ body {
   background: var(--nav-link-color);
   color: black;
   font-weight: bold;
+}
+
+.button_color_go {
+  background: var(--color-go);
+  color: var(--text-color)
+}
+
+.button_color_caution {
+  background: var(--color-caution);
+  color: black
+}
+
+.button_color_danger {
+  background: var(--color-danger);
+  color: var(--text-color)
 }
 
 .button_submit:hover {
@@ -111,6 +132,14 @@ body {
   border-radius: 5px;
   border: none;
   font-size: 1rem;
+}
+
+.checkbox_area {
+  padding: 0.15rem;
+}
+
+.checkbox_area:hover {
+  opacity: 0.7;
 }
 
 
@@ -501,14 +530,6 @@ body {
   text-decoration: underline;
 }
 
-.recordings__form--checkbox_area {
-  padding: 0.15rem;
-}
-
-.recordings__form--checkbox_area:hover {
-  opacity: 0.7;
-}
-
 .recordings__list--motion_captures {
   grid-column: 1 / 6;
   grid-row: 2;
@@ -646,6 +667,72 @@ body {
   background-color: var(--background-ternary);
 }
 
+
+/*
+***                             ***
+      ***  Manage users   ***
+***                             ***
+*/
+
+.manage_users {
+  grid-column: 1 / -1;
+  grid-row: 2; /* site content: below flash messages */
+
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: min-content min-content auto;
+
+  margin: 1em;
+}
+
+.manage_users__user--labels {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  display: grid;
+  grid-template-columns: repeat(4, 3fr) 1fr;
+  justify-items: center;
+
+  font-weight: bold;
+
+  margin-right: 8.8em;
+  margin-bottom: 1em;
+}
+
+.manage_users__user--info_list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  display: grid;
+  grid-template-columns: repeat(4, 3fr) 1fr auto;
+
+  justify-items: center;
+  align-items: center;
+
+  margin-bottom: 1rem;
+}
+
+.manage_users__user--info_list_item_input {
+  width: 13vw;
+}
+
+.manage_users__user--buttons {
+  display: flex;
+  flex-direction: row;
+
+  width: 8.8em;
+  justify-content: center;
+}
+
+.manage_users__user--buttons button {
+  margin-inline: 0.2em;
+}
+
+.manage_users .button_submit {
+  margin-top: auto;
+}
 
 /*
 ***                       ***
@@ -810,8 +897,16 @@ body {
 
 @media (max-width: 943px) {
   /*
+   * Universal
+  */
+  .checkbox_area:hover {
+    opacity: 1.0;
+  }
+
+
+  /*
    * Account
-   */
+  */
    .account {
     grid-template-columns: 1fr;
     grid-template-rows: repeat(2, min-content);
@@ -830,5 +925,45 @@ body {
 
   .account__change_password {
     margin-left: 0em;
+  }
+
+
+  /*
+   * Manage users
+  */
+
+  .manage_users__user--labels {
+    display: none;
+  }
+
+  .manage_users__user--info_list {
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: repeat(5, 1fr) auto;
+
+    justify-items: left;
+    
+    width: min-content;
+
+    margin-bottom: 4em;
+  }
+
+  .manage_users__user--info_list_item {
+    margin-bottom: 0.5em;
+  }
+
+  .manage_users__user--info_list_item_input {
+    width: 15em;
+  }
+
+  .manage_users__user--buttons {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .manage_users__user--buttons button {
+    margin-inline: 0em;
   }
 }

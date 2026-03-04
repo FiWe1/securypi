@@ -75,7 +75,8 @@ class User(MappedAsDataclass, db.Model):
     def register(cls,
                  username,
                  password,
-                 is_admin=False) -> tuple[bool, str]:
+                 is_admin=False,
+                 email=None) -> tuple[bool, str]:
         """
         Registers a new user. 
         -> (True, "succes message")
@@ -87,6 +88,7 @@ class User(MappedAsDataclass, db.Model):
             username=username,
             hashed_password=hashed,
             is_admin=is_admin,
+            email=email
         )
         db.session.add(new_user)
 
@@ -103,6 +105,13 @@ class User(MappedAsDataclass, db.Model):
 
         user_type = "administrator" if is_admin else "standard user"
         return True, f"Successfully registered {username} as {user_type}."
+    
+    @classmethod
+    def fetch_all(cls) -> list[User]:
+        """ Fetches all users from the database. """
+        stmt = select(User)
+        result = db.session.execute(stmt).scalars().all()
+        return list(result)
     
     def change_password(self,
                         new_password: str) -> tuple[bool, str]:
@@ -152,3 +161,18 @@ class User(MappedAsDataclass, db.Model):
             return "Failed to update user due to a database error."
 
         return None
+
+    def delete(self) -> str:
+        """
+        Deletes the user from the database.
+        success -> "success message"
+        error -> "error message"
+        """
+        db.session.delete(self)
+        try:
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+            return "Failed to delete user due to a database error."
+        
+        return f"User '{self.username}' was successfully deleted."

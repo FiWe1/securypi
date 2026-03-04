@@ -54,11 +54,11 @@ def create_app(test_config=None):
     # REGISTER BLUEPRINTS
     from .blueprints import (
         errors, auth, overview, measurements, recordings, camera_control,
-        configure, account
+        configure, account, manage_users
     )
     blueprints = [
         errors.bp, auth.bp, overview.bp, measurements.bp, recordings.bp,
-        camera_control.bp, configure.bp, account.bp
+        camera_control.bp, configure.bp, account.bp, manage_users.bp
     ]
     for bp in blueprints:
         app.register_blueprint(bp)

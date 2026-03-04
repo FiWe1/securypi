@@ -15,20 +15,25 @@ def inject_nav_links():
         ("Recordings", "recordings.index")
     ]
 
-    bottom_nav_links = [
+    bottom_nav_links_user = [
         ("Account", "account.index"),
         ("Logout", "auth.logout")
     ]
+    
+    bottom_nav_links_admin = [
+            ("Configure", "configure.index"),
+            ("Manage users", "manage_users.index")
+        ]
+    
     if is_logged_in_admin():
-        bottom_nav_links.insert(
-            0, ("Configure", "configure.index")
-        )
+        bottom_nav_links = bottom_nav_links_admin + bottom_nav_links_user
+    else:
+        bottom_nav_links = bottom_nav_links_user
 
     return {
         "main_nav_links": main_nav_links,
         "bottom_nav_links": bottom_nav_links
     }
-
 
 def inject_active_page():
     """ Return dictionary with the active page URL for context processor. """

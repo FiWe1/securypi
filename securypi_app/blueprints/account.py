@@ -35,7 +35,9 @@ def handle_form_action(form):
         
         username = username if username is not None and username != "" else None
         email = email if email is not None and email != "" else None
-        message = update_account_details(username=username,
+        user = User.get_by_id(session.get("user_id"))
+        message = update_account_details(user=user,
+                                         username=username,
                                          email=email)
         flash(message)
     return redirect(url_for("account.index"))

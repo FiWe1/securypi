@@ -88,12 +88,23 @@ def validate_login(username, password) -> tuple[User | None, str | None]:
 def verify_change_user_password(current_password,
                                 new_password,
                                 new_password_again) -> str:
+    """
+    Verify and change password of the logged in user.
+    Returns result message.
+    """
     user, old_password_error = (
             validate_login(g.user["username"], current_password)
         )
     if old_password_error is not None:
         return old_password_error
     
+    if user is None:
+        return "Could not verify user."
+    
+    return change_user_password(user, new_password, new_password_again)
+
+
+def change_user_password(user: User, new_password, new_password_again) -> str:
     new_password_error = validate_str_password(new_password)
     if new_password_error is not None:
         return new_password_error
@@ -108,12 +119,11 @@ def verify_change_user_password(current_password,
     return "Failed to verify and change password"
 
 
-def update_account_details(username=None, email=None) -> str:
-    user_id = session.get("user_id")
-    user = User.get_by_id(user_id) if user_id is not None else None
-    if user is None:
-        return "Failed to identify current user."
-    
+def update_account_details(user: User, username=None, email=None, is_admin=None) -> str:
+    """
+    Verify passed on user properties and update user account.
+    Returns result message.
+    """
     update = False
     # update username
     if username is not None and username != user.username:
@@ -136,6 +146,11 @@ def update_account_details(username=None, email=None) -> str:
         else:
             return f"Email '{email}' is in invalid format."
     
+    # update is_admin
+    if is_admin is not None:
+        user.is_admin = is_admin
+        update = True
+    
     # apply update
     if update == True:
         result = user.update()
@@ -145,4 +160,36 @@ def update_account_details(username=None, email=None) -> str:
             return result
     else:
         return "No changes to update."
+
+
+def register_user(username,
+                  password,
+                  confirm_password,
+                  is_admin=False,
+                  email=None) -> str:
+    """
+    Register a new user with the provided credentials.
+    Returns an error message if registration fails, otherwise a success message.
+    """
+    error = validate_str_username(username)
+    if error is not None:
+        return error
     
+    error = validate_str_password(password)
+    if error is not None:
+        return error
+    if password != confirm_password:
+        return "Passwords do not match!"
+    
+    if email is not None and email != "":
+        if not is_email_valid(email):
+            return f"Email '{email}' is in invalid format."
+    
+    if not User.is_username_free(username):
+        return f"Username '{username}' is already taken."
+    
+    _, message = User.register(username=username,
+                                    password=password,
+                                    is_admin=is_admin,
+                                    email=email)
+    return message
