@@ -16,6 +16,13 @@ bp = Blueprint("measurements", __name__, url_prefix="/measurements")
 @bp.route("/data")
 @login_required
 def data():
+    """
+    Fetch measurements data in local timezone.
+    { temp|hum|pres: {
+            times: [], # own time data in case of missing values
+            vals: []
+      }, ...}
+    """
     # optimalisation: fetching local timezone only once here
     config = AppConfig.get()
     local_timezone = ZoneInfo(config.measurements.geolocation.timezone)
@@ -36,14 +43,15 @@ def data():
         }
     }
     for mes in measurements:
+        local_mes_time = mes.time_local_timezone(local_timezone).isoformat()
         if mes.temperature is not None:
-            data["temp"]["times"].append(mes.time_local_timezone(local_timezone).isoformat())
+            data["temp"]["times"].append(local_mes_time)
             data["temp"]["vals"].append(mes.temperature)
         if mes.humidity is not None:
-            data["hum"]["times"].append(mes.time_local_timezone(local_timezone).isoformat())
+            data["hum"]["times"].append(local_mes_time)
             data["hum"]["vals"].append(mes.humidity)
         if mes.pressure is not None:
-            data["pres"]["times"].append(mes.time_local_timezone(local_timezone).isoformat())
+            data["pres"]["times"].append(local_mes_time)
             data["pres"]["vals"].append(mes.pressure)
 
     return jsonify(data)
