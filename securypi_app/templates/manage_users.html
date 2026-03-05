@@ -32,12 +32,10 @@
         </li>
         {% endif %}
         {% endfor %}
-        <li>
-          <div class="manage_users__user--buttons">
-            <button class="button_submit button_mild_round button_color_go" type="submit" name="action" value="add_new_user">
-              + add new user
-            </button>
-          </div>
+        <li class="manage_users__user--buttons">
+          <button class="button_submit button_mild_round button_color_go" type="submit" name="action" value="add_new_user">
+            + add new user
+          </button>
         </li>
       </ul>
 		</form>
@@ -76,15 +74,13 @@
           </li>
           {% endif %}
           {% endfor %}
-          <li>
-            <div class="manage_users__user--buttons">
-              <button class="button_submit button_mild_round button_color_caution" type="submit" name="action" value="edit_user">
-                Update
-              </button>
-              <button class="button_submit button_mild_round button_color_danger" type="submit" name="action" value="delete_user">
-                Delete
-              </button>
-            </div>
+          <li class="manage_users__user--buttons">
+            <button class="button_submit button_mild_round button_color_caution" type="submit" name="action" value="edit_user">
+              Update
+            </button>
+            <button class="button_submit button_mild_round button_color_danger" type="submit" name="action" value="delete_user">
+              Delete
+            </button>
           </li>
         </ul>
       </form>
