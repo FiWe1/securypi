@@ -139,6 +139,7 @@ class MotionCapturing(MotionCapturingInterface):
         print("Background MotionCapturing has started")
 
     def stop(self):
+        """ Stop background motion capturing, if it was running. """
         if self._capturing_thread is not None:
             self._capturing_stop_event.set()  # signal stop
             if self._capturing_thread:
