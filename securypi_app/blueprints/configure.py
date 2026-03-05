@@ -51,13 +51,3 @@ def index():
     is_weather_logging = sensor.measurement_logger.is_logging()
     return render_template("configure.html",
                            is_weather_logging=is_weather_logging)
-
-
-"""
-@TODO {
-    CREATE CONFIG DATABASE
-set username and password length requirements (get them in string_parsing)
-set overview camera resolution for picture, video 
-set temp logging interval
-}
-"""

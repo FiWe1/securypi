@@ -8,8 +8,6 @@ from securypi_app.peripherals.camera.mycam import MyPicamera2
 from securypi_app.peripherals.measurements.weather_station import WeatherStation
 
 
-# @TODO from user settings db
-TEMP_UNIT = "C"
 MEASUREMENTS_REFRESH_SEC = 30
 
 
@@ -49,11 +47,8 @@ def picture_feed():
 @bp.route("/current_measurements")
 @login_required
 def current_measurements():
-    # temperature and humidity sensor @TODO from db)
-    temp_unit = "C"  # @TODO from user settings in db
-
     sensor = WeatherStation.get_instance()
-    measurements = sensor.present_measure_or_na(temp_unit=temp_unit)
+    measurements = sensor.present_measure_or_na()
     return jsonify(measurements)
 
 
@@ -72,11 +67,10 @@ def index():
     Main overview page showing either live stream or snapshot based on mode,
     together with measurements.
     """
-    temp_unit = TEMP_UNIT
     measurements_refresh_sec = MEASUREMENTS_REFRESH_SEC
 
     sensor = WeatherStation.get_instance()
-    measurements = sensor.present_measure_or_na(temp_unit=temp_unit)
+    measurements = sensor.present_measure_or_na()
 
     # get the desired mode from the request (default to "picture")
     mode = request.args.get("mode", "picture")

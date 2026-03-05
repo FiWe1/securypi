@@ -63,7 +63,6 @@ def handle_form_action(form):
                                 confirm_password,
                                 is_admin,
                                 email)
-        flash(message)
         
     elif action == "edit_user":
         user_id = form.get("user_id")
@@ -83,14 +82,15 @@ def handle_form_action(form):
                                    password,
                                    confirm_password,
                                    is_admin)
-        flash(message)
         
     elif action == "delete_user":
         username = form.get("username")
         
         message = delete_user_action(username)
-        flash(message)
+    else:
+        message = "Unknown form action."
     
+    flash(message)
     return redirect(url_for("manage_users.index"))
 
 

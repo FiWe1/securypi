@@ -446,36 +446,56 @@ body {
   grid-row: 2; /* site content: below flash messages */
 
   display: grid;
-  grid-template-columns: repeat(11, 1fr);
-  grid-template-rows: auto 1fr;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1em;
   
   margin: 1em;
 }
 
 .camera_control__title {
-  grid-column: 1 / 12;
+  grid-column: 1 / -1;
   grid-row: 1;
-
-  margin-bottom: 1em;
 }
 
-.camera_control__background_tasks {
-  grid-column: 1 / 12;
-  grid-row: 2;
-
+.camera_control__background_tasks,
+.camera_control__configure {
   margin-left: 1em;
+  margin-bottom: 1em;
 }
 
 .camera_control__recording {
   display: flex;
   flex-direction: column;
-
-  margin-bottom: 2em;
 }
 
 .camera_control__motion_capturing {
   display: flex;
   flex-direction: column;
+}
+
+.camera_control__configure_list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 1rem 1.5rem;
+  align-items: center;
+
+  margin-left: 1em;
+}
+
+.camera_control__configure_list--item {
+  display: contents;
+}
+
+.camera_control__configure_list--item input {
+  max-width: 3em;
+}
+
+.camera_control__configure_list button {
+  width: 6rem;
 }
 
 
@@ -772,6 +792,7 @@ body {
     grid-template-rows: auto 1fr;
   }
 
+
   /*
    * NAVIGATION
   */
@@ -804,10 +825,10 @@ body {
     padding-bottom: 0.9rem;
   }
 
+
   /*
    * OVERVIEW
   */
-
   .overview__measurements {
     grid-column: 6 / 12;
     grid-row: 1;
@@ -851,6 +872,7 @@ body {
     height: 3rem;
   }
 
+
   /*
    * MEASUREMENTS
   */
@@ -863,6 +885,22 @@ body {
 
     margin-left: 0.5em;
   }
+
+
+  /*
+   * CAMERA CONTROL
+  */
+  .camera_control {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .camera_control__background_tasks,
+  .camera_control__configure {
+    margin-left: 0em;
+    margin-bottom: 1.5em;
+  }
+
 
   /*
    * RECORDINGS
@@ -952,7 +990,6 @@ body {
   /*
    * MANAGE USERS
   */
-
   .manage_users__user--labels {
     display: none;
   }

@@ -3,28 +3,108 @@
 {% block site_content %}
 <div class="camera_control">
   <h1 class="camera_control__title">{% block title %}Camera Control{% endblock %}</h1>
-  <div class="camera_control__background_tasks">
-    <div class="camera_control__recording">
-      <h2>Recording to a file</h2>
-      {% if is_recording %}
-      <span>Recording is running</span>
-      <a class="distinguished_link text_color_danger" href={{ url_for('camera_control.stop_recording') }}>Stop recording</a>
-      {% else %}
-      <span>Currently not running a recording</span>
-      <a class="distinguished_link text_color_go" href={{ url_for('camera_control.start_recording') }}>Start recording</a>
-      {% endif %}
-    </div>
-    
-    <div class="camera_control__motion_capturing">
-      <h2>Motion Capturing</h2>
-      {% if is_motion_capturing %}
-      <span>Detecting and capturing motion</span>
-      <a class="distinguished_link text_color_danger" href={{ url_for('camera_control.stop_motion_capturing') }}>Stop motion capturing</a>
-      {% else %}
-      <span>Currently not capturing motion</span>
-      <a class="distinguished_link text_color_go" href={{ url_for('camera_control.start_motion_capturing') }}>Start  motion capturing</a>
-      {% endif %}
-    </div>
-  </div>
+
+  <section class="camera_control__background_tasks camera_control__recording">
+    <h2>Recording to a file</h2>
+    {% if is_recording %}
+    <span>Recording is running</span>
+    <a class="distinguished_link text_color_danger" href={{ url_for('camera_control.stop_recording') }}>Stop recording</a>
+    {% else %}
+    <span>Currently not running a recording</span>
+    <a class="distinguished_link text_color_go" href={{ url_for('camera_control.start_recording') }}>Start recording</a>
+    {% endif %}
+  </section>
+
+  <section class="camera_control__background_tasks camera_control__motion_capturing">
+    <h2>Motion Capturing</h2>
+    {% if is_motion_capturing %}
+    <span>Detecting and capturing motion</span>
+    <a class="distinguished_link text_color_danger" href={{ url_for('camera_control.stop_motion_capturing') }}>Stop motion capturing</a>
+    {% else %}
+    <span>Currently not capturing motion</span>
+    <a class="distinguished_link text_color_go" href={{ url_for('camera_control.start_motion_capturing') }}>Start  motion capturing</a>
+    {% endif %}
+  </section>
+
+  <section class="camera_control__configure camera_control__configure_recording">
+    <h2>Recording configuration</h2>
+    <form method="post">
+      <ul class="camera_control__configure_list">
+        {% for key in recording_config %}
+
+        {% if key == "resolution" %}
+        <li class="camera_control__configure_list--item">
+          <span>{{ key }}:</span>
+          <span>
+            <input class="my_form_input" name="{{ key }}" value="{{ recording_config[key][0] }}">
+            x {{ recording_config[key][1] }}
+          </span>
+        </li>
+        {% else %}
+        <li class="camera_control__configure_list--item">
+          {{ key }}:
+          <input class="my_form_input" name="{{ key }}" value="{{ recording_config[key] }}">
+        </li>
+        {% endif %}
+
+        {% endfor %}
+        <li>
+          <button class="button_submit button_mild_round" type="submit" name="action" value="update_recording_config">
+            Update
+          </button>
+        </li>
+      </ul>
+    </form>
+  </section>
+
+  <section class="camera_control__configure camera_control__configure_motion_capturing">
+    <h2>Motion capturing configuration</h2>
+    <form method="post">
+      <ul class="camera_control__configure_list">
+        {% for key in motion_capturing_config %}
+        <li class="camera_control__configure_list--item">
+          {{ key }}:
+          <input class="my_form_input" name="{{ key }}" value="{{ motion_capturing_config[key] }}">
+        </li>
+        {% endfor %}
+        <li>
+          <button class="button_submit button_mild_round" type="submit" name="action" value="update_motion_capturing_config">
+            Update
+          </button>
+        </li>
+      </ul>
+    </form>
+  </section>
+
+  <section class="camera_control__configure camera_control__configure_streaming">
+    <h2>Streaming configuration</h2>
+    <form method="post">
+      <ul class="camera_control__configure_list">
+        {% for key in streaming_config %}
+
+        {% if key == "resolution" %}
+        <li class="camera_control__configure_list--item">
+          <span>{{ key }}:</span>
+          <span>
+            <input class="my_form_input" name="{{ key }}" value="{{ streaming_config[key][0] }}">
+            x {{ streaming_config[key][1] }}
+          </span>
+        </li>
+        {% else %}
+        <li class="camera_control__configure_list--item">
+          {{ key }}:
+          <input class="my_form_input" name="{{ key }}" value="{{ streaming_config[key] }}">
+        </li>
+        {% endif %}
+
+        {% endfor %}
+        <li>
+          <button class="button_submit button_mild_round" type="submit" name="action" value="update_streaming_config">
+            Update
+          </button>
+        </li>
+      </ul>
+    </form>
+  </section>
 </div>
 {% endblock %}

@@ -11,13 +11,6 @@ from securypi_app.services.auth import (
 bp = Blueprint("account", __name__, url_prefix="/account")
 
 
-''' @TODO {
-    user preferences configuration:
-    - temperature unit (C/F)
-    - ...
-'''
-
-
 def handle_form_action(form):
     action = form["action"]
     if action == "change_password":
