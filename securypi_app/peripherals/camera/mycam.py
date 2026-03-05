@@ -57,9 +57,7 @@ class MyPicamera2(MyPicamera2Interface):
         # wrapping PiCamera2 instance
         self._picam = Picamera2()
 
-        self.configure_video_sensor()
-        self.configure_video_streams()
-        self.configure_runtime_controls()
+        self.refresh_configuration()
         
         # starting picamera here
         self._picam.start()
@@ -77,6 +75,12 @@ class MyPicamera2(MyPicamera2Interface):
     @classmethod
     def get_instance(cls):
         return cls()
+    
+    def refresh_configuration(self):
+        """ Refresh configuration after change. """
+        self.configure_video_sensor()
+        self.configure_video_streams()
+        self.configure_runtime_controls()
 
     def get_best_sensor_mode(self, resolution, fps):
         """

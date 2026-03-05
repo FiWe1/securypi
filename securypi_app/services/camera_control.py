@@ -2,6 +2,7 @@
 Helper functions for editing camera control configuration.
 """
 from securypi_app.models.app_config import AppConfig
+from securypi_app.peripherals.camera.mycam import MyPicamera2
 
 
 def get_recording_config() -> dict[str, int | tuple[int, int]]:
@@ -35,6 +36,7 @@ def get_motion_capturing_config() -> dict[str, int | float]:
         "frame change ratio threshold": config.camera.motion_capturing.frame_change_ratio_threshold
     }
     return motion_capturing_config
+
 
 def update_recording_config(current_config: dict[str, int | tuple[int, int]],
                             updated_config: dict[str, str]
@@ -70,6 +72,10 @@ def update_recording_config(current_config: dict[str, int | tuple[int, int]],
     
     if updated:
         config.save()
+        
+        mycam = MyPicamera2.get_instance()
+        mycam.refresh_configuration()
+        
         return "Recording configuration updated."
     else:
         return "No changes."
@@ -118,6 +124,10 @@ def update_streaming_config(current_config: dict[str, int | tuple[int, int]],
         
     if updated:
         config.save()
+        
+        mycam = MyPicamera2.get_instance()
+        mycam.refresh_configuration()
+        
         return "Streamig configuration updated."
     else:
         return "No changes."
@@ -173,6 +183,10 @@ def update_motion_capturing_config(current_config: dict[str, int | float],
         
     if updated:
         config.save()
+        
+        mycam = MyPicamera2.get_instance()
+        mycam.motion_capturing.apply_capturing_config()
+        
         return "Motion capturing configuration updated."
     else:
         return "No changes."
