@@ -5,6 +5,11 @@ from securypi_app.models.app_config import AppConfig
 from securypi_app.peripherals.camera.mycam import MyPicamera2
 
 
+def to_even(n: int) -> int:
+    """ Convert uneven number to closest higher even nubmer. """
+    return n + (n % 2)
+
+
 def get_recording_config() -> dict[str, int | tuple[int, int]]:
     """ Retrieve recording configuration from app_config.json """
     config = AppConfig.get()
@@ -48,11 +53,11 @@ def update_recording_config(current_config: dict[str, int | tuple[int, int]],
     # check inputs
     width_input = updated_config["resolution"]
     try:
-        width = int(width_input)
+        width = to_even(int(width_input))
     except Exception as e:
         return f"Resolution width must be an integer, no: {width_input}"
     aspect_ratio = 16 / 9
-    height = int(width / aspect_ratio)
+    height = to_even(int(width / aspect_ratio))
     updated_resolution = (width, height)
     
     framerate_input = updated_config["framerate"]
