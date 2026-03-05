@@ -96,11 +96,11 @@ def update_streaming_config(current_config: dict[str, int | tuple[int, int]],
     # check inputs
     width_input = updated_config["resolution"]
     try:
-        width = int(width_input)
+        width = to_even(int(width_input))
     except Exception as e:
         return f"Resolution width must be an integer, no: {width_input}"
     aspect_ratio = 16 / 9
-    height = int(width / aspect_ratio)
+    height = to_even(int(width / aspect_ratio))
     updated_resolution = (width, height)
     
     framerate_input = updated_config["framerate"]
