@@ -13,9 +13,8 @@
     <form method="post">
       <ul class="manage_users__user--info_list">
         {% for key in user_data[0] %}
-
         {% if key == "user_id" %}
-        <!-- user_id invisible -->
+        {# user_id invisible #}
         {% elif key == "admin" %}
         <li class="manage_users__user--info_list_item">
           <label class="checkbox_area">
@@ -32,13 +31,14 @@
             type="{{ 'password' if (key == 'new password' or key == 'confirm password') else 'text' }}">
         </li>
         {% endif %}
-
         {% endfor %}
+        <li>
           <div class="manage_users__user--buttons">
             <button class="button_submit button_mild_round button_color_go" type="submit" name="action" value="add_new_user">
               + add new user
             </button>
           </div>
+        </li>
       </ul>
 		</form>
   </section>
@@ -52,15 +52,13 @@
         {% endif %}
       {% endfor %}
       </ul>
-
       {% for user in user_data %}
-
       <form method="post" class="manage_users__user--form">
+        <input name="user_id" value="{{ user['user_id'] }}" hidden>
         <ul class="manage_users__user--info_list">
           {% for key in user %}
-          
           {% if key == "user_id" %}
-            <input name="user_id" class="manage_users__user--info_list_item_input" value="{{ user['user_id'] }}" hidden>
+          {# user_id invisible #}
           {% elif key == "new password" or key == "confirm password" %}
           <li class="manage_users__user--info_list_item">
             <input class="my_form_input manage_users__user--info_list_item_input" name="{{ key }}" placeholder="{{ key }}" type="password">
@@ -68,7 +66,7 @@
           {% elif key == "admin" %}
           <li class="manage_users__user--info_list_item">
             <label class="checkbox_area">
-              <input type="checkbox" class="" name="{{ key }}" {{ "checked" if user[key] == True else "unchecked" }}>
+              <input type="checkbox" class="" name="{{ key }}" {{ "checked" if user[key] == True else "" }}>
               admin
             </label>
           </li>
@@ -77,16 +75,17 @@
             <input class="my_form_input manage_users__user--info_list_item_input" name="{{ key }}" placeholder="{{ key }}" value="{{ user[key] }}">
           </li>
           {% endif %}
-
           {% endfor %}
-          <div class="manage_users__user--buttons">
-            <button class="button_submit button_mild_round button_color_caution" type="submit" name="action" value="edit_user">
-              Update
-            </button>
-            <button class="button_submit button_mild_round button_color_danger" type="submit" name="action" value="delete_user">
-              Delete
-            </button>
-          </div>
+          <li>
+            <div class="manage_users__user--buttons">
+              <button class="button_submit button_mild_round button_color_caution" type="submit" name="action" value="edit_user">
+                Update
+              </button>
+              <button class="button_submit button_mild_round button_color_danger" type="submit" name="action" value="delete_user">
+                Delete
+              </button>
+            </div>
+          </li>
         </ul>
       </form>
       {% endfor %}
