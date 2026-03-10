@@ -2,10 +2,22 @@
 Helper functions for accessing captured videos in: captures/...
 """
 import os
+import shutil
 from pathlib import Path
 from werkzeug.utils import secure_filename
 from zipstream import ZipStream
 from securypi_app.models.app_config import AppConfig
+
+
+MIN_FREE_STORAGE_BYTES = 1 * 1024 ** 3  # 1 GB
+
+
+def has_enough_free_storage(path: Path) -> bool:
+    """
+    Return True if the filesystem hosting 'path' has at least 1 GB free.
+    """
+    path.mkdir(parents=True, exist_ok=True)
+    return shutil.disk_usage(path).free >= MIN_FREE_STORAGE_BYTES
 
 
 def motion_captures_path() -> Path:

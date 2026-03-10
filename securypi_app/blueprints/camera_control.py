@@ -7,6 +7,9 @@ from securypi_app.services.camera_control import (
     update_streaming_config
 )
 from securypi_app.peripherals.camera.mycam import MyPicamera2, Quality
+from securypi_app.services.captures import (
+    has_enough_free_storage, recordings_path, motion_captures_path
+)
 
 
 ### Globals ###
@@ -18,9 +21,11 @@ bp = Blueprint("camera_control", __name__, url_prefix="/camera_control")
 def start_recording():
     camera = MyPicamera2.get_instance()
 
-    if camera.motion_capturing.is_motion_capturing():
+    if not has_enough_free_storage(recordings_path()):
+        message = "Not enough free storage (less than 1 GB). Cannot start recording."
+    elif camera.motion_capturing.is_motion_capturing():
         message = (
-            "Can't start a recording wile "
+            "Can't start a recording while "
             "background motion capturing is running."
         )
     else:
@@ -58,12 +63,20 @@ def stop_recording():
 def start_motion_capturing():
     camera = MyPicamera2.get_instance()
 
-    try:
-        camera.motion_capturing.set_motion_capturing(True)
-        message = "Started motion capturing."
-    except Exception as e:
-        print(f"Error starting motion capturing: {e}")
-        message = f"An error occured during starting motion capturing."
+    if not has_enough_free_storage(motion_captures_path()):
+        message = "Not enough free storage (less than 1 GB). Cannot start motion capturing."
+    elif camera.is_recording():
+        message = (
+            "Can't start motion capturing while "
+            "background recording is running."
+        )
+    else:
+        try:
+            camera.motion_capturing.set_motion_capturing(True)
+            message = "Started motion capturing."
+        except Exception as e:
+            print(f"Error starting motion capturing: {e}")
+            message = f"An error occured during starting motion capturing."
 
     flash(message)
     return redirect(url_for("camera_control.index"))
