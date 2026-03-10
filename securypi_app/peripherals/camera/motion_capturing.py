@@ -7,7 +7,9 @@ import numpy as np   # pyright: ignore[reportMissingImports]
 from scipy.ndimage import gaussian_filter   # pyright: ignore[reportMissingImports]
 
 from securypi_app.services.string_parsing import timed_filename
-from securypi_app.services.captures import motion_captures_path, has_enough_free_storage
+from securypi_app.services.captures import (
+    motion_captures_path, has_enough_free_storage, enforce_motion_captures_window
+)
 from securypi_app.peripherals.camera.motion_capturing_interface import (
     MotionCapturingInterface
 )
@@ -44,6 +46,7 @@ class MotionCapturing(MotionCapturingInterface):
         self._change_ratio_threshold = threshold_ratio
         self._min_recording_length = min_length
         self._max_recording_length = max_length
+        self._window_size_gb = config.camera.motion_capturing.motion_captures_window_size_gb
 
         if capture:
             self.start()
@@ -146,6 +149,16 @@ class MotionCapturing(MotionCapturingInterface):
                 self._capturing_thread.join(timeout=2.0)
 
             self._capturing_thread = None
+    
+    def _on_new_motion_detected(self, folderpath, ratio):
+        """ Handle the start of a new motion recording. """
+        enforce_motion_captures_window(folderpath, self._window_size_gb)
+        
+        filename = folderpath / timed_filename(".mp4")
+        self._mycam.start_recording_to_file(filename)
+        print(datetime.now().strftime("%Y-%m-%d_%H-%M"),
+              f"New motion: {round(ratio * 100, 2)}% "
+              f"frame change ratio")
 
     def loop_motion_capturing(self, debug=False):
         """
@@ -156,6 +169,7 @@ class MotionCapturing(MotionCapturingInterface):
         - self._change_ratio_threshold
         - self._min_recording_length
         - self._max_recording_length
+        - self._window_size_gb
         """
         w, h = self._mycam.get_current_resolution(target="lores")
 
@@ -189,24 +203,18 @@ class MotionCapturing(MotionCapturingInterface):
                         self._mycam.stop_recording_to_file()
                         low_storage_exit = True
                         break
-                    
+
                     # start recording
                     if not self._mycam.is_recording():
-                        filename = folderpath / timed_filename(".mp4")
-
-                        self._mycam.start_recording_to_file(filename)
+                        self._on_new_motion_detected(folderpath, ratio)
                         recording_start_time = time.time()
-
-                        print(datetime.now().strftime("%Y-%m-%d_%H-%M"),
-                              f"New motion: {round(ratio * 100, 2)}% "
-                              f"frame change ratio")
                     # restart recording if it exceeds max length
                     elif time.time() - recording_start_time > self._max_recording_length:
                         self._mycam.stop_recording_to_file()
                         self._mycam.start_recording_to_file(folderpath /
                                                             timed_filename(".mp4"))
                         recording_start_time = time.time()
-                        
+
                     last_detected = time.time()
                 else:
                     # Stop recording if no motion detected for
@@ -215,7 +223,7 @@ class MotionCapturing(MotionCapturingInterface):
                         time.time() - last_detected > self.get_min_recording_length()
                     ):
                         self._mycam.stop_recording_to_file()
-            
+
             prev = cur
 
             if self._capturing_stop_event.wait(timeout=detection_timeout):

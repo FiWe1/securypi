@@ -27,6 +27,7 @@ class MotionCaptureConfig(BaseModel):
     min_motion_capture_length_sec: int = Field(gt=0) # > 0
     max_motion_capture_length_sec: int
     frame_change_ratio_threshold: float = Field(ge=0.0, le=1.0) # 0.0 <= x= < 1.0
+    motion_captures_window_size_gb: float = Field(gt=0.0) # > 0.0
     description: Optional[str] = None
 
 # - measurements -

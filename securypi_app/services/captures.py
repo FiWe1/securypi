@@ -46,6 +46,27 @@ def recordings_path() -> Path:
     return path
 
 
+def enforce_motion_captures_window(path: Path, window_size_gb: float) -> None:
+    """
+    Delete oldest motion captures until the total folder size fits within
+    window_size_gb
+    """
+    window_size_bytes = window_size_gb * 1024 ** 3
+    # files sorted by modification time, from oldest to newer
+    files = sorted(
+        (f for f in path.iterdir() if f.is_file()),
+        key=lambda f: f.stat().st_mtime
+    )
+    total = sum(f.stat().st_size for f in files)
+    for f in files:
+        if total <= window_size_bytes:
+            break
+        size = f.stat().st_size
+        f.unlink()
+        total -= size
+        print(f"Window size enforcement: deleted {f.name}")
+
+
 # "captures/motion_captures"
 def list_motion_captures() -> list[str]:
     return sorted(os.listdir(motion_captures_path()))
