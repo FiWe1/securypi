@@ -218,7 +218,9 @@ class MyPicamera2(MyPicamera2Interface):
     def start_recording_to_file(self,
                                 output_path: str,
                                 stream: str = "main",
-                                encode_quality=Quality.MEDIUM):
+                                encode_quality=None):
+        if encode_quality is None:
+            encode_quality = Quality.MEDIUM
         if self._recording_encoder is not None:
             raise RuntimeError("Recording already in progress.")
 
@@ -232,7 +234,9 @@ class MyPicamera2(MyPicamera2Interface):
 
     def start_default_recording(self,
                                 stream="main",
-                                encode_quality=Quality.LOW) -> Path:
+                                encode_quality=None) -> Path:
+        if encode_quality is None:
+            encode_quality = Quality.LOW
         filename = timed_filename(".mp4")
         
         folder_path = recordings_path()

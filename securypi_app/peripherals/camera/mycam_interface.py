@@ -13,7 +13,7 @@ class MyPicamera2Interface(ABC):
         pass
     
     @abstractmethod
-    def get_current_resolution(self, target) -> tuple[int, int]:
+    def get_current_resolution(self, target="sensor") -> tuple[int, int]:
         """
         Get current configured resolution for:
         'target' = "sensor" -> sensor resolution
@@ -22,7 +22,7 @@ class MyPicamera2Interface(ABC):
         """
 
     @abstractmethod
-    def set_noise_reduction(self, noise_reduction_mode):
+    def set_noise_reduction(self, noise_reduction_mode="Fast"):
         """
         Noise Reduction Modes:
         {
@@ -36,7 +36,7 @@ class MyPicamera2Interface(ABC):
         pass
     
     @abstractmethod
-    def set_framerate(self, framerate):
+    def set_framerate(self, framerate=None):
         pass
 
     @abstractmethod
@@ -46,8 +46,8 @@ class MyPicamera2Interface(ABC):
     @abstractmethod
     def start_recording_to_file(self,
                                 output_path: str,
-                                stream: str,
-                                encode_quality):
+                                stream: str = "main",
+                                encode_quality=None):
         """
         Start high-res video recording to file.
         - 'output_path': full path to output file as string
@@ -57,8 +57,8 @@ class MyPicamera2Interface(ABC):
         pass
     @abstractmethod
     def start_default_recording(self,
-                                stream,
-                                encode_quality) -> Path:
+                                stream="main",
+                                encode_quality=None) -> Path:
         """
         Start recording to /captures/recordings
         with returned default filename (current datetime).

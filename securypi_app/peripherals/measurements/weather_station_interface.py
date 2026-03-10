@@ -37,7 +37,7 @@ class WeatherStationInterface(ABC):
         pass
 
     @abstractmethod
-    def measure(self, repeat) -> dict[str, float] | None:
+    def measure(self, repeat=5) -> dict[str, float] | None:
         """ 
         Measure temperature and humidity using sensor device.
         On failure, retry 'repeat' times before returning None.
