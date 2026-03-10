@@ -17,6 +17,54 @@ from securypi_app.services.auth import is_logged_in_admin
 bp = Blueprint("recordings", __name__, url_prefix="/recordings")
 
 
+@bp.route("/stream_motion_capture/<filename>")
+@login_required
+def stream_motion_capture(filename):
+    directory = motion_captures_absolute_path(current_app.root_path)
+    if is_motion_capture_valid(filename):
+        return send_from_directory(directory, filename)
+    flash(f"Invalid filename: {filename}")
+    return redirect(url_for("recordings.index"))
+
+
+@bp.route("/stream_recording/<filename>")
+@login_required
+def stream_recording(filename):
+    directory = recordings_absolute_path(current_app.root_path)
+    if is_recording_valid(filename):
+        return send_from_directory(directory, filename)
+    flash(f"Invalid filename: {filename}")
+    return redirect(url_for("recordings.index"))
+
+
+@bp.route("/delete_motion_capture/<filename>", methods=["POST"])
+@login_required
+def delete_single_motion_capture(filename):
+    if is_logged_in_admin():
+        if is_motion_capture_valid(filename):
+            delete_motion_captures([filename])
+            flash(f"Deleted {filename}.")
+        else:
+            flash(f"Invalid filename: {filename}")
+    else:
+        flash("Delete failed, you don't have enough privileges.")
+    return redirect(url_for("recordings.index"))
+
+
+@bp.route("/delete_recording/<filename>", methods=["POST"])
+@login_required
+def delete_single_recording(filename):
+    if is_logged_in_admin():
+        if is_recording_valid(filename):
+            delete_recordings([filename])
+            flash(f"Deleted {filename}.")
+        else:
+            flash(f"Invalid filename: {filename}")
+    else:
+        flash("Delete failed, you don't have enough privileges.")
+    return redirect(url_for("recordings.index"))
+
+
 @bp.route("/download_motion_capture/<filename>")
 def download_motion_capture(filename):
     directory = motion_captures_absolute_path(current_app.root_path)
@@ -38,6 +86,7 @@ def download_recording(filename):
 
 
 def handle_batch_form_action(form):
+    """ Batch download / delete selected recordings, motion capturees. """
     action = form.get("action")
 
     motion_captures = list_motion_captures()

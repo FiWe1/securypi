@@ -4,6 +4,31 @@
 <div class="recordings">
   <h1 class="recordings__title">{% block title %}Recordings{% endblock %}</h1>
   
+  <div class="recordings__player">
+    <video class="recordings__player--video" controls>
+      <source id="recordings__player--source" src="" type="video/mp4">
+    </video>
+    <div class="recordings__player--controls">
+      <span class="recordings__player--filename">Select a recording for preview</span>
+      <div class="recordings__player--buttons">
+        <form id="recordings__player--download_form" method="get" action="" style="display:none;">
+          <button type="submit"
+                  class="button_mild_round background_color_go recordings__player--btn">
+            Download
+          </button>
+        </form>
+        {% if g.user["is_admin"] == True %}
+        <form id="recordings__player--delete_form" method="post" action="" style="display:none;">
+          <button type="submit"
+                  class="button_mild_round background_color_danger recordings__player--btn">
+            Delete
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
   <form id="recordings__form" method="post">
     <div class="recordings__list">
       <div class="recordings__list--motion_captures">
@@ -17,7 +42,12 @@
             <label class="checkbox_area">
               <input type="checkbox" class="recordings__form--checkbox motion_capture_checkbox" name="{{ entry }}" value="no">
             </label>
-            <a class="distinguished_link recordings__list--file_link" href="{{ url_for('recordings.download_motion_capture', filename=entry) }}">
+            <a class="distinguished_link recordings__list--file_link"
+               href="{{ url_for('recordings.download_motion_capture', filename=entry) }}"
+               data-stream-url="{{ url_for('recordings.stream_motion_capture', filename=entry) }}"
+               data-download-url="{{ url_for('recordings.download_motion_capture', filename=entry) }}"
+               data-delete-url="{{ url_for('recordings.delete_single_motion_capture', filename=entry) }}"
+               data-filename="{{ entry }}">
               {{ entry }}
             </a>
           </span>
@@ -34,23 +64,17 @@
           <label class="checkbox_area">
             <input type="checkbox" class="recordings__form--checkbox recording_checkbox" name="{{ entry }}" value="no">
           </label>
-            <a class="distinguished_link recordings__list--file_link" href="{{ url_for('recordings.download_recording', filename=entry) }}">
+            <a class="distinguished_link recordings__list--file_link"
+               href="{{ url_for('recordings.download_recording', filename=entry) }}"
+               data-stream-url="{{ url_for('recordings.stream_recording', filename=entry) }}"
+               data-download-url="{{ url_for('recordings.download_recording', filename=entry) }}"
+               data-delete-url="{{ url_for('recordings.delete_single_recording', filename=entry) }}"
+               data-filename="{{ entry }}">
               {{ entry }}
             </a>
           </span>
           {% endfor %}
       </div>
-    </div>
-    
-    <div class="recordings__form--submit_buttons">
-      <button class="button_mild_round background_color_go" type="submit" name="action" value="download_selected">
-        Download selected
-      </button>
-      {% if g.user["is_admin"] == True %}
-      <button class="button_mild_round background_color_danger" type="submit" name="action" value="delete_selected">
-        Delete selected
-      </button>
-      {% endif %}
     </div>
   </form>
 </div>
@@ -59,8 +83,59 @@
 {% block body %}
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  /// delete dialog ///
-  rec_form = document.getElementById('recordings__form')
+  /// player ///
+  const videoEl = document.querySelector(".recordings__player--video");
+  const sourceEl = document.getElementById("recordings__player--source");
+  const filenameEl = document.querySelector(".recordings__player--filename");
+  const downloadForm = document.getElementById("recordings__player--download_form");
+  const deleteForm = document.getElementById("recordings__player--delete_form");
+
+  document.querySelectorAll(".recordings__list--file_link").forEach(link => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+
+      // clear active state on all links
+      document.querySelectorAll(".recordings__list--file_link").forEach(l => {
+        l.classList.remove("recordings__list--file_link--active");
+      });
+      link.classList.add("recordings__list--file_link--active");
+
+      const streamUrl = link.dataset.streamUrl;
+      const downloadUrl = link.dataset.downloadUrl;
+      const deleteUrl = link.dataset.deleteUrl;
+      const filename = link.dataset.filename;
+
+      // load video
+      sourceEl.src = streamUrl;
+      videoEl.load();
+      videoEl.play().catch(() => {}); // autoplay may be blocked; ignore
+
+      filenameEl.textContent = filename;
+
+      if (downloadForm) {
+        downloadForm.action = downloadUrl;
+        downloadForm.style.display = "";
+      }
+
+      if (deleteForm) {
+        deleteForm.action = deleteUrl;
+        deleteForm.style.display = "";
+      }
+    });
+  });
+
+  /// delete dialog (player) ///
+  if (deleteForm) {
+    deleteForm.addEventListener("submit", (event) => {
+      const filename = filenameEl.textContent;
+      if (!confirm(`Are you sure you want to delete "${filename}"?`)) {
+        event.preventDefault();
+      }
+    });
+  }
+
+  /// batch delete dialog ///
+  const rec_form = document.getElementById('recordings__form');
   if (rec_form) {
     rec_form.addEventListener('submit', function(event) {
       // submit button type
