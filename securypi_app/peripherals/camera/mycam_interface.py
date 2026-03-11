@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
+from numpy import ndarray
 
 class MyPicamera2Interface(ABC):
     """
@@ -75,4 +76,12 @@ class MyPicamera2Interface(ABC):
     @abstractmethod
     def capture_picture(self):
         """ Capture an image, return image data. """
+        pass
+    
+    @abstractmethod
+    def capture_buffer(self, stream="main") -> ndarray:
+        """
+        Capture buffer and return as numpy array
+        from desired stream (main | lores)
+        """
         pass

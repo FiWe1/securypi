@@ -150,11 +150,11 @@ class MotionCapturing(MotionCapturingInterface):
 
             self._capturing_thread = None
     
-    def _on_new_motion_detected(self, folderpath, ratio):
+    def _on_new_motion_detected(self, folder_path, ratio):
         """ Handle the start of a new motion recording. """
-        enforce_motion_captures_window(folderpath, self._window_size_gb)
+        enforce_motion_captures_window(folder_path, self._window_size_gb)
         
-        filename = folderpath / timed_filename(".mp4")
+        filename = folder_path / timed_filename(".mp4")
         self._mycam.start_recording_to_file(filename)
         print(datetime.now().strftime("%Y-%m-%d_%H-%M"),
               f"New motion: {round(ratio * 100, 2)}% "
@@ -173,16 +173,16 @@ class MotionCapturing(MotionCapturingInterface):
         """
         w, h = self._mycam.get_current_resolution(target="lores")
 
-        folderpath = motion_captures_path()
+        folder_path = motion_captures_path()
         detection_timeout = 1 / self._detection_rate
 
-        last_detected: time = 0
-        recording_start_time: time = 0
+        last_detected: float = 0
+        recording_start_time: float = 0
         prev = None
         low_storage_exit = False
         while True:
 
-            cur = self._mycam._picam.capture_buffer("lores")
+            cur = self._mycam.capture_buffer(stream="lores")
             cur = cur[:w * h].reshape(h, w)
             cur = gaussian_filter(cur.astype(np.float32), sigma=1)  # smooth
 
@@ -197,7 +197,7 @@ class MotionCapturing(MotionCapturingInterface):
 
                 # detect motion
                 if ratio >= self.get_change_ratio_threshold():
-                    if not has_enough_free_storage(folderpath):
+                    if not has_enough_free_storage(folder_path):
                         print("Not enough free storage (< 1 GB). "
                               "Stopping motion capturing.")
                         self._mycam.stop_recording_to_file()
@@ -206,13 +206,13 @@ class MotionCapturing(MotionCapturingInterface):
 
                     # start recording
                     if not self._mycam.is_recording():
-                        self._on_new_motion_detected(folderpath, ratio)
+                        self._on_new_motion_detected(folder_path, ratio)
                         recording_start_time = time.time()
                     # restart recording if it exceeds max length
                     elif time.time() - recording_start_time > self._max_recording_length:
                         self._mycam.stop_recording_to_file()
-                        self._mycam.start_recording_to_file(folderpath /
-                                                            timed_filename(".mp4"))
+                        file_path = str(folder_path / timed_filename(".mp4"))
+                        self._mycam.start_recording_to_file(file_path)
                         recording_start_time = time.time()
 
                     last_detected = time.time()

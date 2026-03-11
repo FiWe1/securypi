@@ -1,5 +1,6 @@
 import io
 from pathlib import Path
+from numpy import ndarray
 
 from securypi_app.services.string_parsing import timed_filename
 from securypi_app.services.captures import recordings_path
@@ -10,7 +11,7 @@ from securypi_app.models.app_config import AppConfig
 # Conditional Import for RPi picamera2 library
 try:
     from picamera2 import Picamera2    # pyright: ignore[reportMissingImports]
-    from libcamera import controls # pyright: ignore[reportMissingImports]
+    from libcamera import controls # pyright: ignore[reportAttributeAccessIssue]
     from picamera2.encoders import H264Encoder, Quality # pyright: ignore[reportMissingImports]
     from picamera2.outputs import PyavOutput # pyright: ignore[reportMissingImports]
     from securypi_app.peripherals.camera.motion_capturing import MotionCapturing # motion capturing is dependent on picamera2
@@ -260,3 +261,6 @@ class MyPicamera2(MyPicamera2Interface):
 
         # Return the byte data
         return buffer.getvalue()
+    
+    def capture_buffer(self, stream="main") -> ndarray:
+        return self._picam.capture_buffer(stream)

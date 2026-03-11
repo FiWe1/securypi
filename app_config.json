@@ -22,7 +22,7 @@
       "motion_detection_framerate": 10,
       "min_motion_capture_length_sec": 2,
       "max_motion_capture_length_sec": 60,
-      "frame_change_ratio_threshold": 0.001,
+      "frame_change_ratio_threshold": 0.0011,
       "motion_captures_window_size_gb": 10.0,
       "description": "Motion detection and capture configuration"
     }

@@ -1,4 +1,5 @@
 import random
+import numpy as np
 from threading import Thread, Event
 from io import BytesIO
 
@@ -183,6 +184,11 @@ class MockPicamera2:
         # Create a real JPEG image
         img = self.create_random_color_image(640, 360, brightness=0.5)
         img.save(stream, format=format)
+    
+    def capture_buffer(self, stream) -> np.ndarray:
+        """ Return numpy array with fake single color image. """
+        img = self.create_random_color_image(640, 360, brightness=0.5)
+        return np.asarray(img)
 
     def start(self):
         print("[MockPicamera2] Starting mock camera.")
