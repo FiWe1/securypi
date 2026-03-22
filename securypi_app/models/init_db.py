@@ -1,7 +1,7 @@
 import click
 from flask import current_app
 
-from . import db, measurement, user
+from . import db
 from .user import User
 from securypi_app.services.string_parsing import (
     validate_str_username, validate_str_password,
