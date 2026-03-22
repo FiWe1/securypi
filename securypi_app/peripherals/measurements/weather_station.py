@@ -6,6 +6,7 @@ from securypi_app.peripherals.measurements.weather_station_interface import (
     WeatherStationInterface
 )
 from securypi_app.models.app_config import AppConfig
+from securypi_app.services.notifications import notify_sensor_thresholds
 
 # sensors
 from securypi_app.peripherals.measurements.sensors.sensor_dht22 import SensorDht22
@@ -164,6 +165,11 @@ class WeatherStation(WeatherStationInterface):
             )
             if not new_measurement.log():
                 return None
+
+            try:
+                notify_sensor_thresholds(self._app, measurements)
+            except Exception as e:
+                print(f"Sensor threshold notification error: {e}")
 
         return measurements
 

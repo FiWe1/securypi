@@ -71,6 +71,15 @@ class CapturesConfig(BaseModel):
     recordings_path: str
     description: Optional[str] = None
 
+# - email -
+class EmailConfig(BaseModel):
+    smtp_host: str = ""
+    smtp_port: int = 587
+    smtp_username: str = ""
+    smtp_password: str = ""
+    smtp_use_tls: bool = True
+    description: Optional[str] = None
+
 
 # composite schemas
 #
@@ -100,6 +109,7 @@ class AppConfig(BaseModel):
     measurements: MeasurementsConfig
     authentication: AuthenticationConfig
     storage: StorageConfig
+    email: EmailConfig = Field(default_factory=EmailConfig)
     description: Optional[str] = None
 
     _lock: ClassVar[Lock] = Lock() # (ClassVar protects from pydantic)

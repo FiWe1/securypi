@@ -653,28 +653,60 @@ body {
   grid-row: 2; /* site content: below flash messages */
 
   display: grid;
-  grid-template-columns: repeat(11, 1fr);
-  grid-template-rows: auto 1fr;
+  grid-template-columns: auto;
+  grid-template-rows: repeat(3, min-content);
 
   margin: 1em;
 }
 
 .configure__title {
-  grid-column: 1 / 12;
   grid-row: 1;
 
   margin-bottom: 1em;
 }
 
-.configure__weather_logging {
-  grid-column: 1 / 12;
-  grid-row: 2;
-
+.configure__weather_logging,
+.configure__email_link {
   margin-left: 1em;
   display: flex;
   flex-direction: column;
 }
 
+.configure__email_link {
+  margin-top: 1em;
+}
+
+/* configure/email.html subpage */
+.configure__email {
+  grid-column: 1 / 12;
+  grid-row: 3;
+
+  margin-left: 1em;
+  margin-top: 1em;
+  display: flex;
+  flex-direction: column;
+}
+
+.configure__email_title {
+  grid-column: 1 / 12;
+  grid-row: 1;
+
+  margin-bottom: 1em;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.configure__email_form,
+.configure__email_test {
+  grid-column: 1 / 6;
+  margin-left: 1em;
+  margin-bottom: 2em;
+}
+
+.configure__email--submit {
+  margin-top: 1.5em;
+}
 
 
 /*
@@ -716,6 +748,7 @@ body {
   grid-template-columns: max-content 1fr;
   gap: 1rem 1.5rem;
   align-items: center;
+  justify-items: start;
   max-width: 25em;
 
   margin-left: 1em;
@@ -725,8 +758,24 @@ body {
   display: contents;
 }
 
+.account__notifications--checkbox {
+  width: 1.3rem;
+  height: 1.3rem;
+  cursor: pointer;
+}
+
+.account__notifications--no_email {
+  margin-left: 1em;
+}
+
+.account__info_list--section_label {
+  font-weight: bold;
+  padding-top: 0.3rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+}
+
 .account__change_password {
-  margin-top: 2em;
+  margin-top: 4em;
 }
 
 .account__change_password--current {
@@ -739,6 +788,10 @@ body {
 
 .account__change_password .auth__form {
   background-color: var(--background-ternary);
+}
+
+.account__notifications--list li input  {
+  max-width: 6em;
 }
 
 
@@ -1011,11 +1064,32 @@ body {
 
 
   /*
+   * CONFIGURE EMAIL
+  */
+
+  .configure__email_form,
+  .configure__email_test {
+    grid-column: 1 / -1;
+    margin-left: 0;
+  }
+  
+  .configure__email_form,
+  .configure__email_test {
+    grid-column: 1 / -1;
+    margin-left: 0;
+  }
+  
+  .configure__email_list li input {
+    max-width: 11em;
+  }
+
+  /*
    * ERROR
   */
   .error {
     margin: 0em 1em;
   }
+
 
 }
 
@@ -1033,6 +1107,11 @@ body {
   .distinguished_link {
     /* enable link underline for mobile devices */
     text-decoration: underline;
+  }
+
+  .account__notifications--checkbox {
+    width: 1.6rem;
+    height: 1.6rem;
   }
 
 

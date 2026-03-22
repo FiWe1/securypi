@@ -1,6 +1,7 @@
 import io
 from pathlib import Path
 from numpy import ndarray
+from flask import current_app
 
 from securypi_app.services.string_parsing import timed_filename
 from securypi_app.services.captures import recordings_path
@@ -54,6 +55,8 @@ class MyPicamera2(MyPicamera2Interface):
         if self._initialized:
             return
         super().__init__()
+
+        self._app = current_app._get_current_object()  # pyright: ignore[reportAttributeAccessIssue]
 
         # wrapping PiCamera2 instance
         self._picam = Picamera2()

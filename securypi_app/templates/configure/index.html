@@ -13,5 +13,9 @@
       <a class="distinguished_link text_color_go" href={{ url_for('configure.start_weather_logging') }}>Start background measurements</a>
       {% endif %}
   </div>
+  <div class="configure__email_link">
+    <h2>Email notifications</h2>
+    <a class="distinguished_link" href="{{ url_for('configure.email_config') }}">SMTP / email settings</a>
+  </div>
 </div>
 {% endblock %}

@@ -2,6 +2,7 @@ import pytest
 import os
 from time import sleep
 
+from securypi_app import create_app
 from securypi_app.peripherals.camera.mycam import MyPicamera2
 from securypi_app.peripherals.camera.streaming import StreamingOutput
 
@@ -14,7 +15,17 @@ Mycam package tests using pytest
 class TestMycamClass():
 
     @pytest.fixture
-    def picam(self):
+    def app(self):
+        """
+        Create the app.
+        To import the app context, add 'app' parameter to the test.
+        """
+        app = create_app()
+        with app.app_context():
+            yield app
+    
+    @pytest.fixture
+    def picam(self, app):
         """
         Every time yield the same MyPicamera2 instance,
         but with default configuration.
@@ -23,6 +34,7 @@ class TestMycamClass():
         yield mypicam
 
         # try to get MyPicamera2 to default state
+        mypicam.motion_capturing.stop()
         mypicam._picam.stop()
         mypicam.configure_video_sensor()
         mypicam.configure_video_streams()
@@ -118,21 +130,21 @@ class TestMycamClass():
     exposure_limits: (26, 220416802, 20000)
     """
 
-    modes = MyPicamera2.get_instance()._picam.sensor_modes
-
     @pytest.mark.parametrize(
-        "resolution,fps,expected",
+        "resolution,fps,expected_idx",
         [
-            ((1920, 1080), 30, modes[1]),
-            ((1920, 1080), 10, modes[2]),
-            ((1280, 720), 120, modes[0]),
-            ((1280, 720), 60, modes[0]),
-            ((1280, 720), 55, modes[1]),
-            ((1280, 720), 14, modes[2]),
+            ((1920, 1080), 30, 1),
+            ((1920, 1080), 10, 2),
+            ((1280, 720), 120, 0),
+            ((1280, 720), 60, 0),
+            ((1280, 720), 55, 1),
+            ((1280, 720), 14, 2),
             ((3840, 2160), 15, None),
-            ((3840, 2160), 14, modes[2]),
-            ((2000, 1500), 50, modes[1]),
+            ((3840, 2160), 14, 2),
+            ((2000, 1500), 50, 1),
         ],
     )
-    def test_get_best_sensor_mode(self, picam, resolution, fps, expected):
+    def test_get_best_sensor_mode(self, picam, resolution, fps, expected_idx):
+        modes = picam._picam.sensor_modes
+        expected = modes[expected_idx] if expected_idx is not None else None
         assert picam.get_best_sensor_mode(resolution, fps) == expected

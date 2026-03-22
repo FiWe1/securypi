@@ -34,9 +34,8 @@
         </li>
       </ul>
 		</form>
-  </section>
 
-	<section class="account__change_password">
+  <div class="account__change_password">
     <h2>Change your password:</h2>
 		<form method="post" class="auth__form">
 			<label for="current_password">Current password</label>
@@ -52,6 +51,126 @@
         Change password
       </button>
 		</form>
-	</section>
+	</div>
+  </section>
+
+  <section class="account__notifications">
+    <h2>Notification preferences</h2>
+
+    {% if not user_email %}
+    <p class="text_color_danger account__notifications--no_email">
+      No email address set &mdash; notifications cannot be sent.
+    </p>
+    {% endif %}
+
+    <form method="post">
+    <section class="account__info">
+      <h3>Motion capture</h3>
+      <ul class="account__info_list">
+        <li class="account__info_list--item">
+          <label for="motion_capture_enabled">Email me when motion is detected</label>
+          <input class="checkbox_area" type="checkbox" id="motion_capture_enabled"
+                 name="motion_capture_enabled" value="1"
+                 {% if prefs.motion_capture_enabled %}checked{% endif %}>
+        </li>
+      </ul>
+    </section>
+
+    <section class="account__info account__notifications">
+      <h3>Temperature alerts (&deg;C)</h3>
+      <ul class="account__info_list account__notifications--list">
+        <li class="account__info_list--item">
+          <label for="temp_enabled">Enable temperature alerts</label>
+          <input class="checkbox_area" type="checkbox" id="temp_enabled"
+                 name="temp_enabled" value="1"
+                 {% if prefs.temp_enabled %}checked{% endif %}>
+        </li>
+        <li class="account__info_list--item">
+          <label for="temp_lower">Lower limit</label>
+          <input class="my_form_input" type="number" step="any" id="temp_lower"
+                 name="temp_lower"
+                 value="{{ prefs.temp_lower if prefs.temp_lower is not none else '' }}"
+                 placeholder="e.g. 5">
+        </li>
+        <li class="account__info_list--item">
+          <label for="temp_upper">Upper limit</label>
+          <input class="my_form_input" type="number" step="any" id="temp_upper"
+                 name="temp_upper"
+                 value="{{ prefs.temp_upper if prefs.temp_upper is not none else '' }}"
+                 placeholder="e.g. 35">
+        </li>
+      </ul>
+    </section>
+
+    <section class="account__info account__notifications">
+      <h3>Humidity alerts (%)</h3>
+      <ul class="account__info_list account__notifications--list">
+        <li class="account__info_list--item">
+          <label for="humidity_enabled">Enable humidity alerts</label>
+          <input class="checkbox_area" type="checkbox" id="humidity_enabled"
+                 name="humidity_enabled" value="1"
+                 {% if prefs.humidity_enabled %}checked{% endif %}>
+        </li>
+        <li class="account__info_list--item">
+          <label for="humidity_lower">Lower limit</label>
+          <input class="my_form_input" type="number" step="any" id="humidity_lower"
+                 name="humidity_lower"
+                 value="{{ prefs.humidity_lower if prefs.humidity_lower is not none else '' }}"
+                 placeholder="e.g. 20">
+        </li>
+        <li class="account__info_list--item">
+          <label for="humidity_upper">Upper limit</label>
+          <input class="my_form_input" type="number" step="any" id="humidity_upper"
+                 name="humidity_upper"
+                 value="{{ prefs.humidity_upper if prefs.humidity_upper is not none else '' }}"
+                 placeholder="e.g. 80">
+        </li>
+      </ul>
+    </section>
+
+    <section class="account__info account__notifications">
+      <h3>Pressure alerts (hPa)</h3>
+      <ul class="account__info_list account__notifications--list">
+        <li class="account__info_list--item">
+          <label for="pressure_enabled">Enable pressure alerts</label>
+          <input class="checkbox_area" type="checkbox" id="pressure_enabled"
+                 name="pressure_enabled" value="1"
+                 {% if prefs.pressure_enabled %}checked{% endif %}>
+        </li>
+        <li class="account__info_list--item">
+          <label for="pressure_lower">Lower limit</label>
+          <input class="my_form_input" type="number" step="any" id="pressure_lower"
+                 name="pressure_lower"
+                 value="{{ prefs.pressure_lower if prefs.pressure_lower is not none else '' }}"
+                 placeholder="e.g. 980">
+        </li>
+        <li class="account__info_list--item">
+          <label for="pressure_upper">Upper limit</label>
+          <input class="my_form_input" type="number" step="any" id="pressure_upper"
+                 name="pressure_upper"
+                 value="{{ prefs.pressure_upper if prefs.pressure_upper is not none else '' }}"
+                 placeholder="e.g. 1050">
+        </li>
+      </ul>
+    </section>
+
+    <section class="account__info account__notifications">
+      <h3>Alert cooldown</h3>
+      <ul class="account__info_list account__notifications--list">
+        <li class="account__info_list--item">
+          <label for="cooldown_minutes">Min. minutes between alerts</label>
+          <input class="my_form_input" type="number" min="1" step="1" id="cooldown_minutes"
+                 name="cooldown_minutes"
+                 value="{{ prefs.cooldown_minutes }}">
+        </li>
+        <li>
+          <button class="button_submit button_mild_round" type="submit" name="action" value="update_notifications">
+            Save preferences
+          </button>
+        </li>
+      </ul>
+    </section>
+  </form>
+  </section>
 </div>
 {% endblock %}

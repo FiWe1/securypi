@@ -15,6 +15,7 @@ from securypi_app.peripherals.camera.motion_capturing_interface import (
 )
 from securypi_app.peripherals.camera.mycam_interface import MyPicamera2Interface
 from securypi_app.models.app_config import AppConfig
+from securypi_app.services.notifications import notify_motion_capture
 
 
 class MotionCapturing(MotionCapturingInterface):
@@ -153,12 +154,16 @@ class MotionCapturing(MotionCapturingInterface):
     def _on_new_motion_detected(self, folder_path, ratio):
         """ Handle the start of a new motion recording. """
         enforce_motion_captures_window(folder_path, self._window_size_gb)
-        
+
         filename = folder_path / timed_filename(".mp4")
         self._mycam.start_recording_to_file(filename)
         print(datetime.now().strftime("%Y-%m-%d_%H-%M"),
               f"New motion: {round(ratio * 100, 2)}% "
               f"frame change ratio")
+        try:
+            notify_motion_capture(self._mycam._app)
+        except Exception as e:
+            print(f"Motion capture notification error: {e}")
 
     def loop_motion_capturing(self, debug=False):
         """

@@ -12,7 +12,7 @@ class TestWeatherStation():
     def app(self):
         """
         Create the app.
-        To import the app context, add 'app' parameter to the thest.
+        To import the app context, add 'app' parameter to the test.
         """
         app = create_app()
         with app.app_context():
