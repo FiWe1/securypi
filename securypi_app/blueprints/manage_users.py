@@ -104,6 +104,8 @@ def index():
     
     users = User.fetch_all()
     current_id = session.get("user_id")
+    user_labels = ["user_id", "username", "new password", "confirm password",
+        "email", "admin"]
     user_data = [
         {
             "user_id": user.id,
@@ -116,4 +118,5 @@ def index():
         for user in users if user.id != current_id
     ]
     return render_template("manage_users.html",
+                           user_labels=user_labels,
                            user_data=user_data)

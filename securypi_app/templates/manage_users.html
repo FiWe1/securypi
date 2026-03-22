@@ -12,7 +12,7 @@
     <h2>Add new user</h2>
     <form method="post">
       <ul class="manage_users__user--info_list">
-        {% for key in user_data[0] %}
+        {% for key in user_labels %}
         {% if key == "user_id" %}
         {# user_id invisible #}
         {% elif key == "admin" %}
@@ -44,7 +44,7 @@
   <section class="manage_users__user">
     <h2>Edit users</h2>
       <ul class="manage_users__user--labels">
-      {% for key in user_data[0] %}
+      {% for key in user_labels %}
         {% if key != "user_id" and key != "is_admin"%}
           <li>{{ key }}</li>
         {% endif %}
