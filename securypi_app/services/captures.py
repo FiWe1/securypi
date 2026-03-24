@@ -68,8 +68,8 @@ def enforce_motion_captures_window(path: Path, window_size_gb: float) -> None:
 
 
 # "captures/motion_captures"
-def list_motion_captures() -> list[str]:
-    return sorted(os.listdir(motion_captures_path()))
+def list_motion_captures(reverse: bool = False) -> list[str]:
+    return sorted(os.listdir(motion_captures_path()), reverse=reverse)
 
 
 def motion_captures_absolute_path(current_app_root_path: str) -> str:
@@ -97,8 +97,8 @@ def delete_motion_captures(motion_captures: list[str]) -> None:
 
 
 # "captures/recordings"
-def list_recordings() -> list[str]:
-    return sorted(os.listdir(recordings_path()))
+def list_recordings(reverse: bool = False) -> list[str]:
+    return sorted(os.listdir(recordings_path()), reverse=reverse)
 
 
 def recordings_absolute_path(current_app_root_path: str) -> str:

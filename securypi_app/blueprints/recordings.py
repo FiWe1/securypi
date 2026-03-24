@@ -141,8 +141,8 @@ def index():
     if request.method == "POST":
         return handle_batch_form_action(request.form)
 
-    motion_captures = list_motion_captures()
-    recordings = list_recordings()
+    motion_captures = list_motion_captures(reverse=True)
+    recordings = list_recordings(reverse=True)
 
     return render_template("recordings.html",
                            motion_captures=motion_captures,
