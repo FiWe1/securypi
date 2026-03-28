@@ -1,4 +1,5 @@
 import os
+import secrets
 
 from flask import Flask
 
@@ -10,8 +11,7 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
 
     app.config.from_mapping(
-        # a default secret, should be overridden by instance config
-        SECRET_KEY="very_complex_and_unpredictable_secret_key",
+        SECRET_KEY=secrets.token_hex(32),
         # db path: instance folder
         SQLALCHEMY_DATABASE_URI = (
             "sqlite:///" + os.path.join(app.instance_path,
