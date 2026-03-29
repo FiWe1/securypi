@@ -60,6 +60,14 @@ body {
   text-decoration: underline;
 }
 
+button.distinguished_link {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: inherit;
+  font-family: inherit;
+}
+
 .text_color_danger {
   color: var(--color-danger);
 }
@@ -225,7 +233,7 @@ body {
 }
 
 
-.navbar a {
+.navbar__link {
   color: var(--nav-link-color);
   text-decoration: none;
   padding: 1em;
@@ -233,15 +241,33 @@ body {
   padding-left: 1.3em;
 }
 
-.navbar a:hover {
+.navbar__link:hover {
   text-decoration: underline;
 }
 
-.navbar a.link--active {
+.navbar__link--active {
   color: var(--nav-link-color-active);
   font-weight: bold;
 }
 
+/* logout button */
+.navbar__bottom form {
+  display: contents;
+}
+
+button.navbar__link {
+  color: var(--nav-link-color);
+  text-decoration: none;
+  padding: 1em;
+  padding-left: 1.3em;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: var(--nav-link-size);
+  font-family: inherit;
+  text-align: left;
+  width: 100%;
+}
 
 
 

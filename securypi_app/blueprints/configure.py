@@ -11,7 +11,7 @@ from securypi_app.services.email import send_email_async
 bp = Blueprint("configure", __name__, url_prefix="/configure")
 
 
-@bp.route("/start_weather_logging")
+@bp.route("/start_weather_logging", methods=["POST"])
 @login_required
 @admin_rights_required
 def start_weather_logging():
@@ -28,7 +28,7 @@ def start_weather_logging():
     return redirect(url_for("configure.index"))
 
 
-@bp.route("/stop_weather_logging")
+@bp.route("/stop_weather_logging", methods=["POST"])
 @login_required
 @admin_rights_required
 def stop_weather_logging():

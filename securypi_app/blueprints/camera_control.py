@@ -16,7 +16,7 @@ from securypi_app.services.captures import (
 bp = Blueprint("camera_control", __name__, url_prefix="/camera_control")
 
 
-@bp.route("/start_recording")
+@bp.route("/start_recording", methods=["POST"])
 @login_required
 def start_recording():
     camera = MyPicamera2.get_instance()
@@ -43,7 +43,7 @@ def start_recording():
     return redirect(url_for("camera_control.index"))
 
 
-@bp.route("/stop_recording")
+@bp.route("/stop_recording", methods=["POST"])
 @login_required
 def stop_recording():
     camera = MyPicamera2.get_instance()
@@ -58,7 +58,7 @@ def stop_recording():
     flash(message)
     return redirect(url_for("camera_control.index"))
 
-@bp.route("/start_motion_capturing")
+@bp.route("/start_motion_capturing", methods=["POST"])
 @login_required
 def start_motion_capturing():
     camera = MyPicamera2.get_instance()
@@ -82,7 +82,7 @@ def start_motion_capturing():
     return redirect(url_for("camera_control.index"))
 
 
-@bp.route("/stop_motion_capturing")
+@bp.route("/stop_motion_capturing", methods=["POST"])
 @login_required
 def stop_motion_capturing():
     camera = MyPicamera2.get_instance()

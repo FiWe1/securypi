@@ -34,7 +34,7 @@ def load_logged_in_user():
     
     g.user = None # fail
 
-@bp.route("/logout")
+@bp.route("/logout", methods=["POST"])
 @login_required
 def logout():
     session.clear()

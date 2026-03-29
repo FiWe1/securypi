@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from 'includes/macros.html' import action_form %}
 
 {% block site_content %}
 <div class="configure">
@@ -7,10 +8,14 @@
     <h2>Background sensor measurement</h2>
       {% if is_weather_logging %}
       <span>Running background measurements</span>
-      <a class="distinguished_link text_color_danger" href={{ url_for('configure.stop_weather_logging') }}>Stop background measurements</a>
+      {% call action_form(url_for('configure.stop_weather_logging')) %}
+        <button type="submit" class="distinguished_link text_color_danger">Stop background measurements</button>
+      {% endcall %}
       {% else %}
       <span>Currently not running background measurements</span>
-      <a class="distinguished_link text_color_go" href={{ url_for('configure.start_weather_logging') }}>Start background measurements</a>
+      {% call action_form(url_for('configure.start_weather_logging')) %}
+        <button type="submit" class="distinguished_link text_color_go">Start background measurements</button>
+      {% endcall %}
       {% endif %}
   </div>
   <div class="configure__email_link">
