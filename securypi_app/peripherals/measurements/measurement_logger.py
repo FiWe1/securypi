@@ -24,16 +24,14 @@ class MeasurementLogger(MeasurementLoggerInterface):
         Countinuously log sensor measurements to the database
         in configured interval.
         """
-        # The new thread needs app context in order to have access
-        # to app variables, access to database
-        sleep(0.1) # avoid too many read requests at app start
-        with self._weather_station._app.app_context():
-            while True:
+        while True:
+            with self._weather_station._app.app_context():
+                # access to app variables, to database with app context
                 self._weather_station.measure_and_log()
-                interval = self._logging_interval
-                if self._logging_stop_event.wait(timeout=interval):
-                    print("Background WeatherSensor logger exited cleanly.")
-                    break
+            interval = self._logging_interval
+            if self._logging_stop_event.wait(timeout=interval):
+                print("Background WeatherSensor logger exited cleanly.")
+                break
 
     def is_logging(self) -> bool:
         return self._logging_thread is not None
