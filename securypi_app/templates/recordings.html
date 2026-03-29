@@ -19,6 +19,7 @@
         </form>
         {% if g.user["is_admin"] == True %}
         <form id="recordings__player--delete_form" method="post" action="" style="display:none;">
+          <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
           <button type="submit"
                   class="button_mild_round background_color_danger recordings__player--btn">
             Delete
@@ -30,6 +31,7 @@
   </div>
 
   <form id="recordings__form" method="post">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
     <div class="recordings__list">
       <div class="recordings__list--motion_captures">
         <h2>Motion Captures</h2>

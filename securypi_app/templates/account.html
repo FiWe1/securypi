@@ -11,6 +11,7 @@
   <section class="account__info">
     <h2>Account information</h2>
     <form method="post">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
       <ul class="account__info_list">
         {% for key in account_details %}
 
@@ -38,6 +39,7 @@
   <div class="account__change_password">
     <h2>Change your password:</h2>
 		<form method="post" class="auth__form">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
 			<label for="current_password">Current password</label>
 			<input id="current_password" class="account__change_password--current" type="password" name="current_password" required>
 
@@ -64,6 +66,7 @@
     {% endif %}
 
     <form method="post">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
     <section class="account__info">
       <h3>Motion capture</h3>
       <ul class="account__info_list">

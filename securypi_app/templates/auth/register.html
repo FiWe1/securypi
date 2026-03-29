@@ -6,6 +6,7 @@
 
 {% block body %}
   <form method="post" class="auth__form">
+    <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
     <label for="username">Username</label>
     <input name="username" id="username" required>
 

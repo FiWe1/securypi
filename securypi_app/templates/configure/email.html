@@ -10,6 +10,7 @@
   <section class="configure__email_form">
     <h2>SMTP server settings</h2>
     <form method="post">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
       <input type="hidden" name="action" value="save_smtp">
       <ul class="account__info_list configure__email_list">
         <li class="account__info_list--item">
@@ -30,7 +31,7 @@
         <li class="account__info_list--item">
           <label for="smtp_password">Password</label>
           <input class="my_form_input" type="password" id="smtp_password" name="smtp_password"
-                 value="" placeholder="{% if email_config.smtp_password %}••••••••{% endif %}">
+                 value="" placeholder="••••••••">
         </li>
         <li class="account__info_list--item">
           <label for="smtp_use_tls">Use TLS/SSL</label>
@@ -45,6 +46,7 @@
   <section class="configure__email_test">
     <h2>Send test email</h2>
     <form method="post" action="{{ url_for('configure.send_test_email') }}">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
       <ul class="account__info_list configure__email_list">
         <li class="account__info_list--item">
           <label for="test_recipient">Recipient address</label>

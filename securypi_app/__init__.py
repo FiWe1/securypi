@@ -2,6 +2,7 @@ import os
 import secrets
 
 from flask import Flask
+from flask_wtf.csrf import CSRFProtect
 
 from .models import db
 
@@ -36,6 +37,10 @@ def create_app(test_config=None):
     except OSError:
         pass
 
+    # CSRF = Cross-Site Request Forgery form protection
+    # - check every form for input name '_csrf_token' with value csrf_token()
+    CSRFProtect(app)
+    
     # DATABASE
     # initialize the app with the extension
     db.init_app(app)

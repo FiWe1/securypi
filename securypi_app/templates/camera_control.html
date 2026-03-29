@@ -29,6 +29,7 @@
   <section class="camera_control__configure camera_control__configure_recording">
     <h2>Recording configuration</h2>
     <form method="post">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
       <ul class="camera_control__configure_list">
         {% for key in recording_config %}
 
@@ -60,6 +61,7 @@
   <section class="camera_control__configure camera_control__configure_motion_capturing">
     <h2>Motion capturing configuration</h2>
     <form method="post">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
       <ul class="camera_control__configure_list">
         {% for key in motion_capturing_config %}
         <li class="camera_control__configure_list--item">
@@ -79,6 +81,7 @@
   <section class="camera_control__configure camera_control__configure_streaming">
     <h2>Streaming configuration</h2>
     <form method="post">
+      <input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
       <ul class="camera_control__configure_list">
         {% for key in streaming_config %}
 
