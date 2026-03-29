@@ -53,8 +53,10 @@ def create_app(test_config=None):
     # CONTEXT PROCESSOR
     # inject into the template context
     from .services.navbar import inject_nav_links, inject_active_page
+    from .services.auth import inject_is_logged_in
     app.context_processor(inject_nav_links)
     app.context_processor(inject_active_page)  # from current request
+    app.context_processor(inject_is_logged_in)
 
     # REGISTER BLUEPRINTS
     from .blueprints import (

@@ -19,6 +19,11 @@ def is_logged_in():
     return session.get("username") is not None
 
 
+def inject_is_logged_in():
+    """ Context processor to inject 'is_logged_in' into template context. """
+    return {'is_logged_in': is_logged_in()}
+
+
 def login_required(view):
     """
     Decorate view requiring user to be logged in,

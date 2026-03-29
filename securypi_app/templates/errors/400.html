@@ -2,10 +2,10 @@
 
 {% block site_content %}
 <div class="error">
-  <h1>{% block title %}Error - Page not found (404){% endblock %}</h1>
+  <h1>{% block title %}Error - Bad Request (400){% endblock %}</h1>
     <div class="error__body">
+      <span>{{ error_description }}</span>
       <span>
-        Check your URL or
         <a class="distinguished_link" href={{ url_for('index') }}>return home</a>
       </span>
     </div>
