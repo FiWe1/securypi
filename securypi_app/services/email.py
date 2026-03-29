@@ -3,6 +3,7 @@ from email.mime.text import MIMEText
 from threading import Thread
 
 from securypi_app.models.app_config import AppConfig
+from securypi_app.models.app_secrets import AppSecrets
 
 
 def send_email(to_address, subject, body):
@@ -28,7 +29,7 @@ def send_email(to_address, subject, body):
             if email_cfg.smtp_use_tls:
                 server.starttls()
             if email_cfg.smtp_username:
-                server.login(email_cfg.smtp_username, email_cfg.smtp_password)
+                server.login(email_cfg.smtp_username, AppSecrets.get().smtp_password)
             server.sendmail(msg["From"], [to_address], msg.as_string())
     except Exception as e:
         print(f"Failed to send email to {to_address}: {e}")

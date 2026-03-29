@@ -3,6 +3,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, request
 from securypi_app.services.auth import login_required, admin_rights_required
 from securypi_app.peripherals.measurements.weather_station import WeatherStation
 from securypi_app.models.app_config import AppConfig
+from securypi_app.models.app_secrets import AppSecrets
 from securypi_app.services.email import send_email_async
 
 
@@ -69,11 +70,13 @@ def email_config():
                 config.email.smtp_host = request.form.get("smtp_host", "").strip()
                 config.email.smtp_port = int(request.form.get("smtp_port", 587))
                 config.email.smtp_username = request.form.get("smtp_username", "").strip()
-                smtp_password = request.form.get("smtp_password", "")
-                if smtp_password:  # only update password if a new one was entered
-                    config.email.smtp_password = smtp_password
                 config.email.smtp_use_tls = request.form.get("smtp_use_tls") == "1"
                 config.save()
+                smtp_password = request.form.get("smtp_password", "")
+                if smtp_password:  # only update password if a new one was entered
+                    secrets = AppSecrets.get()
+                    secrets.smtp_password = smtp_password
+                    secrets.save()
                 flash("SMTP settings saved.")
             except Exception as e:
                 flash(f"Failed to save SMTP settings: {e}")

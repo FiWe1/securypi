@@ -76,7 +76,6 @@ class EmailConfig(BaseModel):
     smtp_host: str = ""
     smtp_port: int = 587
     smtp_username: str = ""
-    smtp_password: str = ""
     smtp_use_tls: bool = True
     description: Optional[str] = None
 
@@ -118,11 +117,15 @@ class AppConfig(BaseModel):
 
     @classmethod
     def get_file_path(cls) -> str:
-        """ Assumes structure: root/config.json """
+        """
+        Get relative path to .json configuration file.
+        Assumes structure: {project_root}/config.json
+        """
         return "app_config.json"
 
     @classmethod
     def fetch(cls):
+        """ Fetch data into instance from .json configuration file. """
         path = cls.get_file_path()
         with open(path, "r") as f:
             data = json.load(f)
@@ -131,19 +134,26 @@ class AppConfig(BaseModel):
 
     @classmethod
     def get(cls) -> 'AppConfig':
-        if cls._instance is None:
-            cls.fetch()
+        """ Get the singleton instance of AppSecrets. """
+        with cls._lock:
+            if cls._instance is None:
+                cls.fetch()
         return cls._instance
     
     def save(self):
+        """ Save the current instance to the .json configuration file. """
         with self._lock:
-            config_dict = self.model_dump()
+            self._write(self.get_file_path())
+
+    def _write(self, path: str):
+        """ Atomic write to the .json configuration file. """
+        temp_path = f"{path}.tmp"
+        
+        config_dict = self.model_dump()
+        with open(temp_path, "w") as f:
+            json.dump(config_dict, f, indent=2)
             
-            temp_path = f"{self.get_file_path()}.tmp"
-            with open(temp_path, "w") as f:
-                json.dump(config_dict, f, indent=2)
-                
-            # atomic rename - os-level operation
-            # ('config.json' is never in a half-written state)
-            os.replace(temp_path, self.get_file_path())
-            print("Config saved safely to disk.")
+        # atomic rename - os-level operation
+        # ('config.json' is never in a half-written state)
+        os.replace(temp_path, path)
+        print("Config saved safely to disk.")
