@@ -134,7 +134,7 @@ def update_streaming_config(current_config: dict[str, int | tuple[int, int]],
         mycam = MyPicamera2.get_instance()
         mycam.refresh_configuration()
         
-        return "Streamig configuration updated."
+        return "Streaming configuration updated."
     else:
         return "No changes."
 

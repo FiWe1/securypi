@@ -93,8 +93,6 @@ class Streaming(StreamingInterface):
 
         return self._streaming_output
 
-        return self._streaming_output
-
     def stop_capture_stream(self):
         """ Stop capturing stream. Resets the timeout timer. """
         if self._stream_timer is not None:
