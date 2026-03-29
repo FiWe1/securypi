@@ -7,7 +7,7 @@
   {% block head %}{% endblock %}
 </head>
 <body class="grid_navbar">
-{% if g.user is not none %}
+{% if is_logged_in %}
   {% include "includes/navbar.html" %}
 {% endif %}
 
