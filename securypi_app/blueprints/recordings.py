@@ -66,6 +66,7 @@ def delete_single_recording(filename):
 
 
 @bp.route("/download_motion_capture/<filename>")
+@login_required
 def download_motion_capture(filename):
     directory = motion_captures_absolute_path(current_app.root_path)
     if is_motion_capture_valid(filename):
@@ -76,6 +77,7 @@ def download_motion_capture(filename):
 
 
 @bp.route("/download_recording/<filename>")
+@login_required
 def download_recording(filename):
     directory = recordings_absolute_path(current_app.root_path)
     if is_recording_valid(filename):
@@ -86,7 +88,7 @@ def download_recording(filename):
 
 
 def handle_batch_form_action(form):
-    """ Batch download / delete selected recordings, motion capturees. """
+    """ Batch download / delete selected recordings, motion captures. """
     action = form.get("action")
 
     motion_captures = list_motion_captures()
@@ -98,7 +100,7 @@ def handle_batch_form_action(form):
                            if form.get(rec) is not None]
     motion_count = len(selected_motion_captures)
     rec_count = len(selected_recordings)
-
+    
     if action == "delete_selected":
         # only admin can delete
         if is_logged_in_admin():
@@ -119,16 +121,21 @@ def handle_batch_form_action(form):
         else:
             message = "Delete failed, you don't have enough privileges."
     elif action == "download_selected":
-        zip_stream = create_zip_stream(
-            selected_motion_captures, selected_recordings
-        )
-        return Response(
-            zip_stream,
-            mimetype="application/zip",
-            headers={
-                "Content-Disposition": f"attachment; filename=selected_captures.zip",
-            }
-        )
+        if selected_motion_captures or selected_recordings:
+            zip_stream = create_zip_stream(
+                selected_motion_captures, selected_recordings
+            )
+            return Response(
+                zip_stream,
+                mimetype="application/zip",
+                headers={
+                    "Content-Disposition": f"attachment; filename=selected_captures.zip",
+                }
+            )
+        else:
+            message = "Nothing to download"
+    else:
+        message = "Unknown action."
 
     flash(message)
     return redirect(url_for("recordings.index"))
