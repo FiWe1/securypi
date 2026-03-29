@@ -26,7 +26,7 @@ class MeasurementLogger(MeasurementLoggerInterface):
         """
         while True:
             with self._weather_station._app.app_context():
-                # access to app variables, to database with app context
+                # localised access to app variables, to database
                 self._weather_station.measure_and_log()
             interval = self._logging_interval
             if self._logging_stop_event.wait(timeout=interval):
