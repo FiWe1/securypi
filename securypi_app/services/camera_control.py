@@ -10,6 +10,51 @@ def to_even(n: int) -> int:
     return n + (n % 2)
 
 
+def _parse_positive_int(raw, label) -> tuple[int, None] | tuple[None, str]:
+    """
+    Check if 'raw' input is positive int.
+    On success return it's (int_value, None)
+    Otherwise return (None, string_error_message)
+    """
+    try:
+        v = int(raw)
+    except (ValueError, TypeError):
+        return None, f"{label} must be a positive integer, not '{raw}'"
+    if v <= 0:
+        return None, f"{label} must be a positive integer, not '{raw}'"
+    return v, None
+
+
+def _parse_positive_float(raw, label):
+    """
+    Check if 'raw' input is positive float.
+    On success return it's (float_value, None)
+    Otherwise return (None, string_error_message)
+    """
+    try:
+        v = float(raw)
+    except (ValueError, TypeError):
+        return None, f"{label} must be a positive float, not '{raw}'"
+    if v <= 0.0:
+        return None, f"{label} must be a positive float, not '{raw}'"
+    return v, None
+
+
+def _parse_bounded_float(raw, label, lowest, highest):
+    """
+    Check if 'raw' input is 'lowest' <= float_value 'highest'.
+    On success return it's (float_value, None)
+    Otherwise return (None, string_error_message)
+    """
+    try:
+        v = float(raw)
+    except (ValueError, TypeError):
+        return None, f"{label} must be a float between {lowest} and {highest}, not '{raw}'"
+    if not (lowest <= v <= highest):
+        return None, f"{label} must be a float between {lowest} and {highest}, not '{raw}'"
+    return v, None
+
+
 def get_recording_config() -> dict[str, int | tuple[int, int]]:
     """ Retrieve recording configuration from app_config.json """
     config = AppConfig.get()
@@ -53,20 +98,19 @@ def update_recording_config(current_config: dict[str, int | tuple[int, int]],
     """
     # check inputs
     width_input = updated_config["resolution"]
-    try:
-        width = to_even(int(width_input))
-    except Exception as e:
-        return f"Resolution width must be an integer, no: {width_input}"
+    width, err = _parse_positive_int(width_input, "Resolution width")
+    if err:
+        return err
+    width = to_even(width)
     aspect_ratio = 16 / 9
     height = to_even(int(width / aspect_ratio))
     updated_resolution = (width, height)
-    
+
     framerate_input = updated_config["framerate"]
-    try:
-        updated_framerate = int(framerate_input)
-    except Exception as e:
-        return f"Framerate must be an integer, no: {framerate_input}"
-    
+    updated_framerate, err = _parse_positive_int(framerate_input, "Framerate")
+    if err:
+        return err
+
     config = AppConfig.get()
     updated = False
     if updated_resolution != current_config["resolution"]:
@@ -75,17 +119,17 @@ def update_recording_config(current_config: dict[str, int | tuple[int, int]],
     if updated_framerate != current_config["framerate"]:
         config.camera.recording.framerate = updated_framerate
         updated = True
-    
+
     if updated:
         config.save()
-        
+
         mycam = MyPicamera2.get_instance()
         mycam.refresh_configuration()
-        
+
         return "Recording configuration updated."
     else:
         return "No changes."
-    
+
 
 def update_streaming_config(current_config: dict[str, int | tuple[int, int]],
                             updated_config: dict[str, str]
@@ -96,26 +140,24 @@ def update_streaming_config(current_config: dict[str, int | tuple[int, int]],
     """
     # check inputs
     width_input = updated_config["resolution"]
-    try:
-        width = to_even(int(width_input))
-    except Exception as e:
-        return f"Resolution width must be an integer, no: {width_input}"
+    width, err = _parse_positive_int(width_input, "Resolution width")
+    if err:
+        return err
+    width = to_even(width)
     aspect_ratio = 16 / 9
     height = to_even(int(width / aspect_ratio))
     updated_resolution = (width, height)
-    
+
     framerate_input = updated_config["framerate"]
-    try:
-        updated_framerate = int(framerate_input)
-    except Exception as e:
-        return f"Framerate must be an integer, no: {framerate_input}"
-    
+    updated_framerate, err = _parse_positive_int(framerate_input, "Framerate")
+    if err:
+        return err
+
     timeout_input = updated_config["timeout seconds"]
-    try:
-        updated_timeout = int(timeout_input)
-    except Exception as e:
-        return f"Timeout input must be an integer, no: {timeout_input}"
-    
+    updated_timeout, err = _parse_positive_int(timeout_input, "Timeout")
+    if err:
+        return err
+
     config = AppConfig.get()
     updated = False
     if updated_resolution != current_config["resolution"]:
@@ -127,13 +169,13 @@ def update_streaming_config(current_config: dict[str, int | tuple[int, int]],
     if updated_timeout != current_config["timeout seconds"]:
         config.camera.streaming.timeout_seconds = updated_timeout
         updated = True
-        
+
     if updated:
         config.save()
-        
+
         mycam = MyPicamera2.get_instance()
         mycam.refresh_configuration()
-        
+
         return "Streaming configuration updated."
     else:
         return "No changes."
@@ -148,36 +190,33 @@ def update_motion_capturing_config(current_config: dict[str, int | float],
     """
     # check inputs
     framerate_input = updated_config["motion detection framerate"]
-    try:
-        framerate = int(framerate_input)
-    except Exception as e:
-        return f"'motion detection framerate' must be an integer, no: {framerate_input}"
-    
+    framerate, err = _parse_positive_int(framerate_input, "'motion detection framerate'")
+    if err:
+        return err
+
     min_length_input = updated_config["min capture length seconds"]
-    try:
-        min_length = int(min_length_input)
-    except Exception as e:
-        return f"'min capture length seconds' must be an integer, no: {min_length_input}"
-    
+    min_length, err = _parse_positive_int(min_length_input, "'min capture length seconds'")
+    if err:
+        return err
+
     max_length_input = updated_config["max capture length seconds"]
-    try:
-        max_length = int(max_length_input)
-    except Exception as e:
-        return f"'max capture length seconds' must be an integer, no: {max_length_input}"
-    
+    max_length, err = _parse_positive_int(max_length_input, "'max capture length seconds'")
+    if err:
+        return err
+
+    if min_length > max_length:
+        return f"'min capture length seconds' ({min_length}) must not exceed 'max capture length seconds' ({max_length})"
+
     ratio_threshold_input = updated_config["frame change ratio threshold"]
-    try:
-        ratio_threshold = float(ratio_threshold_input)
-        assert ratio_threshold <= 1
-    except Exception as e:
-        return f"'frame change ratio threshold' must be a float <= 1.0, no: {ratio_threshold_input}"
-    
+    ratio_threshold, err = _parse_bounded_float(ratio_threshold_input, "'frame change ratio threshold'", 0.0, 1.0)
+    if err:
+        return err
+
     window_size_input = updated_config["motion captures window size in GB"]
-    try:
-        window_size = float(window_size_input)
-    except Exception as e:
-        return f"'motion captures window size in GB' must be a float, no: {ratio_threshold_input}"
-    
+    window_size, err = _parse_positive_float(window_size_input, "'motion captures window size in GB'")
+    if err:
+        return err
+
     config = AppConfig.get()
     updated = False
     if framerate != current_config["motion detection framerate"]:
@@ -195,13 +234,13 @@ def update_motion_capturing_config(current_config: dict[str, int | float],
     if window_size != current_config["motion captures window size in GB"]:
         config.camera.motion_capturing.motion_captures_window_size_gb = window_size
         updated = True
-        
+
     if updated:
         config.save()
-        
+
         mycam = MyPicamera2.get_instance()
         mycam.motion_capturing.apply_capturing_config()
-        
+
         return "Motion capturing configuration updated."
     else:
         return "No changes."

@@ -70,9 +70,20 @@ def email_config():
     if request.method == "POST":
         action = request.form.get("action")
         if action == "save_smtp":
+            # input check
+            smtp_port_input = request.form.get("smtp_port", "587")
+            try:
+                smtp_port = int(smtp_port_input)
+            except (ValueError, TypeError):
+                flash(f"SMTP port must be an integer between 1 and 65535, not '{smtp_port_input}'")
+                return redirect(url_for("configure.email_config"))
+            if not (1 <= smtp_port <= 65535):
+                flash(f"SMTP port must be an integer between 1 and 65535, not '{smtp_port_input}'")
+                return redirect(url_for("configure.email_config"))
+            # apply
             try:
                 config.email.smtp_host = request.form.get("smtp_host", "").strip()
-                config.email.smtp_port = int(request.form.get("smtp_port", 587))
+                config.email.smtp_port = smtp_port
                 config.email.smtp_username = request.form.get("smtp_username", "").strip()
                 config.email.smtp_use_tls = request.form.get("smtp_use_tls") == "1"
                 config.save()
