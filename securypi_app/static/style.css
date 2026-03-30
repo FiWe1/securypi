@@ -251,10 +251,6 @@ button.distinguished_link {
 }
 
 /* logout button */
-.navbar__bottom form {
-  display: contents;
-}
-
 button.navbar__link {
   color: var(--nav-link-color);
   text-decoration: none;
