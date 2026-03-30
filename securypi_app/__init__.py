@@ -38,7 +38,7 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    setup_logging(app.instance_path)
+    setup_logging(app.instance_path, debug=False) # True for more detail
 
     # CSRF = Cross-Site Request Forgery form protection
     # - check every form for input name '_csrf_token' with value csrf_token()

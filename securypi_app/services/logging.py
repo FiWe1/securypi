@@ -40,7 +40,7 @@ class DailyFileHandler(logging.Handler):
         super().close()
 
 
-def setup_logging(instance_path):
+def setup_logging(instance_path, debug=False):
     """
     Configure root logger with two handlers:
       - DailyFileHandler  → instance/logs/log_YYYY-MM-DD.txt
@@ -59,8 +59,10 @@ def setup_logging(instance_path):
 
     stream_handler = logging.StreamHandler(sys.stdout)
     stream_handler.setFormatter(formatter)
+    
+    logging_level = logging.DEBUG if debug else logging.INFO
 
     root = logging.getLogger()
-    root.setLevel(logging.DEBUG) # logging.INFO for less detail
+    root.setLevel(logging_level)
     root.addHandler(file_handler)
     root.addHandler(stream_handler)
