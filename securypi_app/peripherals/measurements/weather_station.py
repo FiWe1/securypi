@@ -1,3 +1,4 @@
+import logging
 import math
 
 from flask import current_app
@@ -17,6 +18,9 @@ from securypi_app.peripherals.measurements.sensors.sensor_qmp6988 import SensorQ
 from securypi_app.peripherals.measurements.measurement_logger import (
     MeasurementLogger
 )
+
+
+logger = logging.getLogger(__name__)
 
 
 class WeatherStation(WeatherStationInterface):
@@ -108,7 +112,7 @@ class WeatherStation(WeatherStationInterface):
         try:
             reading = sensor_read_func()
         except Exception as err:
-            print(f"Failed to read from {sensor_name}:\n{err}")
+            logger.error("Failed to read from %s: %s", sensor_name, err)
             reading = None
             
         if isinstance(reading, float):
@@ -169,7 +173,7 @@ class WeatherStation(WeatherStationInterface):
             try:
                 notify_sensor_thresholds(self._app, measurements)
             except Exception as e:
-                print(f"Sensor threshold notification error: {e}")
+                logger.error("Sensor threshold notification error: %s", e)
 
         return measurements
 

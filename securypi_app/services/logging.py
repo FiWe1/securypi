@@ -61,6 +61,6 @@ def setup_logging(instance_path):
     stream_handler.setFormatter(formatter)
 
     root = logging.getLogger()
-    root.setLevel(logging.INFO)
+    root.setLevel(logging.DEBUG) # logging.INFO for less detail
     root.addHandler(file_handler)
     root.addHandler(stream_handler)

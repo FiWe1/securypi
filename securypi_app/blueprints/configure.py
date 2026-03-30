@@ -1,3 +1,5 @@
+import logging
+
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 
 from securypi_app.services.auth import login_required, admin_rights_required
@@ -6,6 +8,8 @@ from securypi_app.models.app_config import AppConfig
 from securypi_app.models.app_secrets import AppSecrets
 from securypi_app.services.email import send_email_async
 
+
+logger = logging.getLogger(__name__)
 
 ### Globals ###
 bp = Blueprint("configure", __name__, url_prefix="/configure")
@@ -21,7 +25,7 @@ def start_weather_logging():
         sensor.measurement_logger.set_log_in_background(True)
         message = "Started logging data from sensors."
     except Exception as e:
-        print(f"Error starting weather logging: {e}")
+        logger.error("Error starting weather logging: %s", e)
         message = "An error occured during starting weather logging."
     
     flash(message)
@@ -38,7 +42,7 @@ def stop_weather_logging():
         sensor.measurement_logger.set_log_in_background(False)
         message = "Stopped logging data from sensors."
     except Exception as e:
-        print(f"Error stopping weather logging: {e}")
+        logger.error("Error stopping weather logging: %s", e)
         message = "An error occured during stopping weather logging."
 
     flash(message)

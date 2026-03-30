@@ -1,9 +1,12 @@
+import logging
 import smtplib
 from email.mime.text import MIMEText
 from threading import Thread
 
 from securypi_app.models.app_config import AppConfig
 from securypi_app.models.app_secrets import AppSecrets
+
+logger = logging.getLogger(__name__)
 
 
 def send_email(to_address, subject, body):
@@ -16,7 +19,7 @@ def send_email(to_address, subject, body):
     email_cfg = config.email
 
     if not email_cfg.smtp_host:
-        print("Email not configured: smtp_host is empty. Skipping.")
+        logger.debug("Email not configured: smtp_host is empty. Skipping.")
         return
 
     msg = MIMEText(body, "plain")
@@ -32,7 +35,7 @@ def send_email(to_address, subject, body):
                 server.login(email_cfg.smtp_username, AppSecrets.get().smtp_password)
             server.sendmail(msg["From"], [to_address], msg.as_string())
     except Exception as e:
-        print(f"Failed to send email to {to_address}: {e}")
+        logger.error("Failed to send email to %s: %s", to_address, e)
 
 
 def send_email_async(to_address, subject, body):

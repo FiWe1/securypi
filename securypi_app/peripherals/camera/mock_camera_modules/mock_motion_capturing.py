@@ -1,4 +1,8 @@
+import logging
+
 from securypi_app.peripherals.camera.motion_capturing import MotionCapturing
+
+logger = logging.getLogger(__name__)
 
 
 class MockMotionCapturing(MotionCapturing):
@@ -11,8 +15,8 @@ class MockMotionCapturing(MotionCapturing):
         Start background motion capturing.
         If it was running, restart it.
         """
-        print("Starting mocked motion capturing")
+        logger.debug("Starting mocked motion capturing.")
     
     def stop(self):
         """ Stop background motion capturing, if it was running. """
-        print("Stopping mocked motion capturing")
+        logger.debug("Stopping mocked motion capturing.")

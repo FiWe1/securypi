@@ -1,7 +1,9 @@
-import sys
+import logging
 from threading import Thread
 
 from securypi_app.services.email import send_email_async
+
+logger = logging.getLogger(__name__)
 
 
 def parse_save_notification_prefs(prefs, form):
@@ -58,11 +60,6 @@ def parse_save_notification_prefs(prefs, form):
     return None
 
 
-def _log(msg):
-    """ Print diagnostic message to stderr, flushed immediately. """
-    print(f"[notifications] {msg}", file=sys.stderr, flush=True)
-
-
 def notify_motion_capture(app):
     """
     Send motion capture email alerts to all users who have
@@ -76,15 +73,15 @@ def notify_motion_capture(app):
                 from securypi_app.models.user import User
 
                 all_prefs = NotificationPrefs.get_all_motion_enabled()
-                _log(f"notify_motion_capture: {len(all_prefs)} user(s) with motion alerts enabled")
+                logger.debug("notify_motion_capture: %d user(s) with motion alerts enabled", len(all_prefs))
 
                 for prefs in all_prefs:
                     if not prefs.is_cooldown_expired("motion"):
-                        _log(f"notify_motion_capture: user_id={prefs.user_id} cooldown not expired, skipping")
+                        logger.debug("notify_motion_capture: user_id=%s cooldown not expired, skipping", prefs.user_id)
                         continue
                     user = User.get_by_id(prefs.user_id)
                     if not user or not user.email:
-                        _log(f"notify_motion_capture: user_id={prefs.user_id} has no email, skipping")
+                        logger.debug("notify_motion_capture: user_id=%s has no email, skipping", prefs.user_id)
                         continue
                     subject = "SecuryPi: Motion detected"
                     body = (
@@ -92,10 +89,10 @@ def notify_motion_capture(app):
                         "You can review it in the Recordings section of your SecuryPi."
                     )
                     send_email_async(user.email, subject, body)
-                    _log(f"notify_motion_capture: sent to {user.email}")
+                    logger.info("notify_motion_capture: sent to %s", user.email)
                     prefs.update_last_sent("motion")
         except Exception as e:
-            _log(f"notify_motion_capture FAILED: {e}")
+            logger.error("notify_motion_capture failed: %s", e)
 
     Thread(target=_run, daemon=True).start()
 
@@ -148,16 +145,16 @@ def notify_sensor_thresholds(app, measurements):
                             continue
 
                         if not prefs.is_cooldown_expired(cooldown_key):
-                            _log(f"notify_sensor_thresholds: user_id={prefs.user_id} {meas_key} cooldown not expired")
+                            logger.debug("notify_sensor_thresholds: user_id=%s %s cooldown not expired", prefs.user_id, meas_key)
                             continue
 
                         subject = f"SecuryPi: {meas_key.capitalize()} alert"
                         body = _threshold_body(meas_key, value, lower, upper)
                         send_email_async(user.email, subject, body)
-                        _log(f"notify_sensor_thresholds: sent {meas_key} alert to {user.email}")
+                        logger.info("notify_sensor_thresholds: sent %s alert to %s", meas_key, user.email)
                         prefs.update_last_sent(cooldown_key)
         except Exception as e:
-            _log(f"notify_sensor_thresholds FAILED: {e}")
+            logger.error("notify_sensor_thresholds failed: %s", e)
 
     Thread(target=_run, daemon=True).start()
 

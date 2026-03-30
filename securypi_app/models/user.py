@@ -1,11 +1,14 @@
 from __future__ import annotations # fix class forward referencing issue
 
+import logging
 from sqlalchemy import Integer, String, Boolean, select, Row
 from sqlalchemy.orm import Mapped, mapped_column, MappedAsDataclass
 from werkzeug.security import generate_password_hash
 from securypi_app.models.app_config import AppConfig
 
 from . import db
+
+logger = logging.getLogger(__name__)
 
 
 class User(MappedAsDataclass, db.Model):
@@ -55,7 +58,7 @@ class User(MappedAsDataclass, db.Model):
         try:
             return cls.get_by_username(username) is None
         except Exception as e:
-            print(e)
+            logger.error("Error checking username: %s", e)
             raise RuntimeError("Error while checking username. "
                                "Is the database initialized?")
 
@@ -100,7 +103,7 @@ class User(MappedAsDataclass, db.Model):
                 f"Failed to register user with username: '{username}',\n"
                 "There was a database error. Please, check logs."
             )
-            print(e)
+            logger.error("Failed to register user: %s", e)
             return False, message
 
         user_type = "administrator" if is_admin else "standard user"

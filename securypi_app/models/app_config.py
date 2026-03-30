@@ -1,4 +1,5 @@
 import json
+import logging
 import os
 from typing import ClassVar, Tuple, Optional
 from pydantic import BaseModel, Field
@@ -101,6 +102,9 @@ class StorageConfig(BaseModel):
     captures: CapturesConfig
 
 
+logger = logging.getLogger(__name__)
+
+
 # root schema
 #
 class AppConfig(BaseModel):
@@ -130,7 +134,7 @@ class AppConfig(BaseModel):
         with open(path, "r") as f:
             data = json.load(f)
             cls._instance = cls(**data)
-            # print(f"Configuration loaded from {path}")
+            logger.debug("Configuration loaded from %s.", path)
 
     @classmethod
     def get(cls) -> 'AppConfig':
@@ -156,4 +160,4 @@ class AppConfig(BaseModel):
         # atomic rename - os-level operation
         # ('config.json' is never in a half-written state)
         os.replace(temp_path, path)
-        print("Config saved safely to disk.")
+        logger.debug("Config saved safely to %s.", path)

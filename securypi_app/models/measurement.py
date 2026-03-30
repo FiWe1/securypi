@@ -1,5 +1,6 @@
 from __future__ import annotations  # fix class forward referencing issue
 
+import logging
 from zoneinfo import ZoneInfo
 from datetime import datetime, timedelta, timezone
 from sqlalchemy import Integer, Float, DateTime, select, text
@@ -7,6 +8,8 @@ from sqlalchemy.orm import Mapped, mapped_column, MappedAsDataclass
 
 from . import db
 from securypi_app.models.app_config import AppConfig
+
+logger = logging.getLogger(__name__)
 
 
 class Measurement(MappedAsDataclass, db.Model):
@@ -56,7 +59,7 @@ class Measurement(MappedAsDataclass, db.Model):
             db.session.commit()
         except Exception as e:
             db.session.rollback()
-            print(e)
+            logger.error("Failed to commit measurement: %s", e)
             return False
 
         return True
@@ -112,4 +115,4 @@ class Measurement(MappedAsDataclass, db.Model):
     def testprintall(cls) -> None:
         measurements = db.session.execute(select(cls))
         for m in measurements.scalars():
-            print(m)
+            logger.debug("%s", m)

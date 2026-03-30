@@ -1,6 +1,7 @@
 """
 Helper functions for accessing captured videos in: captures/...
 """
+import logging
 import os
 import shutil
 from pathlib import Path
@@ -8,6 +9,7 @@ from werkzeug.utils import secure_filename
 from zipstream import ZipStream
 from securypi_app.models.app_config import AppConfig
 
+logger = logging.getLogger(__name__)
 
 MIN_FREE_STORAGE_BYTES = 1 * 1024 ** 3  # 1 GB
 
@@ -64,7 +66,7 @@ def enforce_motion_captures_window(path: Path, window_size_gb: float) -> None:
         size = f.stat().st_size
         f.unlink()
         total -= size
-        print(f"Window size enforcement: deleted {f.name}")
+        logger.info("Window size enforcement: deleted %s", f.name)
 
 
 # "captures/motion_captures"

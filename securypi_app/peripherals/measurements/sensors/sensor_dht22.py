@@ -1,3 +1,5 @@
+import logging
+
 from securypi_app.peripherals.measurements.sensors.sensor_interface import (
     TemperatureSensorInterface, HumiditySensorInterface
 )
@@ -8,8 +10,7 @@ try:
     import board                    # pyright: ignore[reportMissingImports]
 
 except ImportError as e:
-    print("Failed to import temperature sensor libraries, "
-          "reverting to mock class:\n", "\033[31m", e, "\033[0m")
+    logging.warning("Failed to import DHT22 sensor libraries, reverting to mock class: %s", e)
     # Mock sensor classes for platform independent development
     from securypi_app.peripherals.measurements.mock_sensors.mock_dht22 import (
         MockDHT22

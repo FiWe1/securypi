@@ -1,3 +1,5 @@
+import logging
+
 from flask import (
     Response, Blueprint, render_template, request, url_for, jsonify
 )
@@ -7,6 +9,7 @@ from securypi_app.services.auth import login_required
 from securypi_app.peripherals.camera.mycam import MyPicamera2
 from securypi_app.peripherals.measurements.weather_station import WeatherStation
 
+logger = logging.getLogger(__name__)
 
 MEASUREMENTS_REFRESH_SEC = 30
 
@@ -40,7 +43,7 @@ def picture_feed():
         return Response(jpeg_data, mimetype="image/jpeg")
 
     except Exception as e:
-        print(f"Error capturing picture: {e}")
+        logger.error("Error capturing picture: %s", e)
         return Response(status=500)
 
 

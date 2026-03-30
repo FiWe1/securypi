@@ -1,3 +1,4 @@
+import logging
 from time import sleep
 
 from flask import (
@@ -12,6 +13,7 @@ from securypi_app.services.string_parsing import (
     validate_str_username, validate_str_password
 )
 
+logger = logging.getLogger(__name__)
 
 bp = Blueprint("auth", __name__, url_prefix="/auth")
 
@@ -38,7 +40,7 @@ def load_logged_in_user():
 @login_required
 def logout():
     session.clear()
-    print(f"User '{g.user['username']}' has logged out.")
+    logger.info("User '%s' has logged out.", g.user['username'])
     
     return redirect(url_for("index"))
 
@@ -66,11 +68,11 @@ def login():
             session["user_id"] = user.id
             session["username"] = user.username
             
-            print(f"User '{username}' has successfully logged in.")
+            logger.info("User '%s' has successfully logged in.", username)
             return redirect(url_for("index"))
-        
+
         if error is not None:
-            print(f"User '{username}' login attempt failed:\n{error}.")
+            logger.warning("User '%s' login attempt failed: %s", username, error)
             flash(error)
         sleep(1.5) # restrict brute force
     return render_template("auth/login.html")

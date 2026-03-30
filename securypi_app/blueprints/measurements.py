@@ -67,12 +67,6 @@ def index():
     config = AppConfig.get()
     logging_rate_sec = config.measurements.weather_station.logging_interval_sec
 
-    # cli measurements test
-    # last24 = map(Measurement.to_local_timezone,
-    #              Measurement.fetch_previous_range(days_before=1))
-    # for m in last24:
-    #     print(m)
-
     return render_template(
         "measurements.html",
         logging_rate_sec=logging_rate_sec

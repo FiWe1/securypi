@@ -1,6 +1,8 @@
 # needs executed:
 # sudo pigpiod
 
+import logging
+
 from securypi_app.peripherals.measurements.sensors.sensor_interface import (
     TemperatureSensorInterface, PressureSensorInterface
 )
@@ -10,8 +12,7 @@ try:
     import piqmp6988 as QMP  # pyright: ignore[reportMissingImports]
 
 except ImportError as e:
-    print("Failed to import temperature sensor libraries, "
-          "reverting to mock class:\n", "\033[31m", e, "\033[0m")
+    logging.warning("Failed to import QMP6988 sensor libraries, reverting to mock class: %s. Try executing:\n'sudo pigpiod'", e)
     # Mock sensor classes for platform independent development
     from securypi_app.peripherals.measurements.mock_sensors.mock_qmp6988 import (
         MockQMP as QMP

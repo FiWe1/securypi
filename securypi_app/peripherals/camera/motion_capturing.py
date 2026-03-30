@@ -1,5 +1,5 @@
+import logging
 import time
-from datetime import datetime
 from threading import Thread, Event
 from pathlib import Path
 
@@ -16,6 +16,9 @@ from securypi_app.peripherals.camera.motion_capturing_interface import (
 from securypi_app.peripherals.camera.mycam_interface import MyPicamera2Interface
 from securypi_app.models.app_config import AppConfig
 from securypi_app.services.notifications import notify_motion_capture
+
+
+logger = logging.getLogger(__name__)
 
 
 class MotionCapturing(MotionCapturingInterface):
@@ -131,8 +134,7 @@ class MotionCapturing(MotionCapturingInterface):
             raise RuntimeError("Can not start MotionCapturing "
                                "while another recording is running.")
         if self._capturing_thread is not None:
-            print("Background MotionCapturing was not stopped, "
-                  "stopping now...")
+            logger.warning("Background MotionCapturing was not stopped, stopping now...")
             self.stop()
 
         self._capturing_thread = (
@@ -140,7 +142,7 @@ class MotionCapturing(MotionCapturingInterface):
         )
         self._capturing_stop_event.clear()  # clear stop signal
         self._capturing_thread.start()
-        print("Background MotionCapturing has started")
+        logger.info("Background MotionCapturing has started.")
 
     def stop(self):
         """ Stop background motion capturing, if it was running. """
@@ -157,13 +159,11 @@ class MotionCapturing(MotionCapturingInterface):
 
         filename = folder_path / timed_filename(".mp4")
         self._mycam.start_recording_to_file(filename)
-        print(datetime.now().strftime("%Y-%m-%d_%H-%M"),
-              f"New motion: {round(ratio * 100, 2)}% "
-              f"frame change ratio")
+        logger.info("New motion detected: %.2f%% frame change ratio", ratio * 100)
         try:
             notify_motion_capture(self._mycam._app)
         except Exception as e:
-            print(f"Motion capture notification error: {e}")
+            logger.error("Motion capture notification error: %s", e)
 
     def loop_motion_capturing(self, debug=False):
         """
@@ -198,13 +198,12 @@ class MotionCapturing(MotionCapturingInterface):
 
                 # debug - empiric search for change ratio
                 if debug:
-                    print(round(ratio * 100, 2))
+                    logger.debug("Motion ratio: %.2f%%", ratio * 100)
 
                 # detect motion
                 if ratio >= self.get_change_ratio_threshold():
                     if not has_enough_free_storage(folder_path):
-                        print("Not enough free storage (< 1 GB). "
-                              "Stopping motion capturing.")
+                        logger.warning("Not enough free storage (< 1 GB). Stopping motion capturing.")
                         self._mycam.stop_recording_to_file()
                         low_storage_exit = True
                         break
@@ -234,7 +233,7 @@ class MotionCapturing(MotionCapturingInterface):
             if self._capturing_stop_event.wait(timeout=detection_timeout):
                 if self._mycam.is_recording():
                     self._mycam.stop_recording_to_file()
-                print("Background MotionCapturing exited cleanly.")
+                logger.info("Background MotionCapturing exited cleanly.")
                 break
 
         if low_storage_exit:

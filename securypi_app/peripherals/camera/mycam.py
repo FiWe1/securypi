@@ -1,4 +1,5 @@
 import io
+import logging
 from pathlib import Path
 from numpy import ndarray
 from flask import current_app
@@ -18,8 +19,7 @@ try:
     from securypi_app.peripherals.camera.motion_capturing import MotionCapturing # motion capturing is dependent on picamera2
 
 except ImportError as e:
-    print("Failed to import picamera2 camera library, "
-          "reverting to mock class:\n", "\033[31m", e, "\033[0m")
+    logging.warning("Failed to import picamera2 camera library, reverting to mock class: %s", e)
     # Mock sensor classes for platform independent development
     from securypi_app.peripherals.camera.mock_camera_modules.mock_picamera2 import (
         MockPicamera2, MockEncoder, MockPyavOutput,
@@ -34,6 +34,9 @@ except ImportError as e:
     Quality = MockQuality
     controls = Controls
     MotionCapturing = MockMotionCapturing
+
+
+logger = logging.getLogger(__name__)
 
 
 class MyPicamera2(MyPicamera2Interface):
@@ -138,13 +141,9 @@ class MyPicamera2(MyPicamera2Interface):
             config.sensor.bit_depth = bit_depth
 
             self._picam.configure(config)
-            print(f"Configured video sensor resolution to "
-                  f"{size} with bit depth {bit_depth} at {fps} fps.")
+            logger.info("Configured video sensor resolution to %s with bit depth %s at %s fps.", size, bit_depth, fps)
         else:
-            print(f"WARNING: Cannot configure sensor to "
-                  f"resolution {resolution} at {fps} fps.\n"
-                  f"Using default sensor mode (might be cropped - "
-                  f"check camera.sensor_modes).")
+            logger.warning("Cannot configure sensor to resolution %s at %s fps. Using default sensor mode (might be cropped - check camera.sensor_modes).", resolution, fps)
         return self
 
     def configure_video_streams(self):

@@ -1,3 +1,5 @@
+import logging
+
 from flask import Blueprint, render_template, redirect, url_for, flash, request
 
 from securypi_app.services.auth import login_required, is_logged_in_admin
@@ -11,6 +13,8 @@ from securypi_app.services.captures import (
     has_enough_free_storage, recordings_path, motion_captures_path
 )
 
+
+logger = logging.getLogger(__name__)
 
 ### Globals ###
 bp = Blueprint("camera_control", __name__, url_prefix="/camera_control")
@@ -36,7 +40,7 @@ def start_recording():
             )
             message = "Started recording."
         except Exception as e:
-            print(f"Error starting recording: {e}")
+            logger.error("Error starting recording: %s", e)
             message = f"An error occured during starting recording."
 
     flash(message)
@@ -52,7 +56,7 @@ def stop_recording():
         camera.stop_recording_to_file()
         message = "Stopped recording."
     except Exception as e:
-        print(f"Error stopping recording: {e}")
+        logger.error("Error stopping recording: %s", e)
         message = "An error occured during stopping recording."
 
     flash(message)
@@ -75,7 +79,7 @@ def start_motion_capturing():
             camera.motion_capturing.set_motion_capturing(True)
             message = "Started motion capturing."
         except Exception as e:
-            print(f"Error starting motion capturing: {e}")
+            logger.error("Error starting motion capturing: %s", e)
             message = f"An error occured during starting motion capturing."
 
     flash(message)
@@ -91,7 +95,7 @@ def stop_motion_capturing():
         camera.motion_capturing.set_motion_capturing(False)
         message = "Stopped motion capturing."
     except Exception as e:
-        print(f"Error stopping motion capturing: {e}")
+        logger.error("Error stopping motion capturing: %s", e)
         message = "An error occured during stopping motion capturing."
 
     flash(message)

@@ -1,3 +1,4 @@
+import logging
 from time import sleep
 from threading import Thread, Event
 
@@ -5,6 +6,8 @@ from securypi_app.peripherals.measurements.measurement_logger_interface import (
     MeasurementLoggerInterface
 )
 from securypi_app.models.app_config import AppConfig
+
+logger = logging.getLogger(__name__)
 
 
 class MeasurementLogger(MeasurementLoggerInterface):
@@ -30,7 +33,7 @@ class MeasurementLogger(MeasurementLoggerInterface):
                 self._weather_station.measure_and_log()
             interval = self._logging_interval
             if self._logging_stop_event.wait(timeout=interval):
-                print("Background WeatherSensor logger exited cleanly.")
+                logger.info("Background WeatherSensor logger exited cleanly.")
                 break
 
     def is_logging(self) -> bool:
@@ -80,8 +83,7 @@ class MeasurementLogger(MeasurementLoggerInterface):
         If logging was running, restart it.
         """
         if self.is_logging():
-            print("Background WeatherSensor logger was not stopped, "
-                  "stopping now...")
+            logger.warning("Background WeatherSensor logger was not stopped, stopping now...")
             self.stop_logging()
 
         self._logging_thread = (
@@ -89,7 +91,7 @@ class MeasurementLogger(MeasurementLoggerInterface):
         )
         self._logging_stop_event.clear()  # clear stop signal
         self._logging_thread.start()
-        print("Background WeatherSensor logging has started")
+        logger.info("Background WeatherSensor logging has started.")
 
     def stop_logging(self):
         if self.is_logging():
@@ -99,5 +101,4 @@ class MeasurementLogger(MeasurementLoggerInterface):
 
             self._logging_thread = None
         else:
-            print("Can't stop background WeatherSensor logger, "
-                  "it is not running.")
+            logger.warning("Cannot stop background WeatherSensor logger: it is not running.")

@@ -1,9 +1,12 @@
+import logging
 import random
 import numpy as np
 from threading import Thread, Event
 from io import BytesIO
 
 from PIL import Image
+
+logger = logging.getLogger(__name__)
 
 
 class MockStreamingOutput:
@@ -129,7 +132,7 @@ class MockPicamera2:
         self.new_frame_interval_seconds = 2  # new fake frame every n seconds
 
     def configure(self, config):
-        print("[MockPicamera2] Configured with:", config)
+        logger.debug("[MockPicamera2] Configured with: %s", config)
 
     def start_encoder(self,
                       encoder,
@@ -137,10 +140,7 @@ class MockPicamera2:
                       name="main",
                       quality=MockQuality.MEDIUM):
         """ Continuously generate fake frames """
-        print(
-            f"[MockPicamera2] Simulating video recording " +
-            f"to {output} using {encoder} on stream '{name} "
-            f"with quality '{quality}'")
+        logger.debug("[MockPicamera2] Simulating video recording to %s using %s on stream '%s' with quality '%s'.", output, encoder, name, quality)
 
         def frame_generator():
             while True:
@@ -153,7 +153,7 @@ class MockPicamera2:
                 if self._mock_encoder_stop_event.wait(
                     timeout=self.new_frame_interval_seconds
                 ):
-                    print("Mock encoder exited cleanly.")
+                    logger.debug("Mock encoder exited cleanly.")
                     break
 
         self._mock_encoder_stop_event.clear()  # clear stop signal
@@ -166,7 +166,7 @@ class MockPicamera2:
         self.start()
 
     def stop_encoder(self, recording_encoder="<default mock encoder"):
-        print(f"[MockPicamera2] Stopping encoder {recording_encoder}.")
+        logger.debug("[MockPicamera2] Stopping encoder %s.", recording_encoder)
         self._mock_encoder_stop_event.set()  # signal stop
         if self._mock_encoder_thread is not None:
             self._mock_encoder_thread.join(timeout=2.0)
@@ -177,10 +177,10 @@ class MockPicamera2:
     def stop_recording(self):
         self.stop()
         self.stop_encoder("[all encoders]")
-        print("[MockPicamera2] Stopping recording.")
+        logger.debug("[MockPicamera2] Stopping recording.")
 
     def capture_file(self, stream, format="jpeg"):
-        print("[MockPicamera2] Capturing fake image...")
+        logger.debug("[MockPicamera2] Capturing fake image...")
         # Create a real JPEG image
         img = self.create_random_color_image(640, 360, brightness=0.5)
         img.save(stream, format=format)
@@ -191,13 +191,13 @@ class MockPicamera2:
         return np.asarray(img)
 
     def start(self):
-        print("[MockPicamera2] Starting mock camera.")
+        logger.debug("[MockPicamera2] Starting mock camera.")
 
     def stop(self):
-        print("[MockPicamera2] Stopping mock camera.")
+        logger.debug("[MockPicamera2] Stopping mock camera.")
 
     def set_controls(self, controls):
-        print(f"Setting camera controls: {controls}")
+        logger.debug("[MockPicamera2] Setting camera controls: %s", controls)
 
     @staticmethod
     def create_random_color_image(width, height, brightness=1.0):
