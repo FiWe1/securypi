@@ -5,7 +5,7 @@ Utility functions as a service around authentication.
 import functools
 
 from flask import (
-    redirect, url_for, g, session
+    redirect, url_for, jsonify, g, session
 )
 from werkzeug.security import check_password_hash
 
@@ -33,9 +33,22 @@ def login_required(view):
     def wrapped_view(**kwargs):
         if is_logged_in():
             return view(**kwargs)
-
         return redirect(url_for("auth.login"))
 
+    return wrapped_view
+
+
+def api_login_required(view):
+    """
+    Decorate api route requiring user to be logged in,
+    otherwise return json unauthenticated error, 401.
+    """
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if is_logged_in():
+            return view(**kwargs)
+        return jsonify({"error": "unauthenticated"}), 401
+    
     return wrapped_view
 
 
@@ -48,7 +61,6 @@ def logged_out_required(view):
     def wrapped_view(**kwargs):
         if not is_logged_in():
             return view(**kwargs)
-
         return redirect(url_for("index"))
 
     return wrapped_view

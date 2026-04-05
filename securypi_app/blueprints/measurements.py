@@ -1,9 +1,9 @@
 from datetime import datetime, timezone
 from zoneinfo import ZoneInfo
 
-from flask import Blueprint, render_template, jsonify, redirect, url_for
+from flask import Blueprint, render_template, jsonify
 
-from securypi_app.services.auth import login_required
+from securypi_app.services.auth import login_required, api_login_required
 from securypi_app.models.measurement import Measurement
 from securypi_app.peripherals.measurements.weather_station import WeatherStation
 from securypi_app.models.app_config import AppConfig
@@ -14,7 +14,7 @@ bp = Blueprint("measurements", __name__, url_prefix="/measurements")
 
 
 @bp.route("/data")
-@login_required
+@api_login_required
 def data():
     """
     Fetch measurements data in local timezone.

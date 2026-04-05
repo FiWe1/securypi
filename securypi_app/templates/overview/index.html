@@ -110,7 +110,7 @@ function updateTimestamp(img, now) {
   // Error Handling: Network or Server failure
   img.onerror = () => {
       clearInterval(loadingInterval);
-      timestampElement.textContent = `Chyba spojenia`;
+      timestampElement.textContent = `Connection error`;
   };
 }
 setInterval(refreshMeasurements, {{ measurements_refresh_sec * 1000 }}); // current measurements refresh rate in milliseconds
