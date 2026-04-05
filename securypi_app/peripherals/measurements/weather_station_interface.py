@@ -39,7 +39,8 @@ class WeatherStationInterface(ABC):
     @abstractmethod
     def measure(self, repeat=5) -> dict[str, float] | None:
         """ 
-        Measure temperature and humidity using sensor device.
+        Return dictionary of measurements from sensors:
+        { 'temperature' | 'humidity' | 'pressure': value }.
         On failure, retry 'repeat' times before returning None.
         """
         pass
@@ -49,10 +50,11 @@ class WeatherStationInterface(ABC):
                               round_digits=1,
                               temp_unit="C") -> dict[float | str, float | str]:
         """ 
-        Measure temperature and humidity, on failure format the results:
-        return dict{x: "N/A", ..., z: "N/A"}.
+        Return dictionary of measurements from sensors:
+        { 'temperature' | 'humidity' | 'pressure': value }.
+        On measurement failure set the value to: "N/A".
         Convert temerature to specified unit:
-        "C" (Celsius) or "F" (Fahrenheit)
+        "C" (Celsius) or "F" (Fahrenheit).
         """
         pass
 
@@ -60,6 +62,6 @@ class WeatherStationInterface(ABC):
     def measure_and_log(self) -> dict[str, float] | None:
         """
         Measure temperature and humidity and store in db.
-        On success return dictionary of measured values, None othervise.
+        On db log success return dictionary of measured values, othervise None.
         """
         pass
