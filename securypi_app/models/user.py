@@ -1,9 +1,10 @@
-from __future__ import annotations # fix class forward referencing issue
-
 import logging
+import secrets
+
 from sqlalchemy import Integer, String, Boolean, select, Row
 from sqlalchemy.orm import Mapped, mapped_column, MappedAsDataclass
 from werkzeug.security import generate_password_hash
+
 from securypi_app.models.app_config import AppConfig
 
 from . import db
@@ -23,19 +24,22 @@ class User(MappedAsDataclass, db.Model):
     hashed_password: Mapped[str] = mapped_column(
         String, nullable=False
     )
+    password_salt: Mapped[str] = mapped_column(
+        String, nullable=False
+    )
     is_admin: Mapped[bool] = mapped_column(
         Boolean, default=False, nullable=False
     )
     email: Mapped[str | None] = mapped_column(
         String, default=None, nullable=True
     )
-        
+
     def __repr__(self) -> str:
         return (
             f"User(id={self.id}, username={self.username}, "
             f"is_admin={self.is_admin}, email={self.email})"
         )
-    
+
     @classmethod
     def get_hash_method(cls) -> str:
         """ Fetches hash method from app configuration. """
@@ -51,7 +55,7 @@ class User(MappedAsDataclass, db.Model):
     def get_by_username(cls, username: str) -> User | None:
         stmt = select(cls).where(cls.username == username)
         return db.session.execute(stmt).scalar_one_or_none()
-    
+
     @classmethod
     def is_username_free(cls, username) -> bool:
         """ Chcecks if username is not taken. """
@@ -64,7 +68,7 @@ class User(MappedAsDataclass, db.Model):
 
     @classmethod
     def get_meta_by_id(cls, user_id: int) -> Row | None:
-        """ 
+        """
         Returns Row object of the user attributes - without password
         for better data manipulation.
         (Row._mapping -> dict of attributes)
@@ -81,15 +85,19 @@ class User(MappedAsDataclass, db.Model):
                  is_admin=False,
                  email=None) -> tuple[bool, str]:
         """
-        Registers a new user. 
+        Registers a new user.
         -> (True, "succes message")
         -> (False, "error message")
         """
-        hashed = generate_password_hash(password, method=cls.get_hash_method())
+        salt = secrets.token_hex(32)
+        hashed = generate_password_hash(
+            salt + password, method=cls.get_hash_method(), salt_length=32
+        )
 
         new_user = cls(
             username=username,
             hashed_password=hashed,
+            password_salt=salt,
             is_admin=is_admin,
             email=email
         )
@@ -108,14 +116,14 @@ class User(MappedAsDataclass, db.Model):
 
         user_type = "administrator" if is_admin else "standard user"
         return True, f"Successfully registered {username} as {user_type}."
-    
+
     @classmethod
     def fetch_all(cls) -> list[User]:
         """ Fetches all users from the database. """
         stmt = select(User)
         result = db.session.execute(stmt).scalars().all()
         return list(result)
-    
+
     def change_password(self,
                         new_password: str) -> tuple[bool, str]:
         """
@@ -123,13 +131,14 @@ class User(MappedAsDataclass, db.Model):
         -> (True, "success message")
         -> (False, "error message")
         """
-        
         # hash new password
+        self.password_salt = secrets.token_hex(32)
         self.hashed_password = generate_password_hash(
-            new_password,
-            method=self.get_hash_method()
+            self.password_salt + new_password,
+            method=self.get_hash_method(),
+            salt_length=32
         )
-        
+
         try:
             db.session.commit()
         except Exception:
@@ -137,7 +146,7 @@ class User(MappedAsDataclass, db.Model):
             return False, "Failed to update password due to a database error."
 
         return True, f"Password successfully updated for user '{self.username}'."
-    
+
     def account_details(self) -> dict[str, str]:
         """ {
             "username": {username}
@@ -177,5 +186,5 @@ class User(MappedAsDataclass, db.Model):
         except Exception:
             db.session.rollback()
             return "Failed to delete user due to a database error."
-        
+
         return f"User '{self.username}' was successfully deleted."
