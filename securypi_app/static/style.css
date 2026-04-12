@@ -14,6 +14,11 @@
 
   --overview__camera_feed-switch-color: white;
 
+  --overview__camera_feed-aspect-ratio: calc(16 / 9);
+  --overview__camera_feed-height-constraint: 65vh;
+  --overview__camera_feed-width-constraint: calc(var(--overview__camera_feed-height-constraint)
+                                                 * var(--overview__camera_feed-aspect-ratio));
+
   --content-span-grid-columns: 2 / -1; /* first column is navbar */
   --content-span-grid-rows: 1 / -1;
 
@@ -353,6 +358,7 @@ button.navbar__link {
   grid-template-columns: 1fr 1fr;
   grid-template-rows: auto 1fr auto;
   margin-bottom: 1em;
+  width: min(70vw, var(--overview__camera_feed-width-constraint));
 }
 
 .overview__camera_feed--title {
@@ -365,10 +371,8 @@ button.navbar__link {
   grid-row: 2;
   
   aspect-ratio: 16 / 9;
-  width: 70vw;
-  max-width: 70vw;
+  width: 100%;
   height: auto;
-  max-height: 65vh;
   object-fit: contain;
   margin: 0.5em 0em;
 }
@@ -984,13 +988,12 @@ button.navbar__link {
   .overview__camera_feed {
     grid-column: 1 / 12;
     grid-template-rows: auto 2fr auto 1fr; /* push camera feed up */
+    width: 95vw;
   }
 
   #overview__camera_feed--output {
-    width: 95vw;
-    max-width: 95vw;
     height: auto;
-    max-height: auto;
+    max-height: none;
     object-fit: contain;
   }
 
