@@ -1,3 +1,5 @@
+from __future__ import annotations # fix User class forward type referencing
+
 import logging
 import secrets
 
