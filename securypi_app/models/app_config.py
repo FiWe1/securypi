@@ -142,7 +142,7 @@ class AppConfig(BaseModel):
             logger.debug("Configuration loaded from %s.", path)
 
     @classmethod
-    def get(cls) -> AppConfig:
+    def get(cls) -> 'AppConfig':
         """ Get the singleton instance of AppSecrets. """
         with cls._lock:
             if cls._instance is None:
