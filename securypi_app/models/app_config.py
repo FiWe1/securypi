@@ -66,6 +66,10 @@ class UsernameConfig(BaseModel):
     max_length: int
     description: Optional[str] = None
 
+class SessionConfig(BaseModel):
+    session_lifetime_hours: float = Field(gt=0) # > 0
+    description: Optional[str] = None
+
 # - storage -
 class CapturesConfig(BaseModel):
     motion_captures_path: str
@@ -97,6 +101,7 @@ class MeasurementsConfig(BaseModel):
 class AuthenticationConfig(BaseModel):
     password: PasswordConfig
     username: UsernameConfig
+    session: SessionConfig
 
 class StorageConfig(BaseModel):
     captures: CapturesConfig
@@ -137,11 +142,14 @@ class AppConfig(BaseModel):
             logger.debug("Configuration loaded from %s.", path)
 
     @classmethod
-    def get(cls) -> 'AppConfig':
+    def get(cls) -> AppConfig:
         """ Get the singleton instance of AppSecrets. """
         with cls._lock:
             if cls._instance is None:
                 cls.fetch()
+        if cls._instance is None:
+            raise RuntimeError("Error loading configuration.")
+        
         return cls._instance
     
     def save(self):

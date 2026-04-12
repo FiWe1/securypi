@@ -65,6 +65,7 @@ def login():
         if error is None and user is not None:
             # login successful
             session.clear()
+            session.permanent = True # enable PERMANENT_SESSION_LIFETIME expiration
             session["user_id"] = user.id
             session["username"] = user.username
             

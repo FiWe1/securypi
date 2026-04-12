@@ -1,16 +1,20 @@
 import os
 import secrets
+from datetime import timedelta
 
 from flask import Flask
 from flask_wtf.csrf import CSRFProtect
 
 from .models import db
+from .models.app_config import AppConfig
 from .services.logging import setup_logging
 
 
 def create_app(test_config=None):
     """ Create and configure an instance of the Flask application. """
     app = Flask(__name__, instance_relative_config=True)
+
+    session_lifetime_hours = AppConfig.get().authentication.session.session_lifetime_hours
 
     app.config.from_mapping(
         SECRET_KEY=secrets.token_hex(32),
@@ -24,6 +28,8 @@ def create_app(test_config=None):
             "max_overflow": 5,
             "pool_timeout": 30,
         },
+        PERMANENT_SESSION_LIFETIME=timedelta(hours=session_lifetime_hours),
+        SESSION_REFRESH_EACH_REQUEST=False,
     )
 
     if test_config is None:
