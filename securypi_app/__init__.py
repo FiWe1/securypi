@@ -1,12 +1,9 @@
 import os
-import secrets
-from datetime import timedelta
 
 from flask import Flask
 from flask_wtf.csrf import CSRFProtect
 
 from .models import db
-from .models.app_config import AppConfig
 from .services.logging import setup_logging
 
 
@@ -14,35 +11,18 @@ def create_app(test_config=None):
     """ Create and configure an instance of the Flask application. """
     app = Flask(__name__, instance_relative_config=True)
 
-    session_lifetime_hours = AppConfig.get().authentication.session.session_lifetime_hours
-
-    app.config.from_mapping(
-        SECRET_KEY=secrets.token_hex(32),
-        # db path: instance folder
-        SQLALCHEMY_DATABASE_URI = (
-            "sqlite:///" + os.path.join(app.instance_path,
-                                        "securypi_app.sqlite")
-        ),
-        SQLALCHEMY_ENGINE_OPTIONS = {
-            "pool_size": 10,
-            "max_overflow": 5,
-            "pool_timeout": 30,
-        },
-        PERMANENT_SESSION_LIFETIME=timedelta(hours=session_lifetime_hours),
-        SESSION_REFRESH_EACH_REQUEST=False,
-    )
-
-    if test_config is None:
-        # @TODO instance config
-        app.config.from_pyfile("config.py", silent=True)
-    else:
+    # server configuration
+    _server_config = os.path.join(os.path.dirname(os.path.dirname(__file__)),
+                                  "server_config.py")
+    app.config.from_pyfile(_server_config)
+    if test_config is not None:
         app.config.update(test_config)
 
     # ensure the instance folder exists
     try:
         os.makedirs(app.instance_path)
     except OSError:
-        pass
+        pass # path exists
 
     setup_logging(app.instance_path, debug=False) # True for more detail
 
