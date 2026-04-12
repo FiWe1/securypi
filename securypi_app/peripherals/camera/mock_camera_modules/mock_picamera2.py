@@ -195,6 +195,9 @@ class MockPicamera2:
 
     def stop(self):
         logger.debug("[MockPicamera2] Stopping mock camera.")
+        
+    def close(self):
+        logger.debug("[MockPicamera2] Closing mock camera.")
 
     def set_controls(self, controls):
         logger.debug("[MockPicamera2] Setting camera controls: %s", controls)
