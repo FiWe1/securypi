@@ -474,7 +474,6 @@ button.navbar__link {
 
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1em;
   
   margin: 1em;
 }
@@ -544,7 +543,7 @@ button.navbar__link {
 }
 
 .recordings__title {
-  grid-column: 1 / 12;
+  grid-column: 1 / -1;
   grid-row: 1;
 }
 
@@ -755,8 +754,6 @@ button.navbar__link {
 .account__title {
   grid-column: 1 / -1;
   grid-row: 1;
-
-  margin-bottom: 1em;
 }
 
 .account__info {
@@ -1039,11 +1036,6 @@ button.navbar__link {
   /*
    * RECORDINGS
   */
-  .recordings__title {
-    grid-column: 1 / 5;
-    grid-row: 1;
-  }
-
   /* recordings above motion captures spanning full width */
   .recordings__list {
     grid-column: 1 / 12;
