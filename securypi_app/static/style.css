@@ -947,11 +947,6 @@ button.navbar__link {
     margin-top: 0rem;
     margin-bottom: 0.5rem;
   }
-  
-  .navbar a {
-    color: var(--nav-link-color);
-    text-decoration: none;
-  }
 
   .navbar__main a {
     padding-bottom: 0.9rem;
