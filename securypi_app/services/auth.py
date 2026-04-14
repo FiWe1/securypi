@@ -95,8 +95,7 @@ def validate_login(username, password) -> tuple[User | None, str | None]:
     error = None
     if user is None:
         error = "Incorrect username."
-    elif not check_password_hash(user.hashed_password,
-                                 user.password_salt + password):
+    elif not check_password_hash(user.hashed_password, password):
         error = "Incorrect password."
         user = None
     

@@ -1,12 +1,9 @@
-from __future__ import annotations # fix User class forward type referencing
+from __future__ import annotations  # fix 'User' return type forward referencing
 
 import logging
-import secrets
-
 from sqlalchemy import Integer, String, Boolean, select, Row
 from sqlalchemy.orm import Mapped, mapped_column, MappedAsDataclass
 from werkzeug.security import generate_password_hash
-
 from securypi_app.models.app_config import AppConfig
 
 from . import db
@@ -24,9 +21,6 @@ class User(MappedAsDataclass, db.Model):
         String, unique=True, nullable=False
     )
     hashed_password: Mapped[str] = mapped_column(
-        String, nullable=False
-    )
-    password_salt: Mapped[str] = mapped_column(
         String, nullable=False
     )
     is_admin: Mapped[bool] = mapped_column(
@@ -47,6 +41,11 @@ class User(MappedAsDataclass, db.Model):
         """ Fetches hash method from app configuration. """
         config = AppConfig.get()
         return config.authentication.password.hash_method
+    
+    @classmethod
+    def get_salt_length(cls) -> int:
+        """ Returns required salt length for hash function. """
+        return 32
 
     @classmethod
     def get_by_id(cls, user_id: int) -> User | None:
@@ -75,9 +74,8 @@ class User(MappedAsDataclass, db.Model):
         for better data manipulation.
         (Row._mapping -> dict of attributes)
         """
-        stmt = select(cls.id, cls.username, cls.is_admin, cls.email).where(
-            cls.id == user_id
-        )
+        stmt = select(cls.id, cls.username, cls.is_admin,
+                      cls.email).where(cls.id == user_id)
         return db.session.execute(stmt).first()
 
     @classmethod
@@ -91,15 +89,13 @@ class User(MappedAsDataclass, db.Model):
         -> (True, "succes message")
         -> (False, "error message")
         """
-        salt = secrets.token_hex(32)
-        hashed = generate_password_hash(
-            salt + password, method=cls.get_hash_method(), salt_length=32
-        )
+        hashed = generate_password_hash(password,
+                                        method=cls.get_hash_method(),
+                                        salt_length=cls.get_salt_length())
 
         new_user = cls(
             username=username,
             hashed_password=hashed,
-            password_salt=salt,
             is_admin=is_admin,
             email=email
         )
@@ -133,12 +129,12 @@ class User(MappedAsDataclass, db.Model):
         -> (True, "success message")
         -> (False, "error message")
         """
+
         # hash new password
-        self.password_salt = secrets.token_hex(32)
         self.hashed_password = generate_password_hash(
-            self.password_salt + new_password,
+            new_password,
             method=self.get_hash_method(),
-            salt_length=32
+            salt_length=self.get_salt_length()
         )
 
         try:
