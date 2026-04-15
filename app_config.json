@@ -30,9 +30,9 @@
   "measurements": {
     "sensors": {
       "use_dht22": false,
-      "use_sht30": true,
-      "use_qmp6988": true,
-      "description": "Which sensors to read from"
+      "use_sht30": false,
+      "use_qmp6988": false,
+      "description": "Select which sensors to read from"
     },
     "weather_station": {
       "logging_interval_sec": 120,
