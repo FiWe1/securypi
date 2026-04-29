@@ -4,12 +4,11 @@ for platform independent development and testing.
 
 - QMP6988 connected to I2C
 """
+
 from enum import IntEnum
 from typing import NamedTuple
 
-
-MOCKED_TEMPERATURE = 21.5
-MOCKED_PRESSURE = 1013.25
+from securypi_app.models.app_config import AppConfig
 
 
 class MockOversampling(IntEnum):
@@ -39,11 +38,15 @@ class MockPiQmp6988:
     """ Mock pressure (and temperature) sensor. """
     def __init__(self, config: dict | None = None):
         self.config = config or {}
+        
+        app_config = AppConfig.get()
+        self._temperature = app_config.measurements.mock_sensors.mocked_temperature
+        self._pressure = app_config.measurements.mock_sensors.mocked_pressure
     
     def read(self) -> dict[str, float]:
         return {
-            "temperature": MOCKED_TEMPERATURE,
-            "pressure": MOCKED_PRESSURE
+            "temperature": self._temperature,
+            "pressure": self._pressure
         }
 
 

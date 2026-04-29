@@ -31,7 +31,9 @@
     "sensors": {
       "use_dht22": false,
       "use_sht30": false,
+      "use_sht40": false,
       "use_qmp6988": false,
+      "use_bmp388": false,
       "description": "Select which sensors to read from"
     },
     "weather_station": {

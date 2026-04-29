@@ -12,7 +12,10 @@ from securypi_app.services.notifications import notify_sensor_thresholds
 # sensors
 from securypi_app.peripherals.measurements.sensors.sensor_dht22 import SensorDht22
 from securypi_app.peripherals.measurements.sensors.sensor_sht30 import SensorSht30
+from securypi_app.peripherals.measurements.sensors.sensor_sht40 import SensorSht40
 from securypi_app.peripherals.measurements.sensors.sensor_qmp6988 import SensorQmp6988
+from securypi_app.peripherals.measurements.sensors.sensor_bmp388 import SensorBmp388
+
 
 # logger
 from securypi_app.peripherals.measurements.measurement_logger import (
@@ -61,26 +64,34 @@ class WeatherStation(WeatherStationInterface):
         config = AppConfig.get()
         use_dht22 = config.measurements.sensors.use_dht22
         use_sht30 = config.measurements.sensors.use_sht30
+        use_sht40 = config.measurements.sensors.use_sht40
         use_qmp6988 = config.measurements.sensors.use_qmp6988
+        use_bmp388 = config.measurements.sensors.use_bmp388
         
         
         self._sensor_temperature = None
         self._sensor_humidity = None
         self._sensor_pressure = None
         
+        # humidity
         if use_dht22:
             self._sensor_humidity = SensorDht22()
         elif use_sht30:
             self._sensor_humidity = SensorSht30()
+        elif use_sht40:
+            self._sensor_humidity = SensorSht40()
         
+        # pressure
         if use_qmp6988:
             self._sensor_pressure = SensorQmp6988()
+        elif use_bmp388:
+            self._sensor_pressure = SensorBmp388()
         
         # Use the same sensor for temperature + humidity,
         # otherwise pressure + temperature
         if self._sensor_humidity is not None:
             self._sensor_temperature = self._sensor_humidity
-        elif use_qmp6988:
+        elif self._sensor_pressure is not None:
             self._sensor_temperature = self._sensor_pressure
             
 

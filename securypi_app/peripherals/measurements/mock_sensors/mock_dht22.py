@@ -5,22 +5,25 @@ for platform independent development and testing.
 - DHT22 connected to gpio4
 """
 
-MOCKED_TEMPERATURE = 21.5
-MOCKED_HUMIDITY = 45
+from securypi_app.models.app_config import AppConfig
 
 
 class MockDHT22:
     """ Mock humidity and temperature sensor. """
     def __init__(self, pin=None):
         self._pin = pin
+        
+        config = AppConfig.get()
+        self._temperature = config.measurements.mock_sensors.mocked_temperature
+        self._humidity = config.measurements.mock_sensors.mocked_humidity
     
     @property
     def temperature(self):
-        return MOCKED_TEMPERATURE
+        return self._temperature
 
     @property
     def humidity(self):
-        return MOCKED_HUMIDITY
+        return self._humidity
 
     def exit(self):
         pass

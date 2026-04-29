@@ -7,7 +7,7 @@ from securypi_app.peripherals.measurements.sensors.sensor_interface import (
     TemperatureSensorInterface, PressureSensorInterface
 )
 
-# conditional import for RPi DHT22 temp/humidity sensor
+# conditional import for RPi QMP6988 pressure/temperature sensor
 try:
     import piqmp6988 as QMP  # pyright: ignore[reportMissingImports]
 

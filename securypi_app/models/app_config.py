@@ -35,7 +35,9 @@ class MotionCaptureConfig(BaseModel):
 class SensorsConfig(BaseModel):
     use_dht22: bool
     use_sht30: bool
+    use_sht40: bool
     use_qmp6988: bool
+    use_bmp388: bool
     description: Optional[str] = None
     
 class WeatherStationConfig(BaseModel):
