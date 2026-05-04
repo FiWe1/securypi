@@ -61,3 +61,7 @@ b.) or manually create venv and install requirements:
 - Run the register-user command:
 
     .venv/bin/python -m flask --app securypi_app register-user [username] [password] ['admin' | 'standard']
+
+## License
+
+This project is licensed under the MIT License — see [LICENSE.txt](LICENSE.txt) for details.
