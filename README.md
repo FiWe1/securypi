@@ -32,6 +32,9 @@ III.) After connecting environmental sensors, enable them in *app_config.json*, 
 
 a.) Recommended: Use bash **venv install script** located in *scripts/* directory:
 
+    # enable script execution:
+    chmod +x scripts/*
+    
     ./scripts/venv_install.sh
 
 b.) or manually create venv and install requirements:
