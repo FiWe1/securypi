@@ -99,6 +99,7 @@
 │   # PROJECT ROOT FILES: #
 │
 ├── app_config.json         # app configuration
+├── bp-domaci_zabezpecovaci_system-filip_weissensteiner.pdf     # bachelor's thesis serving as documentation
 ├── LICENSE.txt
 ├── pyproject.toml          # configuration of tools: pytest
 ├── README.md               # describes how to initialize and start the app

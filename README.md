@@ -4,11 +4,11 @@ This software was created as part of a bachelor's thesis *Home Security System* 
 
 
 ## What you need:
-- **Raspberry Pi** 4 / 5, 2+GB RAM, running Raspbery Pi OS
+- **Raspberry Pi** 4 / 5, 2+GB RAM, running Raspberry Pi OS
+- **Python 3.11+** (included in Raspberry Pi OS)
 - **SSD** storage recommended
-- **Debian Bookworm** (or newer versions, but there may be limited compatibility with some sensors - QMP6988)
 - **Raspberry Pi Camera v3** / v3 wide
-- optionally **temperature, humidity, pressure sensors** (recommended humidity sensors: adafruit **sht30, sht40**; pressure sensor: **BMP388**; (DHT22 teperature sensor has poor reliability and QMP6988 pressure sensor has limitted compatibility, requiring outdated pigpiod daemon))
+- optionally **temperature, humidity, pressure sensors** (recommended humidity sensors: adafruit **sht30, sht40**; pressure sensor: **BMP388**; (DHT22 temperature sensor has poor reliability and QMP6988 pressure sensor has limitted compatibility, requiring outdated pigpiod daemon))
 
 It is possible to run the app on any system, but only for testing purpouses (sensor data will be mocked).
 
