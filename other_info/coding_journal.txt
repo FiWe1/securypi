@@ -1,8 +1,0 @@
-@TODO Style todo comments like this
-@TODO {
-    or
-    this way
-}
-
-CONTINUE WITH:
-1. @TODO Check linences and T&Cs of libraries (requirements.txt)

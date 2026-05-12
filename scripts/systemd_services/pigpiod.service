@@ -1,3 +1,6 @@
+# When using QMP6988 pressure sensor,
+# to run required pigpiod deamon a systemd service, execute the following:
+#
 # sudo cp ./scripts/systemd_services/pigpiod.service /etc/systemd/system/pigpiod.service
 # sudo systemctl daemon-reload
 # sudo systemctl enable pigpiod.service && sudo systemctl start pigpiod.service
