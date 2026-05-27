@@ -4,7 +4,12 @@
 Flask>=3.1.1, <4.0
 Flask-SQLAlchemy>=3.1.1, <4.0
 flask-wtf>=1.2.0, <2.0
+
+# output zip captures
 zipstream-ng>=1.9.0, <2.0
+
+# timezone information
+tzdata
 
 # Image processing
 Pillow>=11.1.0, <12.0
