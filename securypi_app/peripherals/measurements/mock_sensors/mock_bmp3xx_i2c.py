@@ -12,15 +12,11 @@ class MockBMP3XX_I2C:
     """ Mock humidity and temperature sensor. """
     def __init__(self, i2c):
         self._i2c = i2c
-        
-        config = AppConfig.get()
-        self._temperature = config.measurements.mock_sensors.mocked_temperature
-        self._pressure = config.measurements.mock_sensors.mocked_pressure
-    
+
     @property
     def temperature(self):
-        return self._temperature
+        return AppConfig.get().measurements.mock_sensors.mocked_temperature
 
     @property
     def pressure(self):
-        return self._pressure
+        return AppConfig.get().measurements.mock_sensors.mocked_pressure

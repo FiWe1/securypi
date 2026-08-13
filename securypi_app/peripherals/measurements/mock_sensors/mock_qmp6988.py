@@ -38,15 +38,12 @@ class MockPiQmp6988:
     """ Mock pressure (and temperature) sensor. """
     def __init__(self, config: dict | None = None):
         self.config = config or {}
-        
-        app_config = AppConfig.get()
-        self._temperature = app_config.measurements.mock_sensors.mocked_temperature
-        self._pressure = app_config.measurements.mock_sensors.mocked_pressure
-    
+
     def read(self) -> dict[str, float]:
+        app_config = AppConfig.get()
         return {
-            "temperature": self._temperature,
-            "pressure": self._pressure
+            "temperature": app_config.measurements.mock_sensors.mocked_temperature,
+            "pressure": app_config.measurements.mock_sensors.mocked_pressure
         }
 
 
