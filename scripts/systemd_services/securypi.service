@@ -9,15 +9,16 @@
 
 [Unit]
 Description=Securypi Flask App
-Requires=pigpiod.service tailscaled.service
-After=pigpiod.service tailscaled.service
+# UNCOMMENT WHEN USING QMP6988 PRESSURE SENSOR:
+# Requires=pigpiod.service
+# After=pigpiod.service
 
 [Service]
 Type=simple
 User=fiwe1
-WorkingDirectory=/home/fiwe1/Coding/securypi
+WorkingDirectory=/home/fiwe1/Coding/securypis/securypi_demo
 
-ExecStart=/bin/bash /home/fiwe1/Coding/securypi/scripts/app_run.sh
+ExecStart=/bin/bash /home/fiwe1/Coding/securypis/securypi_demo/scripts/app_run.sh
 
 Restart=on-failure
 
