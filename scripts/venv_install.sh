@@ -4,6 +4,13 @@
 # Install script for creating virtual environment (.venv/)
 # and installing required packages, independently from platform.
 
+# Needs following system packages.
+# If missing, install them MANUALLY with SUDO privileges:
+#
+# sudo apt install python3-dev libcap-dev build-essential
+#
+# sudo apt install python3-lgpio # (when using DHT22 humidity sensor)
+
 
 PYTHON=python3
 
