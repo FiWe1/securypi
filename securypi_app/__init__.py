@@ -66,4 +66,10 @@ def create_app(test_config=None):
     from .models.init_db import register_cli_commands
     register_cli_commands(app)
 
+    # initialize WeatherStation to start background measurement_logger
+    if (test_config is None):
+        from .peripherals.measurements.weather_station import WeatherStation
+        with app.app_context():
+            WeatherStation()
+
     return app
