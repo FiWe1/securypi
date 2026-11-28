@@ -5,7 +5,7 @@ Utility functions as a service around authentication.
 import functools
 
 from flask import (
-    redirect, url_for, jsonify, g, session
+    redirect, url_for, jsonify, g
 )
 from werkzeug.security import check_password_hash
 
@@ -16,7 +16,15 @@ from securypi_app.services.string_parsing import (
 
 
 def is_logged_in():
-    return session.get("username") is not None
+    """
+    True when blueprints/auth/load_logged_in_user
+    found the session's user in the database.
+    
+    g.user is unset when an earlier before_request handler aborted
+    (e.g. if CSRF check fails), g.get falls back to 'None',
+    while error pages keep working.
+    """
+    return g.get("user") is not None
 
 
 def inject_is_logged_in():
@@ -67,11 +75,7 @@ def logged_out_required(view):
 
 
 def is_logged_in_admin():
-    return (
-        is_logged_in()
-        and g.user is not None
-        and g.user["is_admin"] == True
-    )
+    return is_logged_in() and g.user["is_admin"] == True
 
 
 def admin_rights_required(view):
