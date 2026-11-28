@@ -33,7 +33,8 @@ def load_logged_in_user():
         if user_row is not None:
             g.user = user_row._mapping # success
             return
-    
+        session.clear() # user was deleted, drop the stale login
+
     g.user = None # fail
 
 @bp.route("/logout", methods=["POST"])
